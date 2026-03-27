@@ -1,0 +1,32 @@
+{
+  "document": "bachha_patra",
+  "party": "Rastriya Swatantra Party",
+  "party_np": "राष्ट्रिय स्वतन्त्र पार्टी",
+  "description": "Election manifesto commitments - digitize from official document",
+  "categories": {
+    "economy": [],
+    "education": [],
+    "health": [],
+    "infrastructure": [],
+    "governance": [],
+    "agriculture": [],
+    "foreign_policy": [],
+    "justice": [],
+    "environment": [],
+    "technology": [],
+    "social_welfare": [],
+    "youth_employment": []
+  },
+  "items": [
+    {
+      "id": "bp-001",
+      "category": "governance",
+      "text_en": "TODO: Digitize each commitment from the official bachha patra document",
+      "text_np": "TODO: आधिकारिक बाचा पत्रबाट प्रत्येक प्रतिबद्धता डिजिटाइज गर्ने",
+      "priority": "high",
+      "measurable": true,
+      "target_date": null,
+      "assigned_ministries": []
+    }
+  ]
+}

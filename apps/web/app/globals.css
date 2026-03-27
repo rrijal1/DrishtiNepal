@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  /* Drishti Nepal Brand Colors */
+  --color-brand: #1e3a5f; /* Deep blue - trust, authority */
+  --color-brand-light: #2d5a8e;
+  --color-brand-dark: #0f1f33;
+  --color-accent: #dc2626; /* Nepal red */
+  --color-accent-light: #ef4444;
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+
+  --color-score-excellent: #16a34a;
+  --color-score-good: #65a30d;
+  --color-score-average: #f59e0b;
+  --color-score-poor: #f97316;
+  --color-score-failing: #dc2626;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Noto Sans Devanagari",
+    sans-serif;
+  background-color: var(--color-neutral-50);
+  color: var(--color-neutral-800);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Score badge animations */
+@keyframes score-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.score-badge {
+  animation: score-pulse 2s ease-in-out infinite;
+}
+
+/* Glass effect for cards */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Nepali text rendering */
+.font-nepali {
+  font-family: "Noto Sans Devanagari", "Mukta", sans-serif;
+}

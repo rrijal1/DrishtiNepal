@@ -1,0 +1,16 @@
+.env
+.env.local
+.env.production
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.next/
+dist/
+.vercel
+.supabase
+*.log
+.DS_Store
+next-env.d.ts
+*.swp
+*.swo

@@ -1,0 +1,23 @@
+{
+  "cabinet_name": "Current Cabinet of Nepal",
+  "formed_date": "TODO: Add date when current cabinet was formed",
+  "prime_minister": {
+    "name_en": "TODO",
+    "name_np": "TODO",
+    "party": "TODO"
+  },
+  "ministers": [
+    {
+      "name_en": "TODO: Add each minister",
+      "name_np": "TODO",
+      "portfolio_en": "TODO: Ministry name",
+      "portfolio_np": "TODO",
+      "party": "Rastriya Swatantra Party",
+      "appointed_date": "TODO: YYYY-MM-DD",
+      "photo_url": null,
+      "bio_summary_en": "",
+      "bio_summary_np": "",
+      "previous_roles": []
+    }
+  ]
+}

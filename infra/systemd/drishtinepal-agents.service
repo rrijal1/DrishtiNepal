@@ -1,0 +1,18 @@
+[Unit]
+Description=Drishti Nepal Agent Scheduler
+After=network.target
+
+[Service]
+Type=simple
+User=drishtinepal
+WorkingDirectory=/opt/drishtinepal
+ExecStart=/opt/drishtinepal/venv/bin/python -m agents.scheduler
+Restart=always
+RestartSec=30
+EnvironmentFile=/opt/drishtinepal/.env
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=drishtinepal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  # Local development only - production uses Supabase cloud
+  db:
+    image: supabase/postgres:15.1.0.117
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: drishtinepal
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./supabase/migrations:/docker-entrypoint-initdb.d
+
+  agents:
+    build:
+      context: .
+      dockerfile: infra/Dockerfile.agents
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./agents:/app/agents
+
+volumes:
+  pgdata:

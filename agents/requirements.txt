@@ -1,0 +1,10 @@
+supabase
+anthropic
+openai
+feedparser
+beautifulsoup4
+requests
+playwright
+schedule
+python-dotenv
+Pillow
