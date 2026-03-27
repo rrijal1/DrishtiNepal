@@ -50,14 +50,21 @@ Generate a JSON response with:
 - "title_en": Concise English headline
 - "title_np": Same headline in Nepali
 - "body_en": 200-400 word factual article in English (Markdown format)
-- "body_np": Same article in Nepali
+- "body_np": Same article in Nepali (Devanagari script, but technical/English-origin words like budget, GDP, infrastructure, policy can remain in English — this mirrors how educated Nepalis actually write and read)
 - "excerpt_en": 1-2 sentence English summary
-- "excerpt_np": Same summary in Nepali
+- "excerpt_np": Same summary in natural Nepali (mixed script OK for technical terms)
 - "tags": list of relevant tags (e.g., ["economy", "cabinet-decision", "minister-name"])
 - "type": one of "news_update", "analysis", "cabinet_decision"
 - "auto_publishable": boolean - true only if purely factual with high confidence
 
-Rules:
+LANGUAGE RULES for Nepali content:
+- Write primarily in Nepali (Devanagari script)
+- Technical terms, proper nouns, well-known English words can stay in English
+- This natural code-switching reflects how Nepalis actually discuss politics
+- Do NOT force awkward Nepali translations of words like "infrastructure", "budget deficit", "GDP"
+- Core political vocabulary should be in Nepali: मन्त्री, सरकार, प्रतिबद्धता, बाचा पत्र, प्रतिज्ञा पत्र
+
+Other rules:
 - Be strictly factual and neutral
 - Attribute all claims to sources
 - Do not editorialize

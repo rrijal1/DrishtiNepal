@@ -31,26 +31,30 @@ def get_unpublished_posts(platform: str, limit: int = 5) -> list[dict]:
 
 
 def generate_social_text(post: dict, platform: str) -> str:
-    """AI-generate optimized social media text."""
+    """AI-generate optimized social media text in natural mixed Nepali-English."""
     max_chars = (
         SOCIAL_CONFIG["x_max_chars"]
         if platform == "x"
         else SOCIAL_CONFIG["fb_max_chars"]
     )
-    language = "Nepali" if platform == "fb" else "English"
 
-    prompt = f"""Write a {language} social media post for {'X/Twitter' if platform == 'x' else 'Facebook'}.
+    prompt = f"""Write a social media post for {'X/Twitter' if platform == 'x' else 'Facebook'} about this political accountability article from Drishti Nepal.
 
-Article title: {post['title_en']}
+Article title (EN): {post['title_en']}
+Article title (NP): {post.get('title_np', '')}
 Article excerpt: {post.get('excerpt_en', '')}
 
-Rules:
+LANGUAGE RULES:
+- Write in the natural mixed language style that educated Nepalis actually use on social media
+- Core political terms in Nepali (e.g. मन्त्री, सरकार, बजेट, प्रतिबद्धता, जवाफदेहिता)
+- Technical/English-origin words can stay in English (e.g. budget, policy, GDP, infrastructure)
+- The overall feel should be Nepali-first with natural English code-switching
+- Use Devanagari script for Nepali portions
+- This mimics how real Nepalis discuss politics on social media
 - Maximum {max_chars} characters
-- Include relevant hashtags (2-3 max)
-- {'Use Nepali language (Devanagari script)' if platform == 'fb' else 'Use English'}
-- Professional, factual tone
-- Include a call to action to read full article
-- Add #DrishtiNepal #दृष्टिनेपाल #NepaliPolitics
+- Professional, factual tone — no editorializing
+- Include 2-3 hashtags: #DrishtiNepal #दृष्टिनेपाल plus one topic-specific
+- Include a call to action to read full article on the portal
 
 Return ONLY the social media text, nothing else."""
 
