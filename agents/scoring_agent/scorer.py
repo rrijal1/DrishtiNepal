@@ -49,12 +49,18 @@ def calculate_manifesto_compliance(minister_id: str) -> float:
     return max(0, min(100, (score_sum / total) * 100))
 
 
-def calculate_sentiment_score(minister_id: str, days: int = 30) -> float:
-    """Aggregate sentiment from recent actions."""
+def calculate_public_accountability(minister_id: str, days: int = 30) -> float:
+    """
+    30% dimension — captures what the manifesto cannot:
+      - Media sentiment (50% of this sub-score): tone of news coverage
+      - Transparency (30%): press conferences, public statements, RTI responses
+      - Parliamentary engagement (20%): Q&A sessions, bills, committee activity
+    All three are derived from scraped actions data until richer sources are available.
+    """
     since = (datetime.now(timezone.utc) - timedelta(days=days)).date().isoformat()
     actions = (
         db.table("actions")
-        .select("sentiment")
+        .select("sentiment, category")
         .eq("minister_id", minister_id)
         .gte("action_date", since)
         .execute()
@@ -62,31 +68,21 @@ def calculate_sentiment_score(minister_id: str, days: int = 30) -> float:
     if not actions.data:
         return 50.0
 
-    sentiment_scores = {"positive": 80, "neutral": 50, "negative": 20, "mixed": 40}
-    total = sum(sentiment_scores.get(a["sentiment"], 50) for a in actions.data)
-    return total / len(actions.data)
+    # Media sentiment sub-score
+    sentiment_map = {"positive": 80, "neutral": 50, "negative": 20, "mixed": 40}
+    sentiment_score = sum(sentiment_map.get(a["sentiment"], 50) for a in actions.data) / len(actions.data)
 
+    # Transparency sub-score: presence of press/communication actions
+    transparency_categories = {"press_conference", "statement", "rti_response", "announcement"}
+    transparency_count = sum(1 for a in actions.data if a.get("category") in transparency_categories)
+    transparency_score = min(100, 50 + transparency_count * 10)
 
-def calculate_activity_score(minister_id: str, days: int = 30) -> float:
-    """Score based on number and quality of actions taken."""
-    since = (datetime.now(timezone.utc) - timedelta(days=days)).date().isoformat()
-    actions = (
-        db.table("actions")
-        .select("category, sentiment")
-        .eq("minister_id", minister_id)
-        .gte("action_date", since)
-        .execute()
-    )
-    if not actions.data:
-        return 30.0  # Low score for inactivity
+    # Parliamentary engagement sub-score: presence of legislative actions
+    parliament_categories = {"parliament", "bill", "committee", "qa_session", "legislative"}
+    parliament_count = sum(1 for a in actions.data if a.get("category") in parliament_categories)
+    parliament_score = min(100, 30 + parliament_count * 10)
 
-    # More diverse, positive actions = higher score
-    count = len(actions.data)
-    categories = set(a["category"] for a in actions.data)
-    diversity_bonus = min(len(categories) * 5, 20)
-
-    base = min(count * 5, 60)  # Cap at 60 from count alone
-    return min(100, base + diversity_bonus + 20)  # +20 baseline for being active
+    return round(sentiment_score * 0.50 + transparency_score * 0.30 + parliament_score * 0.20, 2)
 
 
 def compute_overall_score(dimensions: dict) -> float:
@@ -109,14 +105,10 @@ def store_score(minister_id: str, dimensions: dict, overall: float):
             "period_start": period_start,
             "period_end": period_end,
             "manifesto_compliance": dimensions["manifesto_compliance"],
-            "policy_effectiveness": dimensions["policy_effectiveness"],
-            "transparency": dimensions["transparency"],
-            "financial_prudence": dimensions["financial_prudence"],
-            "public_sentiment": dimensions["public_sentiment"],
-            "parliamentary_activity": dimensions["parliamentary_activity"],
+            "public_accountability": dimensions["public_accountability"],
             "overall": overall,
             "breakdown": dimensions,
-            "methodology_version": "v1",
+            "methodology_version": "v2",
         }
     ).execute()
 
@@ -141,11 +133,7 @@ def run():
 
             dimensions = {
                 "manifesto_compliance": calculate_manifesto_compliance(mid),
-                "policy_effectiveness": 50.0,  # TODO: needs gazette/outcome data
-                "transparency": 50.0,  # TODO: needs RTI/communication data
-                "financial_prudence": 50.0,  # TODO: needs budget data
-                "public_sentiment": calculate_sentiment_score(mid),
-                "parliamentary_activity": calculate_activity_score(mid),
+                "public_accountability": calculate_public_accountability(mid),
             }
 
             overall = compute_overall_score(dimensions)

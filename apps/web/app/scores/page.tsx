@@ -6,7 +6,7 @@ export const revalidate = 300;
 export const metadata = {
   title: "Score Dashboard — Drishti Nepal",
   description:
-    "Transparent accountability scores for every cabinet minister across 6 dimensions.",
+    "Transparent accountability scores for every cabinet minister across 2 dimensions.",
 };
 
 export default async function ScoresPage() {
@@ -96,22 +96,10 @@ export default async function ScoresPage() {
                 Portfolio
               </th>
               <th className="px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 hidden lg:table-cell">
-                Manifesto
+                Manifesto (70%)
               </th>
               <th className="px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 hidden lg:table-cell">
-                Policy
-              </th>
-              <th className="px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 hidden lg:table-cell">
-                Transparency
-              </th>
-              <th className="px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 hidden lg:table-cell">
-                Fiscal
-              </th>
-              <th className="px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 hidden lg:table-cell">
-                Sentiment
-              </th>
-              <th className="px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 hidden lg:table-cell">
-                Parliament
+                Public Accountability (30%)
               </th>
               <th className="px-3 py-3 pr-6 text-center text-xs font-semibold uppercase text-neutral-500">
                 Overall
@@ -161,11 +149,7 @@ export default async function ScoresPage() {
                     {m.portfolio_en}
                   </td>
                   <DimensionCell value={s?.manifesto_compliance} />
-                  <DimensionCell value={s?.policy_effectiveness} />
-                  <DimensionCell value={s?.transparency} />
-                  <DimensionCell value={s?.financial_prudence} />
-                  <DimensionCell value={s?.public_sentiment} />
-                  <DimensionCell value={s?.parliamentary_activity} />
+                  <DimensionCell value={s?.public_accountability} />
                   <td className="px-3 py-4 pr-6 text-center">
                     <ScoreBadge score={m.overall_score} size="sm" />
                   </td>
@@ -173,7 +157,7 @@ export default async function ScoresPage() {
               );
             }) ?? (
               <tr>
-                <td colSpan={10} className="py-16 text-center text-neutral-400">
+                <td colSpan={5} className="py-16 text-center text-neutral-400">
                   No score data available yet. Scoring agents run daily.
                 </td>
               </tr>

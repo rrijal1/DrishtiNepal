@@ -142,15 +142,11 @@ CREATE TABLE scores (
     minister_id UUID REFERENCES ministers(id) ON DELETE CASCADE,
     period_start DATE NOT NULL,
     period_end DATE NOT NULL,
-    manifesto_compliance NUMERIC(5,2) DEFAULT 0,
-    policy_effectiveness NUMERIC(5,2) DEFAULT 0,
-    transparency NUMERIC(5,2) DEFAULT 0,
-    financial_prudence NUMERIC(5,2) DEFAULT 0,
-    public_sentiment NUMERIC(5,2) DEFAULT 0,
-    parliamentary_activity NUMERIC(5,2) DEFAULT 0,
-    overall NUMERIC(5,2) DEFAULT 0,
-    breakdown JSONB DEFAULT '{}',        -- Detailed scoring breakdown
-    methodology_version TEXT DEFAULT 'v1',
+    manifesto_compliance   NUMERIC(5,2) DEFAULT 0,
+    public_accountability  NUMERIC(5,2) DEFAULT 0,   -- sentiment + transparency + parliament
+    overall                NUMERIC(5,2) DEFAULT 0,
+    breakdown JSONB DEFAULT '{}',        -- Detailed sub-score breakdown
+    methodology_version TEXT DEFAULT 'v2',
     calculated_at TIMESTAMPTZ DEFAULT NOW()
 );
 

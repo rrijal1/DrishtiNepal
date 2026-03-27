@@ -226,13 +226,11 @@ GOVERNMENT_SOURCES = [
 NEWS_SOURCES = NEWS_SOURCES_NEPALI + NEWS_SOURCES_ENGLISH
 
 # Scoring weights
+# Two-dimension model: manifesto compliance is the primary accountability lens;
+# public accountability covers what the manifesto cannot (sentiment, transparency, parliament).
 SCORING_WEIGHTS = {
-    "manifesto_compliance": 0.30,
-    "policy_effectiveness": 0.20,
-    "transparency": 0.15,
-    "financial_prudence": 0.15,
-    "public_sentiment": 0.10,
-    "parliamentary_activity": 0.10,
+    "manifesto_compliance": 0.70,
+    "public_accountability": 0.30,
 }
 
 # Social media posting config

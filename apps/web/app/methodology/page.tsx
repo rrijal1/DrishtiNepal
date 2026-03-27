@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Scoring Methodology — Drishti Nepal",
   description:
-    "How we calculate ministerial accountability scores across 6 transparent dimensions.",
+    "How we calculate ministerial accountability scores across 2 transparent dimensions.",
 };
 
 export default function MethodologyPage() {
@@ -12,81 +12,71 @@ export default function MethodologyPage() {
       </h1>
       <p className="mt-2 text-neutral-500">
         How Drishti Nepal calculates ministerial accountability scores. Version
-        1.0 — fully open source and peer-reviewable.
+        2.0 — fully open source and peer-reviewable.
       </p>
 
       <div className="prose prose-neutral mt-10 max-w-none">
         <h2>Overview</h2>
         <p>
-          Each minister receives a composite score from 0 to 100, calculated
-          across six weighted dimensions. Scores are recalculated daily at
-          midnight NPT (18:15 UTC).
+          Each minister receives a composite score from 0 to 100 across two
+          dimensions. Scores are recalculated daily at midnight NPT (18:15 UTC).
+        </p>
+        <p>
+          We keep scoring lean deliberately. Ra Swa Pa&apos;s bachha patra and
+          pratigya patra already define what ministers promised — GDP targets,
+          remittance policy, industrialization, education, infrastructure, and
+          more. That is the primary accountability lens. The second dimension
+          captures everything the manifesto cannot: how the public and press
+          perceive a minister, whether they communicate openly, and whether they
+          participate in the legislature they were elected to serve.
         </p>
 
         <h2>Dimensions & Weights</h2>
 
-        <h3>1. Manifesto Compliance — 30%</h3>
+        <h3>1. Manifesto Compliance — 70%</h3>
         <p>
-          Measures how well a minister&apos;s actions align with the
-          party&apos;s election commitments (bachha patra + pratigya patra).
+          How well a minister&apos;s actions match their party&apos;s election
+          commitments (bachha patra + pratigya patra). This covers every stated
+          commitment — GDP growth targets, remittance policy, industrialization,
+          education access, infrastructure, agriculture, and any other item in
+          the manifesto assigned to their ministry.
         </p>
         <ul>
           <li>Each manifesto item assigned to the minister is tracked</li>
           <li>
             Status values: completed (100), in_progress (50),
-            partially_fulfilled (30), not_started (0), contradicted (-20)
+            partially_fulfilled (30), not_started (0), contradicted (−20)
           </li>
           <li>Score = average status value across all assigned items</li>
+          <li>Ministers with no assigned items default to 50 pending data entry</li>
         </ul>
 
-        <h3>2. Policy Effectiveness — 20%</h3>
-        <p>Evaluates the quality and impact of policy decisions.</p>
-        <ul>
-          <li>Based on AI analysis of action outcomes</li>
-          <li>Considers sector diversity and follow-through</li>
-        </ul>
-
-        <h3>3. Transparency — 15%</h3>
-        <p>How open and communicative the minister is with the public.</p>
-        <ul>
-          <li>Press conference frequency</li>
-          <li>Responses to RTI requests</li>
-          <li>Public disclosure of decisions</li>
-        </ul>
-
-        <h3>4. Financial Prudence — 15%</h3>
-        <p>Responsible use of government resources.</p>
-        <ul>
-          <li>Audit findings from Office of the Auditor General</li>
-          <li>Budget adherence in their ministry</li>
-          <li>Procurement transparency</li>
-        </ul>
-
-        <h3>5. Public Sentiment — 10%</h3>
-        <p>Aggregate media sentiment about the minister.</p>
+        <h3>2. Public Accountability — 30%</h3>
+        <p>
+          Captures dimensions the manifesto cannot quantify. Composed of three
+          equally weighted sub-signals:
+        </p>
         <ul>
           <li>
-            AI-analyzed sentiment from news articles (positive/negative/neutral)
+            <strong>Media sentiment (50% of this score)</strong> — AI-analyzed
+            tone of news coverage over the rolling 30-day window.
+            Positive = 80, Neutral = 50, Mixed = 40, Negative = 20.
           </li>
           <li>
-            Converted to 0–100 scale: positive = 80, neutral = 50, negative =
-            20, mixed = 40
+            <strong>Transparency (30% of this score)</strong> — Press
+            conferences held, public statements made, RTI responses. Measures
+            whether the minister communicates openly.
           </li>
-          <li>Averaged across all articles mentioning the minister</li>
-        </ul>
-
-        <h3>6. Parliamentary Activity — 10%</h3>
-        <p>Engagement in legislative activities.</p>
-        <ul>
-          <li>Bills introduced or supported</li>
-          <li>Parliamentary committee participation</li>
-          <li>Question & answer sessions</li>
+          <li>
+            <strong>Parliamentary engagement (20% of this score)</strong> —
+            Q&amp;A sessions attended, bills introduced or supported, committee
+            participation.
+          </li>
         </ul>
 
         <h2>Composite Score Formula</h2>
         <div className="rounded-lg bg-neutral-100 p-4 font-mono text-sm">
-          Overall = (manifesto × 0.30) + (policy × 0.20) + (transparency × 0.15)
-          + (fiscal × 0.15) + (sentiment × 0.10) + (parliament × 0.10)
+          Overall = (manifesto_compliance × 0.70) + (public_accountability × 0.30)
         </div>
 
         <h2>Score Labels</h2>

@@ -20,60 +20,6 @@ Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a pub
 
 Content is published in **natural mixed Nepali-English** — the way educated Nepalis actually discuss politics. Core political terms stay in Nepali (मन्त्री, सरकार, बजेट, जवाफदेहिता), while technical/English-origin words (infrastructure, GDP, policy) stay in English. The portal, social posts, and articles all follow this natural code-switching style, plus fully separate English and Nepali versions where needed.
 
-## Architecture
-
-```
-Nepali News Sources → AI Scraper Agents → Content Pipeline → Web Portal → Social Media
-                                                  ↕
-                              Public Submissions ← Review Queue → Published
-```
-
-**Tech stack:** Next.js (portal) · Supabase (DB) · Python (agents) · Claude AI (analysis) · Vercel (hosting)
-
----
-
-## Transparency & Monetization
-
-**We believe in being completely honest about how this project works and sustains itself.**
-
-### How We Make Money
-
-Drishti Nepal is an open-source civic tech project. To sustain operations and pay our team, we monetize through:
-
-| Channel | How | Status |
-|---------|-----|--------|
-| **Facebook Page** | Meta in-stream ads and branded content on @DrishtiNepalHQ | Planned — requires 10K followers + eligibility |
-| **X (Twitter)** | Creator ad revenue sharing on @DrishtiNepalHQ | Planned — requires 500 followers + 5M impressions/3 months |
-| **Google AdSense** | Display ads on the web portal (drishtinepal.com) | Planned — applied once traffic qualifies |
-| **Donations** | Voluntary contributions from the public | Planned |
-
-**When you see a Drishti Nepal post on Facebook or X, it may contain ads placed by the platform. We earn a share of that ad revenue.** This is how we fund the project. We will never accept money from any political party, government entity, or politically-affiliated organization.
-
-### What We Spend Money On
-
-| Expense | Monthly Cost | Notes |
-|---------|-------------|-------|
-| VPS (agent hosting) | $5–10 | Hetzner CX22 |
-| AI API calls (Claude) | $50–100 | 95% cheap model, 5% quality model |
-| Domain + CDN | ~$1 | Cloudflare free tier + domain renewal |
-| Web hosting | $0 | Vercel free tier |
-| Database | $0–25 | Supabase free tier initially |
-| X API access | $0–100 | Free tier has limits; may upgrade |
-| **Total infrastructure** | **~$60–240/mo** | |
-| **Team (5 people in Nepal)** | **~$1,400–2,000/mo** | Editor, moderator, social manager, tech lead, community manager |
-| **Total monthly burn** | **~$1,500–2,200/mo** | |
-
-### Will This Be Self-Sustaining?
-
-**Honest answer: we don't know yet.** Here's our realistic assessment:
-
-- **Months 1–3**: We operate at a loss. Revenue is $0. We bootstrap with personal funds (~$500/mo minimum to cover infra + minimal team).
-- **Months 3–6**: If we hit social media monetization thresholds (10K FB followers, 500 X followers), ad revenue starts trickling in. Optimistically $200–600/mo.
-- **Months 6–12**: If content quality is high and audience grows, revenue could reach $1,000–2,500/mo through ads + donations.
-- **Break-even target**: ~$1,500/mo. This requires significant audience growth and consistent content quality.
-
-**Risk of running out of money**: If we can't reach monetization thresholds within 6 months, the project will need either external funding (grants, NGO partnerships) or will need to scale down to a volunteer-only operation. We are designing the system to run with minimal human intervention specifically to survive lean periods.
-
 ### What We Will Never Do
 
 - Accept money from political parties or politicians
@@ -86,16 +32,12 @@ Drishti Nepal is an open-source civic tech project. To sustain operations and pa
 
 ## Scoring Methodology
 
-Each minister receives a transparent 0–100 score across six weighted dimensions:
+Each minister receives a transparent 0–100 score across two dimensions:
 
-| Dimension | Weight | What It Measures |
-|-----------|--------|-----------------|
-| Manifesto Compliance | 30% | Actions matching bachha/pratigya patra commitments |
-| Policy Effectiveness | 20% | Measurable outcomes of decisions |
-| Transparency | 15% | Public communication, RTI responses |
-| Financial Prudence | 15% | Budget use, audit findings |
-| Public Sentiment | 10% | Aggregated from news coverage |
-| Parliamentary Activity | 10% | Attendance, questions, bills |
+| Dimension              | Weight | What It Measures                                                                                |
+| ---------------------- | ------ | ----------------------------------------------------------------------------------------------- |
+| Manifesto Compliance   | 70%    | Actions matching bachha patra & pratigya patra commitments (GDP targets, remittance, industry, education, infrastructure, and every other stated commitment) |
+| Public Accountability  | 30%    | What the manifesto can't capture: media sentiment, ministerial transparency (press conferences, RTI responses), and parliamentary engagement |
 
 Full methodology: [/methodology](https://drishtinepal.com/methodology) on the portal.
 
