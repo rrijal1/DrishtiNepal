@@ -1,0 +1,43 @@
+name: Daily Scoring (Cron)
+
+on:
+    schedule:
+        # Midnight NPT = 18:15 UTC previous day
+        - cron: "15 18 * * *"
+    workflow_dispatch:
+
+jobs:
+    daily-scoring:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.12"
+                  cache: "pip"
+                  cache-dependency-path: agents/requirements.txt
+
+            - name: Install dependencies
+              run: pip install -r agents/requirements.txt
+
+            - name: Run manifesto matcher
+              env:
+                  NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+                  NVIDIA_BASE_URL: ${{ secrets.NVIDIA_BASE_URL }}
+                  NVIDIA_MODEL: ${{ secrets.NVIDIA_MODEL }}
+                  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+                  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+                  ENVIRONMENT: production
+              run: python -m agents.run matcher
+
+            - name: Run scoring agent
+              env:
+                  NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+                  NVIDIA_BASE_URL: ${{ secrets.NVIDIA_BASE_URL }}
+                  NVIDIA_MODEL: ${{ secrets.NVIDIA_MODEL }}
+                  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+                  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+                  ENVIRONMENT: production
+              run: python -m agents.run scorer

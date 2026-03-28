@@ -18,8 +18,8 @@ export default function AboutPage() {
         <p>
           Drishti Nepal (दृष्टि नेपाल) is a non-partisan civic technology
           platform that holds Nepal&apos;s elected representatives accountable
-          by tracking their actions against their election manifesto
-          commitments.
+          by tracking their actions against their vacha patra (election
+          commitments).
         </p>
         <p>
           Using AI-powered agents that monitor 20+ news sources and government
@@ -30,12 +30,12 @@ export default function AboutPage() {
         <h2>What We Track</h2>
         <ul>
           <li>
-            <strong>Bachha Patra (बच्चा पत्र)</strong> — The party&apos;s
-            governing agenda submitted to the President upon forming government.
+            <strong>Bachha Patra (बच्चा पत्र)</strong> — The 100 policy
+            foundations for transformation, the detailed commitments.
           </li>
           <li>
-            <strong>Pratigya Patra (प्रतिज्ञा पत्र)</strong> — Election pledges
-            made to voters during the campaign.
+            <strong>Karar Patra (करार पत्र)</strong> — The citizen&apos;s
+            agreement with 5 priority areas and accountability clause.
           </li>
           <li>
             <strong>Cabinet Decisions</strong> — Every major government decision
@@ -47,9 +47,19 @@ export default function AboutPage() {
           </li>
         </ul>
 
+        <h2>वाचा पालन — Electoral Accountability</h2>
+        <p>
+          At the heart of Drishti Nepal is वाचा पालन (vacha palan) — did they
+          honor their vacha? The government signed a commitment charter (वाचा
+          पत्र) with the people. We take the specific, measurable commitments
+          from the bachha patra and karar patra and track whether the government
+          actually delivers on them. No editorializing, no opinion — just the
+          gap between भनाइ (rhetoric) and गराइ (action), measured objectively.
+        </p>
+
         <h2>Scoring Methodology</h2>
         <p>
-          Ministers are scored across 6 transparent dimensions with publicly
+          Ministers are scored across 2 transparent dimensions with publicly
           documented weights:
         </p>
         <table>
@@ -57,32 +67,25 @@ export default function AboutPage() {
             <tr>
               <th>Dimension</th>
               <th>Weight</th>
+              <th>What It Measures</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td>Manifesto Compliance</td>
+              <td>70%</td>
+              <td>
+                Delivery against specific bachha patra &amp; karar patra
+                commitments assigned to the minister
+              </td>
+            </tr>
+            <tr>
+              <td>Public Accountability</td>
               <td>30%</td>
-            </tr>
-            <tr>
-              <td>Policy Effectiveness</td>
-              <td>20%</td>
-            </tr>
-            <tr>
-              <td>Transparency</td>
-              <td>15%</td>
-            </tr>
-            <tr>
-              <td>Financial Prudence</td>
-              <td>15%</td>
-            </tr>
-            <tr>
-              <td>Public Sentiment</td>
-              <td>10%</td>
-            </tr>
-            <tr>
-              <td>Parliamentary Activity</td>
-              <td>10%</td>
+              <td>
+                Media sentiment, transparency (press conferences, RTI), and
+                parliamentary engagement
+              </td>
             </tr>
           </tbody>
         </table>
@@ -174,6 +177,12 @@ export default function AboutPage() {
           <li>
             X (Twitter):{" "}
             <a href="https://x.com/DrishtiNepalHQ">@DrishtiNepalHQ</a>
+          </li>
+          <li>
+            Instagram:{" "}
+            <a href="https://www.instagram.com/drishtinepal_hq/">
+              @drishtinepal_hq
+            </a>
           </li>
           <li>
             GitHub:{" "}

@@ -233,6 +233,14 @@ function Footer() {
                   X (Twitter)
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://www.instagram.com/drishtinepal_hq/"
+                  className="hover:text-neutral-800"
+                >
+                  Instagram
+                </a>
+              </li>
             </ul>
             <div className="mt-4">
               <h4 className="mb-2 text-sm font-semibold text-neutral-800">

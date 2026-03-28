@@ -2,7 +2,7 @@
 
 ## Implementation Plan
 
-**Mission:** Hold Nepal's government accountable by tracking every cabinet minister's performance against Ra Swa Pa's _Bachha Patra_ (election manifesto) and _Pratigya Patra_ (commitment letter), delivering unbiased information to the public 24/7 through autonomous agents.
+**Mission:** Hold Nepal's government accountable by tracking every cabinet minister's performance against Ra Swa Pa's _Bachha Patra_ (100 policy foundations) and _Karar Patra_ (citizen's agreement), delivering unbiased information to the public 24/7 through autonomous agents.
 
 ---
 
@@ -51,17 +51,17 @@
 
 Lightweight Python agents running on scheduled cron jobs (NOT always-on servers):
 
-| Agent                | Frequency      | Source                                                                         | Purpose                                     |
-| -------------------- | -------------- | ------------------------------------------------------------------------------ | ------------------------------------------- |
-| `news_scraper`       | Every 30 min   | Nepali news sites (ekantipur, onlinekhabar, ratopati, setopati, himalayatimes) | Collect minister-related news               |
-| `gazette_monitor`    | Every 6 hrs    | Nepal Gazette (rajpatra)                                                       | Track official government decisions         |
-| `parliament_tracker` | Every 2 hrs    | Parliament website                                                             | Track legislative activities                |
-| `social_listener`    | Every 1 hr     | X/Twitter, FB                                                                  | Track minister statements                   |
-| `manifesto_matcher`  | Every 12 hrs   | Internal DB                                                                    | Match actions against bachha/pratigya patra |
-| `scoring_agent`      | Every 24 hrs   | Internal DB                                                                    | Recalculate minister scores                 |
-| `content_generator`  | On new data    | AI Pipeline                                                                    | Generate analysis posts                     |
-| `social_publisher`   | On new content | Portal DB                                                                      | Publish to FB and X                         |
-| `scholarly_curator`  | Weekly         | Academic sources + AI                                                          | Generate political analysis                 |
+| Agent                | Frequency      | Source                                                                         | Purpose                                  |
+| -------------------- | -------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
+| `news_scraper`       | Every 30 min   | Nepali news sites (ekantipur, onlinekhabar, ratopati, setopati, himalayatimes) | Collect minister-related news            |
+| `gazette_monitor`    | Every 6 hrs    | Nepal Gazette (rajpatra)                                                       | Track official government decisions      |
+| `parliament_tracker` | Every 2 hrs    | Parliament website                                                             | Track legislative activities             |
+| `social_listener`    | Every 1 hr     | X/Twitter, FB                                                                  | Track minister statements                |
+| `manifesto_matcher`  | Every 12 hrs   | Internal DB                                                                    | Match actions against bachha/karar patra |
+| `scoring_agent`      | Every 24 hrs   | Internal DB                                                                    | Recalculate minister scores              |
+| `content_generator`  | On new data    | AI Pipeline                                                                    | Generate analysis posts                  |
+| `social_publisher`   | On new content | Portal DB                                                                      | Publish to FB and X                      |
+| `scholarly_curator`  | Weekly         | Academic sources + AI                                                          | Generate political analysis              |
 
 ### Module 3: Content Pipeline
 
@@ -72,7 +72,7 @@ Raw Data → AI Extraction → Fact Verification → Content Generation → Edit
 1. **Extraction**: AI agent extracts relevant facts from scraped news
 2. **Deduplication**: NLP-based duplicate detection across sources
 3. **Classification**: Auto-tag as achievement / failure / neutral / decision
-4. **Manifesto Mapping**: Link to specific bachha patra / pratigya patra commitments
+4. **Manifesto Mapping**: Link to specific bachha patra / karar patra commitments
 5. **Content Generation**: AI drafts analysis post (Nepali + English)
 6. **Human Review Queue**: Flag high-impact posts for human editor review
 7. **Auto-publish**: Low-risk factual updates publish automatically
@@ -80,23 +80,26 @@ Raw Data → AI Extraction → Fact Verification → Content Generation → Edit
 
 ### Module 4: Scoring Engine
 
-Each minister scored on 0–100 scale across dimensions:
+Each minister scored on 0–100 scale across two dimensions:
 
-| Dimension              | Weight | Measurement                               |
-| ---------------------- | ------ | ----------------------------------------- |
-| Manifesto Compliance   | 30%    | Actions matching bachha patra commitments |
-| Policy Effectiveness   | 20%    | Measurable outcomes of decisions          |
-| Transparency           | 15%    | Public communication, RTI responses       |
-| Financial Prudence     | 15%    | Budget utilization, corruption indicators |
-| Public Sentiment       | 10%    | Aggregated from news and social media     |
-| Parliamentary Activity | 10%    | Attendance, questions, bills              |
+| Dimension             | Weight | Measurement                                           |
+| --------------------- | ------ | ----------------------------------------------------- |
+| Manifesto Compliance  | 70%    | Fulfilled / assigned bachha patra items               |
+| Public Accountability | 30%    | Sentiment (50%), Transparency (30%), Parliament (20%) |
+
+**Sub-scores within Public Accountability:**
+
+- **Media Sentiment (50%)**: Tone of news coverage (positive/negative/neutral/mixed)
+- **Transparency (30%)**: Press conferences, public statements, RTI responses, announcements
+- **Parliamentary Engagement (20%)**: Q&A sessions, bills, committees, legislation
 
 **Scoring methodology:**
 
-- Each commitment from bachha/pratigya patra digitized as a checklist item
-- AI agent matches government actions to checklist items
+- Each commitment from bachha/karar patra digitized with structured `source_id` (bp-001 → bp-100, pp-001 → pp-005)
+- Key commitments, measurability, and target metrics tracked per item
+- AI agent matches government actions to checklist items via embedding similarity
 - Human reviewers validate AI-matched scores weekly
-- Public can challenge scores via evidence-backed PRs
+- Public can challenge scores via evidence-backed submissions
 
 ### Module 5: Public Contribution (PR System)
 
@@ -213,22 +216,50 @@ ministers
 ├── id (uuid)
 ├── name_en, name_np
 ├── photo_url
-├── portfolio (ministry name)
+├── portfolio_en, portfolio_np (ministry name)
 ├── party
 ├── appointed_date
-├── previous_roles[]
-├── bio_summary
+├── previous_roles[] (jsonb)
+├── bio_summary_en, bio_summary_np
 ├── overall_score (0–100)
-└── status (active/resigned/reshuffled)
+├── status (active/resigned/reshuffled/dismissed)
+└── metadata (jsonb)
 
 manifesto_items
 ├── id (uuid)
-├── document_type (bachha_patra | pratigya_patra)
+├── source_id (text, unique: bp-001→bp-100, pp-001→pp-005)
+├── document_type (bachha_patra | karar_patra)
 ├── category (economy | health | education | infrastructure | governance | ...)
+├── title_en, title_np
 ├── item_text_en, item_text_np
-├── priority (high | medium | low)
-├── status (not_started | in_progress | partially_fulfilled | fulfilled | broken)
-└── assigned_ministers[] (fk → ministers)
+├── key_commitments[] (jsonb — array of commitment strings)
+├── measurable (boolean)
+├── target_metrics (jsonb — {metric, target, unit})
+├── priority (critical | high | medium | low)
+├── status (not_started | in_progress | partially_fulfilled | fulfilled | broken | irrelevant)
+├── current_situation_en/np (karar patra only)
+├── goal_en/np (karar patra only)
+├── key_targets[] (jsonb — karar patra only)
+├── bachha_patra_links[] (jsonb — karar patra cross-refs)
+├── embedding (vector 1536)
+├── assigned_ministers[] (fk → ministers via junction)
+└── metadata (jsonb)
+
+governance_agendas
+├── id (uuid)
+├── source_id (text, unique: ga-001→ga-100)
+├── number, section (A–L)
+├── category
+├── title_en, title_np
+├── summary_en, summary_np
+├── deadline (raw text: "7 days", "immediate", etc.)
+├── deadline_date (computed absolute date)
+├── significance (critical | high | medium | low)
+├── status (announced | in_progress | completed | delayed | stalled | cancelled)
+├── manifesto_links[] (jsonb — bp-XXX IDs)
+├── assigned_ministry (text)
+├── evidence[] (jsonb)
+└── metadata (jsonb)
 
 actions
 ├── id (uuid)
@@ -236,14 +267,18 @@ actions
 ├── action_date
 ├── title_en, title_np
 ├── description_en, description_np
-├── category (decision | statement | policy | legislation | scandal | achievement)
-├── sentiment (positive | negative | neutral)
-├── linked_manifesto_items[] (fk → manifesto_items)
-├── sources[] (urls)
+├── category (decision | statement | policy | legislation | scandal | achievement |
+│             appointment | press_conference | rti_response | parliament | bill |
+│             committee | qa_session | announcement | other)
+├── sentiment (positive | negative | neutral | mixed)
+├── linked_manifesto_items[] (fk → manifesto_items via junction)
+├── sources[] (jsonb — {url, title, published_at})
 ├── evidence_files[] (storage paths)
 ├── ai_confidence_score (0–1)
 ├── human_verified (boolean)
-└── published (boolean)
+├── published (boolean)
+├── embedding (vector 1536)
+└── metadata (jsonb)
 
 cabinet_decisions
 ├── id (uuid)
@@ -252,39 +287,40 @@ cabinet_decisions
 ├── summary_en, summary_np
 ├── full_text_url
 ├── category
-├── impact_assessment
-├── linked_manifesto_items[]
-├── responsible_ministers[]
-└── gazette_reference
+├── impact_assessment_en/np
+├── gazette_reference
+├── linked_manifesto_items[] (fk → manifesto_items via junction)
+├── responsible_ministers[] (fk → ministers via junction)
+└── metadata (jsonb)
 
 scores
 ├── id (uuid)
 ├── minister_id (fk → ministers)
-├── period (date range)
-├── manifesto_compliance (0–100)
-├── policy_effectiveness (0–100)
-├── transparency (0–100)
-├── financial_prudence (0–100)
-├── public_sentiment (0–100)
-├── parliamentary_activity (0–100)
+├── period_start, period_end (date range)
+├── manifesto_compliance (0–100, weight 70%)
+├── public_accountability (0–100, weight 30%)
 ├── overall (weighted 0–100)
-├── calculated_at
-└── methodology_version
+├── breakdown (jsonb — detailed sub-scores)
+├── methodology_version (default 'v2')
+└── calculated_at
 
 posts (published content)
 ├── id (uuid)
-├── type (news_update | analysis | scholarly | cabinet_decision | score_update)
+├── type (news_update | analysis | scholarly | cabinet_decision | score_update |
+│         public_submission | agenda_update)
+├── slug (unique)
 ├── title_en, title_np
 ├── body_en, body_np (markdown)
-├── minister_ids[]
+├── minister_ids[] (fk → ministers via junction)
 ├── tags[]
-├── author (agent | human | scholar_name)
+├── author_type (agent | editor | scholar | public)
+├── author_name
 ├── status (draft | review | published | archived)
 ├── published_at
-├── fb_post_id
-├── x_post_id
-├── fb_published (boolean)
-└── x_published (boolean)
+├── fb_post_id, x_post_id
+├── fb_published, x_published
+├── view_count
+└── metadata (jsonb)
 
 public_submissions
 ├── id (uuid)
@@ -293,11 +329,13 @@ public_submissions
 ├── target_post_id (fk → posts, optional)
 ├── target_minister_id (fk → ministers)
 ├── claim_text
-├── evidence_urls[]
+├── evidence_urls[] (jsonb)
 ├── evidence_files[]
-├── submission_type (support | challenge | new_info)
-├── status (pending | under_review | accepted | rejected)
+├── submission_type (support | challenge | new_info | correction)
+├── status (pending | under_review | accepted | rejected | needs_more_info)
 ├── reviewer_notes
+├── reviewed_by, reviewed_at
+├── submitter_reputation_score
 └── submitted_at
 
 scholarly_articles
@@ -305,10 +343,10 @@ scholarly_articles
 ├── title_en, title_np
 ├── author_name, author_bio
 ├── body_en, body_np (markdown)
-├── category (policy_analysis | political_economy | governance | opinion)
+├── category (policy_analysis | political_economy | governance | opinion | comparative | historical)
 ├── peer_reviewed (boolean)
-├── published_at
-└── post_id (fk → posts)
+├── post_id (fk → posts)
+└── published_at
 ```
 
 ---
@@ -427,7 +465,7 @@ Pipeline:
 - [ ] Initialize Next.js project with TypeScript
 - [ ] Set up Supabase project (DB + Auth + Storage)
 - [ ] Design and create database schema
-- [ ] Digitize Ra Swa Pa bachha patra + pratigya patra into structured data
+- [ ] Digitize Ra Swa Pa bachha patra + karar patra into structured data
 - [ ] Create minister profiles (current cabinet)
 - [ ] Build basic portal: home, minister list, minister profile pages
 - [ ] Deploy to Vercel

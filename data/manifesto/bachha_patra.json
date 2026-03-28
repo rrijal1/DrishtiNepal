@@ -1,32 +1,1470 @@
 {
   "document": "bachha_patra",
+  "document_np": "वाचा पत्र २०८२",
+  "document_en": "Commitment Charter 2082 — Citizen's Agreement",
+  "subtitle_np": "थिति बसाल्ने सङ्कल्प",
+  "subtitle_en": "The Resolve to Establish Good Systems/Norms",
   "party": "Rastriya Swatantra Party",
   "party_np": "राष्ट्रिय स्वतन्त्र पार्टी",
-  "description": "Election manifesto commitments - digitize from official document",
-  "categories": {
-    "economy": [],
-    "education": [],
-    "health": [],
-    "infrastructure": [],
-    "governance": [],
-    "agriculture": [],
-    "foreign_policy": [],
-    "justice": [],
-    "environment": [],
-    "technology": [],
-    "social_welfare": [],
-    "youth_employment": []
+  "party_short": "RSP",
+  "party_short_np": "रास्वपा",
+  "president": "Rabi Lamichhane",
+  "president_np": "रवि लामिछाने",
+  "release_date_bs": "२०८२ फाल्गुन २१",
+  "release_date_ad": "2026-03-05",
+  "original_pdf": "वाचा पत्र .pdf",
+  "source_md": "manifesto.md",
+  "description": "RSP's 100 policy foundations for transformation, released as part of the vacha patra before the 2082 BS general election. Contains 5 priority areas and 100 detailed policy foundations. This is the primary document against which government performance is scored.",
+
+  "preamble": {
+    "commitment_np": "तपाईंहरूले हामीलाई एकल बहुमत दिलाएको अवस्थामा पनि करार बमोजिमका सर्तहरू डेलिभरी सहित ५ वर्षभित्र बुझाउन नसकी तपाईं नागरिकलाई मर्का पर्न गएमा, संविधान, मौजुदा कानुन र सामाजिक करार अनुसार हाम्रो 'राजनैतिक नैतिकता' र पद' बाट अर्को पटकको निर्वाचनमा सजाय दिई असुल उपर गरी लिनु होला।",
+    "commitment_en": "If, even after you grant us a single-party majority, we fail to deliver the terms of this agreement within five years and cause you citizens hardship, you may punish us according to the constitution, existing laws, and social contract by holding us accountable in the next election."
   },
-  "items": [
+
+  "priority_areas": [
+    {
+      "number": 1,
+      "title_np": "सदाचार र असल शासन",
+      "title_en": "Integrity and Good Governance",
+      "goal_en": "Anti-Corruption Mega-Campaign. Universal digital delivery of government services. Massive improvement in corruption indices. End politicization. Investigate agreements since 2076 BS."
+    },
+    {
+      "number": 2,
+      "title_np": "मध्यम वर्गीय विस्तार",
+      "title_en": "Middle-Class Expansion",
+      "goal_en": "Nepal as middle-income country. 7% GDP growth. Per capita $3,000+. Economy $100B within 5-7 years. 100% insured health. Public education reform. Integrated social security. End usurious lending."
+    },
+    {
+      "number": 3,
+      "title_np": "काम, काम, काम",
+      "title_en": "Jobs, Jobs, Jobs",
+      "goal_en": "Create 500,000 new formal, dignified, safe, inclusive jobs. Priority: IT, construction, tourism, agriculture, minerals, industry, service trade."
+    },
+    {
+      "number": 4,
+      "title_np": "कनेक्टिभिटी",
+      "title_en": "Connectivity",
+      "goal_en": "Quality road and air networks. Reliable energy grid. High-speed internet to all settlements. 15,000 MW installed. 30,000 km highways. 10 signature projects."
+    },
+    {
+      "number": 5,
+      "title_np": "प्रवास",
+      "title_en": "Diaspora",
+      "goal_en": "Online voting for Nepalis abroad. Citizenship continuity. Sovereign diaspora fund. Safe investment and dignified return. Decent foreign employment."
+    }
+  ],
+
+  "goals_2087": {
+    "note": "Goals for BS 2087 (2030-31 CE) — 5-year targets if RSP runs majority government",
+    "items": [
+      {
+        "id": "goal-01",
+        "title_en": "Complete Digital Governance and Anti-Corruption",
+        "summary_en": "End requirement to visit offices. Faceless, paperless administration. Citizen App + NID integrated. Past corruption cases finalized. 100% meritocracy in constitutional bodies."
+      },
+      {
+        "id": "goal-02",
+        "title_en": "Production-Oriented Economy and Energy Revolution",
+        "summary_en": "Shift to production/export economy. 5,000 MW domestic consumption. 50% reduction in LPG imports. Nepal Production Fund + Remittance Investment Fund. 20% reduction in forced foreign migration."
+      },
+      {
+        "id": "goal-03",
+        "title_en": "Equitable Society and Integrated Social Security",
+        "summary_en": "State presence from womb to cremation. Contribution-based social security to informal sector. Universal design infrastructure. Reduce personal health expenditure via insurance."
+      },
+      {
+        "id": "goal-04",
+        "title_en": "IT Hub and Skilled Human Capital",
+        "summary_en": "Nepal as reliable IT export destination. Every Class 12 graduate gets vocational skill certificate. Mega-skill centers in 7 provinces. IT exports over Rs 50 billion/year."
+      },
+      {
+        "id": "goal-05",
+        "title_en": "Clean Cities and Climate Diplomacy Leadership",
+        "summary_en": "50% reduction in air pollution in major cities. Complete Chure exploitation control. Prevent Madhesh desertification. Nepal as climate diplomacy leader."
+      },
+      {
+        "id": "goal-06",
+        "title_en": "Infrastructure Excellence and Urban Mobility",
+        "summary_en": "Reform procurement. Modern blue buses and electric transport in Kathmandu, Pokhara, Biratnagar. Scientific route permits. End transport syndicate. ITS deployment."
+      },
+      {
+        "id": "goal-07",
+        "title_en": "Modern Drinking Water, Sanitation, Environmental Justice",
+        "summary_en": "24-hour clean water to every home via smart distribution. Waste-to-Wealth model. River rejuvenation. Disability-friendly sanitation."
+      },
+      {
+        "id": "goal-08",
+        "title_en": "Integrated Connectivity and Infrastructure Revolution",
+        "summary_en": "15,000 MW installed. Smart grid. Energy export center. 30,000 km highways. 10 signature projects. High-speed internet everywhere. Economic corridors."
+      }
+    ]
+  },
+
+  "foundations": [
     {
       "id": "bp-001",
+      "number": 1,
+      "category": "social_justice",
+      "title_en": "Formal State Apology to Dalit and Marginalized Communities",
+      "key_commitments": [
+        "Formal state apology to Dalit communities in new PM's first address",
+        "Legal reforms to end structural discrimination",
+        "Institutional reforms for Dalit inclusion"
+      ],
+      "measurable": false,
+      "priority": "critical"
+    },
+    {
+      "id": "bp-002",
+      "number": 2,
       "category": "governance",
-      "text_en": "TODO: Digitize each commitment from the official bachha patra document",
-      "text_np": "TODO: आधिकारिक बाचा पत्रबाट प्रत्येक प्रतिबद्धता डिजिटाइज गर्ने",
-      "priority": "high",
+      "title_en": "Implement Gen-Z Judicial Inquiry Commission Recommendations",
+      "key_commitments": [
+        "Implement Gen-Z Judicial Inquiry Commission report recommendations",
+        "Accountability for Bhadra 23-24 incidents"
+      ],
       "measurable": true,
-      "target_date": null,
-      "assigned_ministries": []
+      "priority": "critical"
+    },
+    {
+      "id": "bp-003",
+      "number": 3,
+      "category": "governance",
+      "title_en": "Investigate Assets of Public Officials Since 2046 BS (1990)",
+      "key_commitments": [
+        "Asset investigation of all public officials since 2046 BS (1990)",
+        "Confiscation of illegally acquired assets",
+        "Clear procedure for asset nationalization"
+      ],
+      "measurable": true,
+      "priority": "critical"
+    },
+    {
+      "id": "bp-004",
+      "number": 4,
+      "category": "governance",
+      "title_en": "Digital Service Delivery — Online Not In Line",
+      "key_commitments": [
+        "National identity cards for all Nepalis",
+        "Integrated citizen database",
+        "End all middlemen in government services",
+        "Digital service delivery action plan"
+      ],
+      "measurable": true,
+      "priority": "critical"
+    },
+    {
+      "id": "bp-005",
+      "number": 5,
+      "category": "governance",
+      "title_en": "No Fraternal/Sister Organizations",
+      "key_commitments": [
+        "No fraternal organizations by RSP",
+        "End political affiliation in all state bodies"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-006",
+      "number": 6,
+      "category": "governance",
+      "title_en": "Abolish Partisan Trade Unions in Government",
+      "key_commitments": [
+        "Abolish partisan trade unions in government",
+        "Modern IT-capable civil service"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-007",
+      "number": 7,
+      "category": "governance",
+      "title_en": "Redistribute Staff to Service Delivery Points",
+      "key_commitments": [
+        "Move central staff to service delivery points",
+        "Fair base salary revision for civil servants",
+        "Civil Service Bill with performance indicators"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-008",
+      "number": 8,
+      "category": "governance",
+      "title_en": "Autonomous Transfer Board for Predictable Transfers",
+      "key_commitments": [
+        "Autonomous Transfer Board",
+        "Expertise-based placement with minimum tenure"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-009",
+      "number": 9,
+      "category": "governance",
+      "title_en": "End Hierarchical File System, Go Digital",
+      "key_commitments": [
+        "End hierarchical tippani system",
+        "Auto-approval for delayed files",
+        "Launch tipani.gov.np and paripatra.gov.np",
+        "Mandatory digital signatures"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-010",
+      "number": 10,
+      "category": "governance",
+      "title_en": "Constitutional Amendment Discussion Paper Within 3 Months",
+      "key_commitments": [
+        "Constitutional amendment discussion paper within 3 months",
+        "Directly elected executive proposal",
+        "Fully proportional parliament",
+        "MPs cannot become ministers",
+        "Non-party local government"
+      ],
+      "measurable": true,
+      "target_metrics": ["discussion paper within 3 months"],
+      "priority": "high"
+    },
+    {
+      "id": "bp-011",
+      "number": 11,
+      "category": "governance",
+      "title_en": "Reform Constitutional Bodies (CIAA, Constitutional Council, Judicial Council)",
+      "key_commitments": [
+        "Amend CIAA Act, Constitutional Council Act, Judicial Council Act",
+        "Financial and regulatory impact analysis for all bills"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-012",
+      "number": 12,
+      "category": "justice",
+      "title_en": "Complete Transitional Justice",
+      "key_commitments": [
+        "Complete transitional justice process",
+        "Implement Judicial Fund Act 2046"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-013",
+      "number": 13,
+      "category": "justice",
+      "title_en": "Merit-Based Judge Appointments",
+      "key_commitments": [
+        "Merit-based judge selection for High Court and Supreme Court",
+        "End partisan power-sharing in judicial appointments"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-014",
+      "number": 14,
+      "category": "justice",
+      "title_en": "Study Live Broadcasting of Court Hearings",
+      "key_commitments": ["Study live court broadcasting"],
+      "measurable": false,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-015",
+      "number": 15,
+      "category": "governance",
+      "title_en": "Public Funding for Parties, Two-Term Limit for Party Chiefs",
+      "key_commitments": [
+        "Public funding for political parties",
+        "Two-term limit for party chief"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-016",
+      "number": 16,
+      "category": "governance",
+      "title_en": "Full Public Asset Disclosure, No Conflict of Interest",
+      "key_commitments": [
+        "Pre-office complete asset disclosure",
+        "Independent asset audit after term",
+        "Zero conflict of interest guarantee"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-017",
+      "number": 17,
+      "category": "governance",
+      "title_en": "Limit Federal Ministries to 18, Expert Ministers",
+      "key_commitments": [
+        "Limit federal ministries to 18",
+        "Expert minister standard",
+        "PM Office as result center"
+      ],
+      "measurable": true,
+      "target_metrics": ["18 federal ministries"],
+      "priority": "high"
+    },
+    {
+      "id": "bp-018",
+      "number": 18,
+      "category": "governance",
+      "title_en": "Transform National Planning Commission, Strengthen Statistics",
+      "key_commitments": [
+        "Transform NPC into policy research body",
+        "Autonomous National Statistics Office"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-019",
+      "number": 19,
+      "category": "economy",
+      "title_en": "Productivity-Based Growth, Private Sector Leadership",
+      "key_commitments": [
+        "Productivity growth as GDP foundation",
+        "Private sector-led economy",
+        "Government as regulator not operator"
+      ],
+      "measurable": false,
+      "priority": "critical"
+    },
+    {
+      "id": "bp-020",
+      "number": 20,
+      "category": "economy",
+      "title_en": "Strong Regulatory Bodies, Social Market Economy",
+      "key_commitments": [
+        "Independent regulatory bodies",
+        "End cartels and rent-seeking",
+        "Social market economy model"
+      ],
+      "measurable": false,
+      "priority": "high"
+    },
+    {
+      "id": "bp-021",
+      "number": 21,
+      "category": "economy",
+      "title_en": "Repeal ~24 Burdensome Acts, 7% GDP Growth Target",
+      "key_commitments": [
+        "Repeal ~24 burdensome economic acts",
+        "7% annual GDP growth target",
+        "Per capita income $3,000 within 5-7 years",
+        "Economy size $100B within 5-7 years"
+      ],
+      "measurable": true,
+      "target_metrics": [
+        "repeal ~24 acts",
+        "7% GDP growth",
+        "$3000 per capita",
+        "$100B economy"
+      ],
+      "priority": "critical"
+    },
+    {
+      "id": "bp-022",
+      "number": 22,
+      "category": "economy",
+      "title_en": "Tax Reform: Less Burden, Family-Based Income Tax",
+      "key_commitments": [
+        "Reduce overall tax burden",
+        "No retroactive tax laws",
+        "Family-based income tax thresholds",
+        "Education/health/childcare tax deductions"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-023",
+      "number": 23,
+      "category": "economy",
+      "title_en": "Review INR Exchange Rate Peg",
+      "key_commitments": ["Study and review INR exchange rate peg"],
+      "measurable": false,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-024",
+      "number": 24,
+      "category": "economy",
+      "title_en": "One-Stop Investment Service Center",
+      "key_commitments": [
+        "One-stop investment center operational",
+        "Single-window for all investment approvals",
+        "Free digital business registration"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-025",
+      "number": 25,
+      "category": "economy",
+      "title_en": "Revenue Tribunal Reform, Abolish Revenue Investigation Dept",
+      "key_commitments": [
+        "Reform Revenue Tribunal",
+        "Abolish Revenue Investigation Department",
+        "CA-majority revenue investigation unit"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-026",
+      "number": 26,
+      "category": "economy",
+      "title_en": "Public Enterprise Reform (Merge, Privatize, Decentralize)",
+      "key_commitments": [
+        "Classify and reform public enterprises",
+        "Implement Public Expenditure Review Commission 2075 report"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-027",
+      "number": 27,
+      "category": "governance",
+      "title_en": "Mission Mode Project Implementation (I)",
+      "key_commitments": [
+        "Mission mode project implementation",
+        "No transfer of project staff until completion"
+      ],
+      "measurable": true,
+      "priority": "high",
+      "note": "Near-duplicate of item 28 — both exist in original PDF"
+    },
+    {
+      "id": "bp-028",
+      "number": 28,
+      "category": "governance",
+      "title_en": "Mission Mode Project Implementation (II)",
+      "key_commitments": [
+        "Mission mode project implementation",
+        "No transfer of project staff until completion"
+      ],
+      "measurable": true,
+      "priority": "high",
+      "note": "Near-duplicate of item 27 — both exist in original PDF"
+    },
+    {
+      "id": "bp-029",
+      "number": 29,
+      "category": "economy",
+      "title_en": "National Science & Technology Program, 10 Special Projects",
+      "key_commitments": [
+        "National science and technology program",
+        "10 special projects across diversified sectors"
+      ],
+      "measurable": true,
+      "target_metrics": ["10 special projects"],
+      "priority": "medium"
+    },
+    {
+      "id": "bp-030",
+      "number": 30,
+      "category": "economy",
+      "title_en": "Cooperative/Microfinance Under NRB Supervision",
+      "key_commitments": [
+        "Cooperatives under NRB supervision",
+        "Class D standards for cooperatives over Rs 50 crore"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-031",
+      "number": 31,
+      "category": "economy",
+      "title_en": "Link Cooperatives to Credit Information Center",
+      "key_commitments": [
+        "All cooperatives linked to Credit Information Center",
+        "End shadow lending systems"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-032",
+      "number": 32,
+      "category": "economy",
+      "title_en": "End Usury (Meter Byaj) — Declare as Economic Crime",
+      "key_commitments": [
+        "Usury declared economic crime",
+        "Dismantle usury networks in 5 years",
+        "Fast-Track Justice Task Force",
+        "Digital land verification at local level",
+        "Collateral-free loans for poor communities"
+      ],
+      "measurable": true,
+      "target_metrics": ["5 years to dismantle usury"],
+      "priority": "critical",
+      "note": "Partial overlap with item 33 on digital land verification"
+    },
+    {
+      "id": "bp-033",
+      "number": 33,
+      "category": "economy",
+      "title_en": "Capital Market Modernization and Reform",
+      "key_commitments": [
+        "Digital land verification system",
+        "Amend Securities Act 2063",
+        "Restructure Securities Board, NEPSE, CDS",
+        "Introduce intraday, short selling, derivatives",
+        "Zero tolerance insider trading",
+        "Allow NRN trading on NEPSE",
+        "Launch commodity exchange",
+        "Public Warehousing Act"
+      ],
+      "measurable": true,
+      "priority": "high",
+      "note": "Partial overlap with item 32 on digital land verification"
+    },
+    {
+      "id": "bp-034",
+      "number": 34,
+      "category": "economy",
+      "title_en": "Institutional Investors, Bond Market, Financial Literacy",
+      "key_commitments": [
+        "Expand institutional investors",
+        "Stable capital market tax policy",
+        "Bond market development",
+        "Infrastructure bonds",
+        "Nationwide digital capital market access"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-035",
+      "number": 35,
+      "category": "technology",
+      "title_en": "IT as National Strategic Industry — $30B Export Target",
+      "key_commitments": [
+        "Declare IT as national strategic industry",
+        "IT exports from $1.5B to $30B in 10 years",
+        "Autonomous IT Promotion Board",
+        "IT sector income tax concessions",
+        "Digital Parks in all 7 provinces"
+      ],
+      "measurable": true,
+      "target_metrics": ["$30B IT exports in 10 years", "7 digital parks"],
+      "priority": "critical"
+    },
+    {
+      "id": "bp-036",
+      "number": 36,
+      "category": "technology",
+      "title_en": "Digital Economy Development",
+      "key_commitments": [
+        "Data centers and cloud services",
+        "Cybersecurity and data privacy laws",
+        "Sovereign digital infrastructure via satellite",
+        "Government software procurement to Nepal firms",
+        "Postal service as multipurpose digital center"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-037",
+      "number": 37,
+      "category": "technology",
+      "title_en": "International Payment Gateway, Cashless Society",
+      "key_commitments": [
+        "International payment gateway operational",
+        "Cashless society initiative",
+        "Cash incentives for IT exports",
+        "Full income tax exemption for IT exports"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-038",
+      "number": 38,
+      "category": "technology",
+      "title_en": "Data Centers, AI Computing, Green GPU, Crypto Policy",
+      "key_commitments": [
+        "Data centers near hydropower projects",
+        "AI computing and cloud services export",
+        "Green GPU computing rental",
+        "Digital sanctuary special act",
+        "Cryptocurrency regulation policy within 1 year",
+        "Crypto mining pilot in year 1"
+      ],
+      "measurable": true,
+      "target_metrics": ["crypto policy within 1 year", "mining pilot year 1"],
+      "priority": "high"
+    },
+    {
+      "id": "bp-039",
+      "number": 39,
+      "category": "labor",
+      "title_en": "Remote Work Legal Framework, Digital Nomad Visas",
+      "key_commitments": [
+        "Legal framework for remote work from Nepal",
+        "Amend Labor Act for digital employment",
+        "Banking reforms for foreign salary payments",
+        "Digital nomad visa category"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-040",
+      "number": 40,
+      "category": "agriculture",
+      "title_en": "Agriculture: Respectable Profession with Policy Stability",
+      "key_commitments": [
+        "Policy stability for agriculture",
+        "Stable markets and transparent subsidies",
+        "Reliable insurance and adequate irrigation",
+        "Technology-based farming"
+      ],
+      "measurable": false,
+      "priority": "high"
+    },
+    {
+      "id": "bp-041",
+      "number": 41,
+      "category": "agriculture",
+      "title_en": "Agricultural Import Substitution and Trade Reform (I)",
+      "key_commitments": [
+        "Import substitution trade agreements",
+        "Customs reform for agricultural self-reliance",
+        "Cold storage and cold chain infrastructure",
+        "Export promotion to international standards"
+      ],
+      "measurable": true,
+      "priority": "high",
+      "note": "Substantial overlap with item 42"
+    },
+    {
+      "id": "bp-042",
+      "number": 42,
+      "category": "agriculture",
+      "title_en": "Agricultural Import Substitution and Trade Reform (II)",
+      "key_commitments": [
+        "Import substitution for trade balance",
+        "Agro-processing priority",
+        "Fintech and Agritech development"
+      ],
+      "measurable": true,
+      "priority": "high",
+      "note": "Substantial overlap with item 41"
+    },
+    {
+      "id": "bp-043",
+      "number": 43,
+      "category": "agriculture",
+      "title_en": "Land Use Planning, Irrigation, Agricultural Research",
+      "key_commitments": [
+        "Land-use planning review",
+        "Barren land utilization programs",
+        "Land consolidation and pooling incentives",
+        "Restructure agricultural research council"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-044",
+      "number": 44,
+      "category": "energy",
+      "title_en": "30,000 MW Installed Electricity Capacity",
+      "key_commitments": [
+        "30,000 MW installed electricity in decade",
+        "Single desk for hydropower approvals",
+        "Government security guarantee for hydropower projects"
+      ],
+      "measurable": true,
+      "target_metrics": ["30,000 MW in 10 years"],
+      "priority": "critical"
+    },
+    {
+      "id": "bp-045",
+      "number": 45,
+      "category": "energy",
+      "title_en": "New Energy Policy, Storage, Private Participation",
+      "key_commitments": [
+        "New energy and water resources policy",
+        "Energy storage technology promotion",
+        "Private sector in transmission/distribution/trading",
+        "Wind and solar grid connection"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-046",
+      "number": 46,
+      "category": "energy",
+      "title_en": "Increase Domestic Electricity Consumption",
+      "key_commitments": [
+        "Increase domestic electricity consumption",
+        "Attract energy-based industries"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-047",
+      "number": 47,
+      "category": "energy",
+      "title_en": "Energy Export Diplomacy (India, Bangladesh)",
+      "key_commitments": [
+        "Energy export agreements with India and Bangladesh",
+        "Cross-border transmission infrastructure"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-048",
+      "number": 48,
+      "category": "tourism",
+      "title_en": "Double Tourist Arrivals and Per-Visitor Spending",
+      "key_commitments": [
+        "Double tourist arrivals in 5 years",
+        "Double per-visitor spending in 5 years",
+        "New tourism destinations in Karnali/Sudurpashchim",
+        "Restore damaged trekking trails"
+      ],
+      "measurable": true,
+      "target_metrics": [
+        "double tourist arrivals in 5 years",
+        "double per-visitor spending"
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "bp-049",
+      "number": 49,
+      "category": "tourism",
+      "title_en": "Single-Window Digital Tourism System",
+      "key_commitments": [
+        "Single digital tourism platform",
+        "Three-tier mountain categorization (6K/6-8K/8K+)",
+        "Modern rescue and safety systems",
+        "Hill station development near border"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-050",
+      "number": 50,
+      "category": "tourism",
+      "title_en": "Religious-Cultural Tourism, NTB Restructuring",
+      "key_commitments": [
+        "Hindu-Buddhist religious tourism circuit",
+        "Janakpur as tourism hub",
+        "Restructure Nepal Tourism Board"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-051",
+      "number": 51,
+      "category": "tourism",
+      "title_en": "Global Mountaineering Training Hub",
+      "key_commitments": [
+        "Mountain school establishment",
+        "International high-altitude rescue academy"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-052",
+      "number": 52,
+      "category": "infrastructure",
+      "title_en": "Civil Aviation Reform, Nepal Airlines on Stock Exchange",
+      "key_commitments": [
+        "Separate CAAN regulatory and service roles",
+        "Remove Nepal from aviation blacklist",
+        "Free Nepal Airlines from political interference",
+        "List Nepal Airlines on stock exchange"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-053",
+      "number": 53,
+      "category": "infrastructure",
+      "title_en": "Airport Development (Pokhara, Bhairahawa, TIA, New International)",
+      "key_commitments": [
+        "Pokhara and Bhairahawa airports fully operational",
+        "India ILS diplomatic initiative",
+        "TIA terminal expansion",
+        "New international airport (Nijgadh or alternative)"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-054",
+      "number": 54,
+      "category": "infrastructure",
+      "title_en": "End Transport Syndicates, Electric Buses, Public Transit Master Plan",
+      "key_commitments": [
+        "End transport syndicates and cartels",
+        "Single authority centralized ticketing",
+        "Electric bus customs concessions",
+        "Public transport master plan"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-055",
+      "number": 55,
+      "category": "infrastructure",
+      "title_en": "Road Safety Technology, Blue Bus Expansion for Women",
+      "key_commitments": [
+        "GPS tracking in all public transport",
+        "AI-based traffic cameras and digital fines",
+        "Blue Bus expansion for women's safety",
+        "Pedestrian safety infrastructure"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-056",
+      "number": 56,
+      "category": "infrastructure",
+      "title_en": "Traditional Architecture Bus Stops, Green Open Spaces",
+      "key_commitments": [
+        "Traditional architecture bus stops nationwide",
+        "Green spaces and parks in every municipality"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-057",
+      "number": 57,
+      "category": "infrastructure",
+      "title_en": "National Open Area Standard, Open Government Compounds",
+      "key_commitments": [
+        "National Open Area Standard by 2087",
+        "Open major government compounds to public (Narayanhiti to Lagankhel)"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-058",
+      "number": 58,
+      "category": "infrastructure",
+      "title_en": "Highway Network Expansion, Bypass Roads",
+      "key_commitments": [
+        "Highway network expansion",
+        "Bypass roads for 8+ highway towns",
+        "Pedestrian/cyclist safety in all road contracts"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-059",
+      "number": 59,
+      "category": "infrastructure",
+      "title_en": "50-Year Railway Master Plan",
+      "key_commitments": [
+        "50-year railway master plan",
+        "Mechi-Mahakali electric railway",
+        "Cross-border rail connectivity (China, India)",
+        "Tram and light rail introduction"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-060",
+      "number": 60,
+      "category": "economy",
+      "title_en": "Investment-Friendly Mining Policy",
+      "key_commitments": [
+        "New mining policy and act",
+        "Mines and Minerals Authority",
+        "End illegal extraction"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-061",
+      "number": 61,
+      "category": "education",
+      "title_en": "Free Education From Partisan Politics",
+      "key_commitments": [
+        "Ban partisan activity in educational institutions",
+        "Prohibit teacher political affiliation",
+        "Non-partisan student representation"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-062",
+      "number": 62,
+      "category": "education",
+      "title_en": "Public Education Quality — High Investment Over Two Decades",
+      "key_commitments": [
+        "Major long-term investment in public education",
+        "Improve quality, access, and competitiveness"
+      ],
+      "measurable": false,
+      "priority": "high"
+    },
+    {
+      "id": "bp-063",
+      "number": 63,
+      "category": "education",
+      "title_en": "Regulate Private Education as Service, Not Profit",
+      "key_commitments": [
+        "Stronger private school regulation",
+        "Fee structure regulation"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-064",
+      "number": 64,
+      "category": "education",
+      "title_en": "Model Inclusive Schools, Disability Services in Schools",
+      "key_commitments": [
+        "1 model inclusive school per province (7 total)",
+        "All schools gradually fully accessible",
+        "Therapy services inside schools for disabled children"
+      ],
+      "measurable": true,
+      "target_metrics": ["7 model inclusive schools (1 per province)"],
+      "priority": "high"
+    },
+    {
+      "id": "bp-065",
+      "number": 65,
+      "category": "education",
+      "title_en": "Merit-Based Teacher System, Cultural Renaissance",
+      "key_commitments": [
+        "Merit-based teacher selection and promotion",
+        "Guru-Chela tradition scholarships"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-066",
+      "number": 66,
+      "category": "education",
+      "title_en": "University Restructuring — Research and Employment Focused",
+      "key_commitments": [
+        "University restructuring",
+        "Industry-education collaboration",
+        "International standard curricula"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-067",
+      "number": 67,
+      "category": "education",
+      "title_en": "International Higher Education Hub",
+      "key_commitments": [
+        "Foreign university campuses in Nepal",
+        "Easy visas for foreign educators/students",
+        "Return program for Nepali diaspora professors"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-068",
+      "number": 68,
+      "category": "sports",
+      "title_en": "Sports Infrastructure in All Provinces",
+      "key_commitments": [
+        "Complete unfinished stadiums",
+        "World-class sports infrastructure in all 7 provinces",
+        "Sports ground in every local level"
+      ],
+      "measurable": true,
+      "target_metrics": ["7 provincial sports infrastructure"],
+      "priority": "medium"
+    },
+    {
+      "id": "bp-069",
+      "number": 69,
+      "category": "sports",
+      "title_en": "Professional Sports Management, Athletes Pension",
+      "key_commitments": [
+        "End political appointments in sports",
+        "Athletes Pension Fund",
+        "Health insurance and job guarantees for medal winners"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-070",
+      "number": 70,
+      "category": "health",
+      "title_en": "Basic Health Minimum Standards, Rural Health Priority",
+      "key_commitments": [
+        "National minimum health service standards",
+        "Priority health expansion to rural/remote areas",
+        "Virtual health worker network"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-071",
+      "number": 71,
+      "category": "health",
+      "title_en": "Health Insurance Expansion — Mental Health Included",
+      "key_commitments": [
+        "Universal health insurance coverage",
+        "Single-window health social security",
+        "Mental health in insurance coverage"
+      ],
+      "measurable": true,
+      "priority": "critical"
+    },
+    {
+      "id": "bp-072",
+      "number": 72,
+      "category": "health",
+      "title_en": "Prevention Over Treatment for NCDs Including Cancer",
+      "key_commitments": [
+        "Prevention-first NCD strategy",
+        "Cancer prevention programs",
+        "Regular health checkup promotion"
+      ],
+      "measurable": false,
+      "priority": "high"
+    },
+    {
+      "id": "bp-073",
+      "number": 73,
+      "category": "health",
+      "title_en": "Disability Rehabilitation Centers in Every Province",
+      "key_commitments": [
+        "1 disability rehabilitation center per province (7 total)",
+        "Comprehensive services under one roof"
+      ],
+      "measurable": true,
+      "target_metrics": [
+        "7 disability rehabilitation centers (1 per province)"
+      ],
+      "priority": "high"
+    },
+    {
+      "id": "bp-074",
+      "number": 74,
+      "category": "health",
+      "title_en": "Early Screening for Disabilities Down to Local Health Desks",
+      "key_commitments": [
+        "Minimize preventable disabilities by 2087",
+        "Early screening at local health desks",
+        "Early intervention for autism, hearing, vision issues"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-075",
+      "number": 75,
+      "category": "health",
+      "title_en": "Yoga, Meditation, Alternative Medicine Programs",
+      "key_commitments": [
+        "Institutional yoga and meditation programs",
+        "Evidence-based alternative medicine regulation"
+      ],
+      "measurable": false,
+      "priority": "low"
+    },
+    {
+      "id": "bp-076",
+      "number": 76,
+      "category": "health",
+      "title_en": "Burn Treatment Fund and World-Class Burn Hospital",
+      "key_commitments": [
+        "Burn Treatment Fund established",
+        "World-class burn hospital construction"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-077",
+      "number": 77,
+      "category": "health",
+      "title_en": "Mental Health Division, National Helpline 24/7",
+      "key_commitments": [
+        "Separate mental health division",
+        "Mental health specialists in all district hospitals",
+        "24/7 national mental health helpline"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-078",
+      "number": 78,
+      "category": "labor",
+      "title_en": "Dignified Labor Market Reform",
+      "key_commitments": [
+        "Comprehensive labor market reform",
+        "Free legal aid for workers",
+        "Formalize informal sector",
+        "Mandatory workplace safety and social security"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-079",
+      "number": 79,
+      "category": "labor",
+      "title_en": "Foreign Employment Company Accountability, Migrant Worker ID",
+      "key_commitments": [
+        "Strict regulation of foreign employment companies",
+        "End fraud and excessive fees",
+        "Special identity card for migrant workers"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-080",
+      "number": 80,
+      "category": "social_justice",
+      "title_en": "Concessional Loans for Dalit Workers Going Abroad",
+      "key_commitments": [
+        "Concessional loans for Dalit foreign employment seekers",
+        "Returnee entrepreneur incentives"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-081",
+      "number": 81,
+      "category": "infrastructure",
+      "title_en": "Sustainable Housing Program, Fire Safety, Earthquake Codes",
+      "key_commitments": [
+        "Sustainable housing model program",
+        "Mandatory earthquake-resistant construction",
+        "Fire safety code for buildings 3+ stories"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-082",
+      "number": 82,
+      "category": "social_justice",
+      "title_en": "National Land Rights Authority — Satellite-Based Identification",
+      "key_commitments": [
+        "National Land Rights Authority",
+        "Satellite mapping to identify genuine landless",
+        "Permanent land titles for landless"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-083",
+      "number": 83,
+      "category": "infrastructure",
+      "title_en": "Integrated Settlements for Scattered Hilly Communities",
+      "key_commitments": [
+        "Integrated settlement program for scattered communities",
+        "Voluntary participation and cultural preservation"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-084",
+      "number": 84,
+      "category": "infrastructure",
+      "title_en": "First Home Incentive Policy for Youth",
+      "key_commitments": [
+        "First Home Incentive Policy",
+        "Home loan income tax deductions",
+        "First-time buyer registration fee discount"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-085",
+      "number": 85,
+      "category": "social_justice",
+      "title_en": "Redesign Social Security System with Database",
+      "key_commitments": [
+        "Social security database",
+        "Targeted social security system",
+        "Prevent double benefits and misuse"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-086",
+      "number": 86,
+      "category": "environment",
+      "title_en": "Forest Management for Economic Contribution",
+      "key_commitments": [
+        "Forest law review for economic value",
+        "Scientific forest utilization plans",
+        "Carbon trading from forests"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-087",
+      "number": 87,
+      "category": "environment",
+      "title_en": "Wildlife Management (Monkeys, Elephants, Tigers)",
+      "key_commitments": [
+        "Scientific wildlife management",
+        "Compensation systems",
+        "Monkey population control"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-088",
+      "number": 88,
+      "category": "environment",
+      "title_en": "Forest Fire High-Alert Center with Satellite Monitoring",
+      "key_commitments": [
+        "Forest Fire High-Alert Center",
+        "Real-time satellite fire monitoring",
+        "Portable pumps to every forest ward"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-089",
+      "number": 89,
+      "category": "environment",
+      "title_en": "Simplify EIA, Land Acquisition for Infrastructure",
+      "key_commitments": [
+        "Simplify EIA process",
+        "Simplify land acquisition",
+        "Faster infrastructure in protected areas"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-090",
+      "number": 90,
+      "category": "environment",
+      "title_en": "Chure Conservation — Scientific Excavation, Protected Areas",
+      "key_commitments": [
+        "Scientific excavation procedure for Chure",
+        "Empower Chure Conservation Authority",
+        "Fully Protected Areas in sensitive Chure zones"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-091",
+      "number": 91,
+      "category": "health",
+      "title_en": "Arsenic-Free Terai Campaign",
+      "key_commitments": [
+        "Safe drinking water for all",
+        "Arsenic declared national crisis",
+        "Arsenic-Free Terai Campaign"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-092",
+      "number": 92,
+      "category": "environment",
+      "title_en": "Waste-to-Energy, Circular Economy",
+      "key_commitments": [
+        "Nationwide waste segregation",
+        "Waste-to-energy projects",
+        "Circular economy promotion"
+      ],
+      "measurable": true,
+      "priority": "medium"
+    },
+    {
+      "id": "bp-093",
+      "number": 93,
+      "category": "environment",
+      "title_en": "Air Pollution Control — WHO Standards",
+      "key_commitments": [
+        "Air pollution within WHO standards",
+        "New emission standards for vehicles and industries",
+        "Ban open burning",
+        "Clean cooking fuel access"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-094",
+      "number": 94,
+      "category": "environment",
+      "title_en": "Preparedness-Oriented Disaster Policy",
+      "key_commitments": [
+        "Preparedness-first disaster policy",
+        "Risk mapping to local level",
+        "Early warning system expansion",
+        "Empower National Disaster Authority",
+        "Relief centers at 5 airports",
+        "Annual mandatory disaster drills"
+      ],
+      "measurable": true,
+      "target_metrics": ["5 airport relief centers"],
+      "priority": "high"
+    },
+    {
+      "id": "bp-095",
+      "number": 95,
+      "category": "environment",
+      "title_en": "Climate Finance Strategy, Climate Justice Leadership",
+      "key_commitments": [
+        "National Climate Finance Strategy",
+        "Climate justice in international forums",
+        "Nepal as climate leader",
+        "Climate Diplomacy Roadmap"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-096",
+      "number": 96,
+      "category": "foreign_policy",
+      "title_en": "Balanced Dynamic Diplomacy — Vibrant Bridge",
+      "key_commitments": [
+        "Nepal as vibrant bridge not buffer state",
+        "Tripartite economic partnerships",
+        "Sovereign independent foreign policy"
+      ],
+      "measurable": false,
+      "priority": "high"
+    },
+    {
+      "id": "bp-097",
+      "number": 97,
+      "category": "foreign_policy",
+      "title_en": "Border Security Force with Modern Technology",
+      "key_commitments": [
+        "Specialized Border Security Force",
+        "Night-vision cameras at borders",
+        "Digital entry-exit records",
+        "Diplomatic border dispute resolution"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-098",
+      "number": 98,
+      "category": "foreign_policy",
+      "title_en": "Diplomatic Mission Performance Audit, Digital Consular Services",
+      "key_commitments": [
+        "Performance audit for diplomatic missions",
+        "Digital consular services pilot",
+        "24/7 Central Response Unit at Foreign Ministry",
+        "Economic Consulars for trade promotion"
+      ],
+      "measurable": true,
+      "priority": "high"
+    },
+    {
+      "id": "bp-099",
+      "number": 99,
+      "category": "diaspora",
+      "title_en": "Diaspora Engagement: Voting Rights, Dual Citizenship, Knowledge Bank",
+      "key_commitments": [
+        "Voting rights for overseas Nepalis",
+        "Dual citizenship in principle",
+        "End NRN property rights hassles",
+        "Special legal protection for NRN investment",
+        "Dollar account ease",
+        "National Knowledge Bank"
+      ],
+      "measurable": true,
+      "priority": "critical"
+    },
+    {
+      "id": "bp-100",
+      "number": 100,
+      "category": "governance",
+      "title_en": "Party Integrity Mechanism — Zero Tolerance for Corruption",
+      "key_commitments": [
+        "Strong party integrity mechanism",
+        "Mandatory code of conduct",
+        "Zero tolerance for corruption"
+      ],
+      "measurable": true,
+      "priority": "high"
     }
-  ]
+  ],
+
+  "notes": {
+    "duplicates_in_original": [
+      "Items 27 and 28: Near-identical content about mission-mode project implementation — both exist in original PDF",
+      "Items 41 and 42: Substantial overlap on agricultural import substitution — both exist in original PDF",
+      "Items 32 and 33: Overlap on digital land verification — item 32 covers usury, item 33 covers capital markets"
+    ],
+    "category_legend": {
+      "governance": "Government reform, anti-corruption, digital governance, constitutional issues",
+      "justice": "Judiciary, transitional justice, judicial appointments",
+      "economy": "Economic policy, fiscal, monetary, capital markets, mining, public enterprises",
+      "technology": "IT sector, digital economy, data centers, AI, payments",
+      "agriculture": "Farming, food security, land use, agritech",
+      "energy": "Hydropower, electricity, energy trade, storage",
+      "tourism": "Tourism development, aviation, mountaineering",
+      "infrastructure": "Roads, railways, transport, housing, urban development",
+      "education": "Schools, universities, skills, research",
+      "health": "Healthcare, insurance, mental health, disabilities",
+      "sports": "Sports development, infrastructure",
+      "labor": "Labor market, foreign employment, remote work",
+      "environment": "Forests, wildlife, pollution, climate, disaster management",
+      "foreign_policy": "Diplomacy, border security, international relations",
+      "diaspora": "NRN engagement, voting rights, dual citizenship",
+      "social_justice": "Dalit rights, inclusion, disability, social security, landless"
+    }
+  }
 }

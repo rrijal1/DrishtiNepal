@@ -200,12 +200,12 @@ export default async function HomePage() {
             <HowStep
               step="02"
               title="Extract & Match"
-              desc="Political actions are extracted and matched against Ra Swa Pa's bachha patra and pratigya patra commitments."
+              desc="Political actions are extracted and matched against Ra Swa Pa's bachha patra and karar patra commitments."
             />
             <HowStep
               step="03"
               title="Score"
-              desc="Ministers receive transparent scores across 6 dimensions: compliance, effectiveness, transparency, fiscal prudence, sentiment, and parliamentary activity."
+              desc="वाचा पालन — ministers receive transparent scores: 70% manifesto compliance (did they deliver on their vacha?) and 30% public accountability (sentiment, transparency, parliamentary engagement)."
             />
             <HowStep
               step="04"

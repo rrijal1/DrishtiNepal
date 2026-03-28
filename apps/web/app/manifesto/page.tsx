@@ -3,9 +3,9 @@ import { supabase } from "@/lib/supabase";
 export const revalidate = 300;
 
 export const metadata = {
-  title: "Manifesto Tracker — Drishti Nepal",
+  title: "Vacha Patra Tracker — Drishti Nepal",
   description:
-    "Track progress on every election manifesto commitment. Bachha patra and pratigya patra.",
+    "Track progress on every vacha patra commitment. Bachha patra and karar patra.",
 };
 
 export default async function ManifestoPage() {
@@ -22,11 +22,11 @@ export default async function ManifestoPage() {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-neutral-800">
-          Manifesto Tracker
+          Vacha Patra Tracker
         </h1>
         <p className="mt-2 text-neutral-500">
-          Every commitment from Ra Swa Pa&apos;s bachha patra and pratigya patra
-          — tracked against actual government actions.
+          Every commitment from Ra Swa Pa&apos;s bachha patra and karar patra —
+          tracked against actual government actions.
         </p>
       </div>
 

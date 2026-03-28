@@ -70,19 +70,39 @@ def calculate_public_accountability(minister_id: str, days: int = 30) -> float:
 
     # Media sentiment sub-score
     sentiment_map = {"positive": 80, "neutral": 50, "negative": 20, "mixed": 40}
-    sentiment_score = sum(sentiment_map.get(a["sentiment"], 50) for a in actions.data) / len(actions.data)
+    sentiment_score = sum(
+        sentiment_map.get(a["sentiment"], 50) for a in actions.data
+    ) / len(actions.data)
 
     # Transparency sub-score: presence of press/communication actions
-    transparency_categories = {"press_conference", "statement", "rti_response", "announcement"}
-    transparency_count = sum(1 for a in actions.data if a.get("category") in transparency_categories)
+    # These categories must match the CHECK constraint in actions.category
+    transparency_categories = {
+        "press_conference",
+        "statement",
+        "rti_response",
+        "announcement",
+    }
+    transparency_count = sum(
+        1 for a in actions.data if a.get("category") in transparency_categories
+    )
     transparency_score = min(100, 50 + transparency_count * 10)
 
     # Parliamentary engagement sub-score: presence of legislative actions
-    parliament_categories = {"parliament", "bill", "committee", "qa_session", "legislative"}
-    parliament_count = sum(1 for a in actions.data if a.get("category") in parliament_categories)
+    parliament_categories = {
+        "parliament",
+        "bill",
+        "committee",
+        "qa_session",
+        "legislation",
+    }
+    parliament_count = sum(
+        1 for a in actions.data if a.get("category") in parliament_categories
+    )
     parliament_score = min(100, 30 + parliament_count * 10)
 
-    return round(sentiment_score * 0.50 + transparency_score * 0.30 + parliament_score * 0.20, 2)
+    return round(
+        sentiment_score * 0.50 + transparency_score * 0.30 + parliament_score * 0.20, 2
+    )
 
 
 def compute_overall_score(dimensions: dict) -> float:
@@ -141,7 +161,7 @@ def run():
             items_processed += 1
 
             logger.info(
-                f"  {name}: {overall}/100 (manifesto: {dimensions['manifesto_compliance']:.0f}, sentiment: {dimensions['public_sentiment']:.0f})"
+                f"  {name}: {overall}/100 (manifesto: {dimensions['manifesto_compliance']:.0f}, accountability: {dimensions['public_accountability']:.0f})"
             )
 
         complete_agent_run(run_id, "success", items_processed, items_processed)

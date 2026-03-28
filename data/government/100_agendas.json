@@ -1,0 +1,1491 @@
+{
+  "document": "100_governance_agendas",
+  "document_np": "शासकीय सुधार सम्बन्धी एक सय कार्यसूचीहरू",
+  "document_en": "One Hundred Agenda Items Related to Administrative Reform",
+  "government": "Balendra Shah Cabinet",
+  "government_np": "बालेन्द्र शाह मन्त्रिमण्डल",
+  "prime_minister": "Balendra Shah",
+  "prime_minister_np": "बालेन्द्र शाह",
+  "party": "Rastriya Swatantra Party",
+  "party_np": "राष्ट्रिय स्वतन्त्र पार्टी",
+  "meeting": "First Cabinet Meeting",
+  "meeting_np": "मन्त्रिपरिषद्को पहिलो बैठक",
+  "decision_date_bs": "२०८२ चैत्र १३",
+  "decision_date_ad": "2026-03-27",
+  "published_date_bs": "२०८२ चैत्र १४",
+  "published_date_ad": "2026-03-28",
+  "venue_en": "Singha Durbar, Office of the Prime Minister and Council of Ministers",
+  "venue_np": "सिंहदरबार, प्रधानमन्त्री तथा मन्त्रिपरिषद्को कार्यालय",
+  "source": "Kantipur / Prime Minister's Secretariat",
+  "original_pdf": "१००-क्रियाकलापहरू-Final.pdf",
+  "source_md": "100_agendas.md",
+  "description": "100 governance reform agendas approved by the first cabinet meeting of the Balendra Shah government. These represent concrete action items with deadlines, many implementing RSP manifesto commitments.",
+  "date_note": "The official document header says 'Chaitra 13' (approved date) while Kantipur reported 'Chaitra 14' (publication date). Both dates are recorded.",
+  "sections": [
+    {
+      "code": "A",
+      "title_en": "Shared Commitment, Coordination, and Public Trust",
+      "title_np": "साझा प्रतिबद्धता, समन्वय र जनविश्वास",
+      "items": "1-8"
+    },
+    {
+      "code": "B",
+      "title_en": "Administrative Reform, Restructuring",
+      "title_np": "प्रशासनिक सुधार, पुनर्संरचना र मितिव्यवस्था",
+      "items": "9-19"
+    },
+    {
+      "code": "C",
+      "title_en": "Public Service Delivery and Complaint Management",
+      "title_np": "सार्वजनिक सेवा प्रवाह र गुनासो व्यवस्थापन",
+      "items": "20-27"
+    },
+    {
+      "code": "D",
+      "title_en": "Digital Governance, Data Governance, and Communication",
+      "title_np": "डिजिटल शासन र डाटा गभर्नेन्स तथा सञ्चार",
+      "items": "28-42"
+    },
+    {
+      "code": "E",
+      "title_en": "Good Governance, Transparency, and Corruption Control",
+      "title_np": "सुशासन, पारदर्शिता र भ्रष्टाचार नियन्त्रण",
+      "items": "43-47"
+    },
+    {
+      "code": "F",
+      "title_en": "Public Procurement and Project Management Reform",
+      "title_np": "सार्वजनिक खरिद र परियोजना व्यवस्थापन सुधार",
+      "items": "48-52"
+    },
+    {
+      "code": "G",
+      "title_en": "Investment, Industry, Private Sector Promotion, and Tourism",
+      "title_np": "लगानी, उद्योग, निजी क्षेत्र प्रवर्द्धन तथा पर्यटन",
+      "items": "53-73"
+    },
+    {
+      "code": "H",
+      "title_en": "Energy and Water Resources",
+      "title_np": "ऊर्जा तथा जलस्रोत",
+      "items": "74-77"
+    },
+    {
+      "code": "I",
+      "title_en": "Revenue Reform",
+      "title_np": "राजस्व सुधार",
+      "items": "78-84"
+    },
+    {
+      "code": "J",
+      "title_en": "Health, Education, and Human Development",
+      "title_np": "स्वास्थ्य, शिक्षा र मानव विकास",
+      "items": "85-89"
+    },
+    {
+      "code": "K",
+      "title_en": "Agriculture, Land, Infrastructure",
+      "title_np": "कृषि, भूमि, पूर्वाधार र आधारभूत सेवा",
+      "items": "90-92"
+    },
+    {
+      "code": "L",
+      "title_en": "Other Strategic and Social Security Decisions",
+      "title_np": "अन्य रणनीतिक तथा सामाजिक सुरक्षा सम्बन्धी निर्णयहरू",
+      "items": "93-100"
+    }
+  ],
+  "agendas": [
+    {
+      "id": "ga-001",
+      "number": 1,
+      "section": "A",
+      "category": "governance",
+      "title_en": "Appreciation to Karki Government, Election Commission, Security Agencies, and Media",
+      "summary_en": "Express gratitude to Sushila Karki government, Election Commission, security agencies, civil servants, journalists, and media for successful Falgun 21 election.",
+      "deadline": null,
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-002",
+      "number": 2,
+      "section": "A",
+      "category": "governance",
+      "title_en": "Delivery-Based Governance System — Ministry KPIs Within 7 Days",
+      "summary_en": "Implement delivery-based governance. Each ministry prepares top 10 activities with timelines, responsible officers, KPIs within 7 days. Monthly progress to PM Office. Regular monitoring and public reporting.",
+      "deadline": "7 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-017"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-003",
+      "number": 3,
+      "section": "A",
+      "category": "governance",
+      "title_en": "Synthesize All Party Manifestos into National Commitment",
+      "summary_en": "Synthesize implementable issues from all parties' manifestos and pledges into 'National Commitment' with GoN shared ownership. Link to annual policies, budgets, reform agendas. Establish structure under PM Office immediately.",
+      "deadline": "immediate",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-100"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-004",
+      "number": 4,
+      "section": "A",
+      "category": "governance",
+      "title_en": "Constitutional Amendment Debate Panel Task Force",
+      "summary_en": "Form task force within 7 days to prepare Constitutional Amendment Debate Panel for national consensus on political/institutional reforms and electoral system. Process to be participatory, transparent, fact-based.",
+      "deadline": "7 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-010"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-005",
+      "number": 5,
+      "section": "A",
+      "category": "social_justice",
+      "title_en": "Formal State Apology to Dalit and Excluded Communities",
+      "summary_en": "Within 15 days, formally acknowledge injustice faced by Dalits and historically excluded communities. Declare reform-oriented programs with formal state apology for social justice, inclusive restoration, and historical reconciliation.",
+      "deadline": "15 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-001"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-006",
+      "number": 6,
+      "section": "A",
+      "category": "governance",
+      "title_en": "Gen-Z Movement Victims — Integrated Justice and Rehabilitation Package",
+      "summary_en": "Integrated initiative for Gen-Z (Bhadra 23-24) affected families. Within 100 days: employment, skill development, psychosocial counseling, rehabilitation package. Advance prosecution based on Gauri Bahadur Karki Commission report.",
+      "deadline": "100 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-002"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-007",
+      "number": 7,
+      "section": "A",
+      "category": "governance",
+      "title_en": "High-Level Inquiry Committee for Bhadra 24 Incident",
+      "summary_en": "Form high-level inquiry committee within 1 week to investigate the Bhadra 24, 2082 incident. Collect details, analyze, identify responsible parties, submit report within specified timeframe. Advance further action based on recommendations.",
+      "deadline": "1 week",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-002"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-008",
+      "number": 8,
+      "section": "A",
+      "category": "governance",
+      "title_en": "Implement Commission Reports — Start Legal Processes Within 30 Days",
+      "summary_en": "Initiate legal, administrative, and prosecution processes within 30 days to implement recommendations from various commission reports that have remained unimplemented.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-011"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-009",
+      "number": 9,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Reduce Federal Ministries to 17 Within 30 Days",
+      "summary_en": "Amend Government Work Division Regulations within 30 days to reduce ministries to 17. Manage staffing without affecting service delivery. Establish Restructuring Management Secretariat under PM Office for Transition Roadmap.",
+      "deadline": "30 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-017"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-010",
+      "number": 10,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Business Process Re-engineering — Max 3 Approval Levels",
+      "summary_en": "All public bodies review procedures, remove duplication, limit approval levels to max 3. BPR to make service delivery simple, fast, result-oriented. Standards and monitoring systems within 30 days.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-009"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-011",
+      "number": 11,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Evaluate and Abolish Unproductive Boards/Committees",
+      "summary_en": "Form high-level task force (PM Office, Finance, Industry, Federal Affairs ministries) to evaluate unproductive boards, committees, and projects for abolition, integration, or restructuring. Report within 1 month.",
+      "deadline": "1 month",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-017",
+        "bp-026"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-012",
+      "number": 12,
+      "section": "B",
+      "category": "governance",
+      "title_en": "End Political Interference in Administration, Abolish Party Trade Unions",
+      "summary_en": "Free public administration from political interference. Mandatory non-affiliation for civil servants, teachers, professors. Abolish party trade unions in administration. Federal Civil Service Bill within 45 days.",
+      "deadline": "45 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-005",
+        "bp-006"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-013",
+      "number": 13,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Implement Civil Service Code of Conduct Strictly",
+      "summary_en": "Strictly implement Civil Service Code of Conduct. Make civil servants accountable, service-oriented, and exemplary. Ensure environment of impartiality and professional dignity.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-007"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-014",
+      "number": 14,
+      "section": "B",
+      "category": "governance",
+      "title_en": "National Standards for Organization & Management Survey",
+      "summary_en": "Prepare and approve national standards for organization and management survey of federal, provincial, and local levels within 15 days.",
+      "deadline": "15 days",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-015",
+      "number": 15,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Teacher Post-Retirement Management to Provincial Level",
+      "summary_en": "Transfer teachers' system discharge and post-retirement service management to provincial education ministry starting next fiscal year.",
+      "deadline": "next fiscal year",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-016",
+      "number": 16,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Performance-Based Accountability (KPIs in 45 Days, Review System in 90)",
+      "summary_en": "Each public body prepares objective performance indicators for every position within 45 days. Performance-linked accountability and review system within 90 days.",
+      "deadline": "45-90 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-007"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-017",
+      "number": 17,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Service Quality Certification Standards for Local Level",
+      "summary_en": "Ministry of Federal Affairs prepares quality certification standards for local-level services within 45 days. Incentivize excellent bodies.",
+      "deadline": "45 days",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-018",
+      "number": 18,
+      "section": "B",
+      "category": "infrastructure",
+      "title_en": "Uniform Standards for Government Office Infrastructure",
+      "summary_en": "Ministry of Urban Development prepares uniform standards for government office physical infrastructure within 2 months, implements within 100 days.",
+      "deadline": "100 days",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-019",
+      "number": 19,
+      "section": "B",
+      "category": "governance",
+      "title_en": "Personnel Management Information System (PMIS)",
+      "summary_en": "Ministry of Federal Affairs prepares PMIS architecture within 3 months for automated, predictable appointment, posting, transfer, promotion, and retirement management.",
+      "deadline": "3 months",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-008",
+        "bp-009"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-020",
+      "number": 20,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Citizen Service Centers — 12-Hour Operation in Major Cities",
+      "summary_en": "Operate agency/office model citizen service centers in major cities with minimum 12 hours daily operation to end requirement of visiting multiple offices.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-021",
+      "number": 21,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Digital Citizenship, Passport, NID — Any District, Faceless, Time-Bound",
+      "summary_en": "Digitize and integrate citizenship, passport, NID services. Citizenship copies and passports from any district. Ward-level digital recommendation. NID as mandatory single ID. All processes faceless, time-bound, trackable.",
+      "deadline": "immediate",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-022",
+      "number": 22,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Train All Front Desk Staff on All Services",
+      "summary_en": "All offices submit front desk staff training needs within 15 days. Ministry arranges training within 6 months.",
+      "deadline": "15 days (list), 6 months (training)",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-023",
+      "number": 23,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Time and Motion Study for Every Office Within 1 Month",
+      "summary_en": "Each office conducts Time and Motion study within 1 month and prepares Restructuring Plan to make all processes digital, trackable, transparent.",
+      "deadline": "1 month",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-009"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-024",
+      "number": 24,
+      "section": "C",
+      "category": "governance",
+      "title_en": "24/7 National Citizen Helpline and Complaint System",
+      "summary_en": "Operate 24-hour National Citizen Assistance and Complaint Management System. Multi-channel: phone, mobile app, portal, social media.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-025",
+      "number": 25,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Upgrade Hello Government — Real-Time Complaint Dashboard",
+      "summary_en": "Upgrade Hello Government mechanism as citizen dialogue platform. Real-time monitoring of complaint resolution via integrated dashboard coordinating all ministries.",
+      "deadline": null,
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-026",
+      "number": 26,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Predictable Time for Passport, Citizenship, License — Faceless Digital",
+      "summary_en": "Make passport, citizenship, driver's license available in predictable time, intermediary-free. Transform all service processes to free, time-bound, faceless, digital.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-027",
+      "number": 27,
+      "section": "C",
+      "category": "governance",
+      "title_en": "Government Courier Service — Documents Delivered Home Within 100 Days",
+      "summary_en": "Modernize postal/courier to deliver government documents (passport, citizenship copies, licenses) to citizens' homes. Implement within 100 days.",
+      "deadline": "100 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-028",
+      "number": 28,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Strengthen GIOMS in All Government Bodies Within 100 Days",
+      "summary_en": "Strengthen and make user-friendly existing GIOMS (Government Integrated Office Management System) in all government bodies at all levels within 100 days for fast, transparent, paperless service.",
+      "deadline": "100 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-009"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-029",
+      "number": 29,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Auto-Fill Citizen Data Across Government Systems Within 60 Days",
+      "summary_en": "Implement auto-fill of citizen personal details (name/address from citizenship number) across government offices within 60 days. Once-only data submission principle.",
+      "deadline": "60 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-030",
+      "number": 30,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Accessible Government Apps for Disabilities Within 100 Days",
+      "summary_en": "Make government apps and portals usable by persons with disabilities and citizens with limited technical knowledge within 100 days.",
+      "deadline": "100 days",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-031",
+      "number": 31,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Citizen App for Police Report, Passport, License Applications",
+      "summary_en": "Enable applications for police reports, passports, and driver's licenses through Citizen App within 45 days. Local form storage (not centralized). Auto-fill from stored/linked data.",
+      "deadline": "45 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-032",
+      "number": 32,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Appointment Booking System for Government Services",
+      "summary_en": "Within 3 months, implement appointment booking system for services requiring physical presence. Citizens choose convenient date/time.",
+      "deadline": "3 months",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-033",
+      "number": 33,
+      "section": "D",
+      "category": "technology",
+      "title_en": "NID-Based Digital Signature via Biometric/OTP",
+      "summary_en": "Enable e-signature via NID Card, Biometric, or OTP instead of certificate-only digital signature. Strengthen NID department. Study and report within 1 month under Home Ministry coordination.",
+      "deadline": "1 month",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-004",
+        "bp-009"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-034",
+      "number": 34,
+      "section": "D",
+      "category": "technology",
+      "title_en": "File Tracking with Auto-Alert for Delays Within 30 Days",
+      "summary_en": "Within 30 days, implement file tracking in GIOMS that monitors how long files stay on each desk and auto-alerts superior officers when time limits are exceeded.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-009"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-035",
+      "number": 35,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Downloadable Certificates via App/Email Within 15 Days",
+      "summary_en": "Within 15 days, enable citizens to download certificates through official mobile app/Citizen App or email.",
+      "deadline": "15 days",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-004"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-036",
+      "number": 36,
+      "section": "D",
+      "category": "technology",
+      "title_en": "National Integrated Digital Governance Platform — Data Exchange in 100 Days",
+      "summary_en": "Establish National Integrated Digital Governance Platform. Adopt 'submit once' principle. Integrate all government data/services. Begin National Data Exchange Platform based on digital public infrastructure within 100 days.",
+      "deadline": "100 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-004",
+        "bp-036"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-037",
+      "number": 37,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Digital Governance and Data Protection Law Within 60 Days",
+      "summary_en": "Prepare policies and laws for digital governance and personal data protection within 60 days to enable single-platform service delivery, transparency, and reduced time/cost.",
+      "deadline": "60 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-036"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-038",
+      "number": 38,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Independent IT Regulatory Authority Within 60 Days",
+      "summary_en": "Make legal and institutional arrangements within 60 days for establishing an Independent Regulatory Authority for IT and digital governance.",
+      "deadline": "60 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-035",
+        "bp-036"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-039",
+      "number": 39,
+      "section": "D",
+      "category": "technology",
+      "title_en": "IT and E-Governance Office Under PM Office Within 3 Months",
+      "summary_en": "Establish IT and E-Governance Office under PM Office within 3 months. Abolish current IT Department. All IT-related public bodies to operate under this new office.",
+      "deadline": "3 months",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-035",
+        "bp-036"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-040",
+      "number": 40,
+      "section": "D",
+      "category": "technology",
+      "title_en": "IT and E-Governance Bill Within 60 Days",
+      "summary_en": "Prepare the Information Technology and E-Governance Bill within 60 days.",
+      "deadline": "60 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-035"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-041",
+      "number": 41,
+      "section": "D",
+      "category": "technology",
+      "title_en": "National Enterprise Architecture Framework Within 60 Days",
+      "summary_en": "Prepare the National Enterprise Architecture Framework within 60 days.",
+      "deadline": "60 days",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-036"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-042",
+      "number": 42,
+      "section": "D",
+      "category": "technology",
+      "title_en": "Shut Down Betting Apps Within 24 Hours",
+      "summary_en": "Ministry of Communication and IT shall shut down betting apps and related websites within 24 hours.",
+      "deadline": "24 hours",
+      "significance": "high",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-043",
+      "number": 43,
+      "section": "E",
+      "category": "governance",
+      "title_en": "Asset Inquiry Committee Within 15 Days — Officials Since 2062 BS",
+      "summary_en": "Form empowered Asset Inquiry Committee under PM Office within 15 days. Phase 1: investigate assets of political office holders and high officials from 2062/63 to present. Phase 2: from 2048 to 2061/62. Include law, finance, revenue experts.",
+      "deadline": "15 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-003",
+        "bp-016"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-044",
+      "number": 44,
+      "section": "E",
+      "category": "governance",
+      "title_en": "Restructure National Vigilance Center Within 30 Days",
+      "summary_en": "Prepare and implement restructuring plan for National Vigilance Center within 30 days for good governance, corruption control, transparency, and accountability.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-011"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-045",
+      "number": 45,
+      "section": "E",
+      "category": "governance",
+      "title_en": "Integrated Digital Asset Registry — NRB Within 100 Days",
+      "summary_en": "Nepal Rastra Bank establishes Integrated Digital Asset Registry within 100 days covering bank accounts, digital wallets, shares, financial assets. Risk-Based Red Flag system. Auto-identify suspicious transactions.",
+      "deadline": "100 days",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-003",
+        "bp-031"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-046",
+      "number": 46,
+      "section": "E",
+      "category": "governance",
+      "title_en": "Second National Anti-Corruption Action Plan Within 15 Days",
+      "summary_en": "Issue Second National Action Plan against Corruption within 15 days, aligned with UN Convention against Corruption.",
+      "deadline": "15 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-003"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-047",
+      "number": 47,
+      "section": "E",
+      "category": "governance",
+      "title_en": "National Integrity Policy, Whistleblower Protection Within 30 Days",
+      "summary_en": "Issue National Integrity Policy within 30 days for integrity promotion, whistleblower protection, and conflict of interest management. Advance related law preparation.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-016",
+        "bp-100"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-048",
+      "number": 48,
+      "section": "F",
+      "category": "governance",
+      "title_en": "Amend Public Procurement Act — Digital, VFM, Performance-Based",
+      "summary_en": "Amend Public Procurement Act within 30 days. Implement Value for Money, Life Cycle Costing, EGov Marketplace, Performance-Based Contracting. Fully digital, transparent, trackable procurement.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-027"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-049",
+      "number": 49,
+      "section": "F",
+      "category": "governance",
+      "title_en": "Project Management Reform (Pipeline, Sick Projects, Fast-Track, Infra Company)",
+      "summary_en": "Multi-part: (a) NPC prepares National Project Pipeline within 2 months. (b) Study team for sick projects within 30 days. (c) Fast-Track Mechanism for national pride projects — direct PM Office monitoring. (d) Law within 3 days for government infrastructure company for failed tenders.",
+      "deadline": "3 days (law), 30 days (sick projects), 2 months (pipeline)",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-027",
+        "bp-028"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-050",
+      "number": 50,
+      "section": "F",
+      "category": "governance",
+      "title_en": "End-to-End E-Procurement Monitoring Within 90 Days",
+      "summary_en": "Implement data-based end-to-end e-procurement monitoring system within 90 days to track from project selection to payment. Control variation order misuse and delays.",
+      "deadline": "90 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-027"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-051",
+      "number": 51,
+      "section": "F",
+      "category": "governance",
+      "title_en": "Project Facilitation Umbrella Law Within 60 Days",
+      "summary_en": "Draft umbrella law for Project Facilitation within 60 days to solve projects getting entangled in multiple laws and approvals for years.",
+      "deadline": "60 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-089"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-052",
+      "number": 52,
+      "section": "F",
+      "category": "infrastructure",
+      "title_en": "Highway Project Directorate and Toll Plazas",
+      "summary_en": "Immediately establish project directorates for major road/transport projects causing daily hardship. Install highway toll plazas within 45 days based on strategic area study.",
+      "deadline": "immediate (directorates), 45 days (toll plazas)",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-058"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-053",
+      "number": 53,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Empower Single-Window Service Center at Industry Dept",
+      "summary_en": "Delegate additional authority to staff at single-window service center in Department of Industry for simple, fast, transparent industry registration, approval, and operations.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-054",
+      "number": 54,
+      "section": "G",
+      "category": "economy",
+      "title_en": "National Structured Project Pipeline Within 90 Days",
+      "summary_en": "NPC, Investment Board, and Ministry of Finance jointly classify all national pride and registered projects by investment modality (government/PPP/private/mixed) within 90 days. Publish National Structured Project Pipeline.",
+      "deadline": "90 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-055",
+      "number": 55,
+      "section": "G",
+      "category": "economy",
+      "title_en": "One Door Approval System Under Investment Board Within 1 Month",
+      "summary_en": "Establish One Door Approval System under Investment Board Nepal within 1 month for integrated, time-bound services to domestic and foreign investors.",
+      "deadline": "1 month",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-056",
+      "number": 56,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Startup Fast Track — Business Registration in 2 Days",
+      "summary_en": "Implement Startup Fast Track system for simple, fast (within 2 days), hassle-free business registration to promote entrepreneurship.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-057",
+      "number": 57,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Reduce Risk Weightage for SME, Agriculture, IT Loans — NRB 30 Days",
+      "summary_en": "Nepal Rastra Bank reduces risk weightage on loans to SME, agriculture, and IT sectors within 30 days.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-035",
+        "bp-040"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-058",
+      "number": 58,
+      "section": "G",
+      "category": "economy",
+      "title_en": "One Door Business Platform Within 45 Days",
+      "summary_en": "Integrate business registration, tax registration, bank account, and permits into One Door Business Platform within 45 days. Digital, transparent, trackable.",
+      "deadline": "45 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-059",
+      "number": 59,
+      "section": "G",
+      "category": "labor",
+      "title_en": "Employment, Skill, and Entrepreneurship Centers Within 60 Days",
+      "summary_en": "Transform employment service centers into Employment, Skill, and Entrepreneurship Centers within 60 days. Joint operation by CTEVT, Labor Ministry, Industry Ministry. Unemployed registration, skill mapping, returnee integration.",
+      "deadline": "60 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-078"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-060",
+      "number": 60,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Private Sector Protection and Promotion Strategy (PSPP)",
+      "summary_en": "Approve and immediately implement PSPP strategy for physical security, economic revival, regulatory simplification, investment promotion, and youth entrepreneurship.",
+      "deadline": "immediate",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-019",
+        "bp-020"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-061",
+      "number": 61,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Industrial/Business Security Rapid Response Within 30 Days",
+      "summary_en": "Ministry of Home Affairs develops necessary structures and rapid response mechanisms for industrial and business security within 30 days.",
+      "deadline": "30 days",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-062",
+      "number": 62,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Strict Legal Action for Damage to Private Property",
+      "summary_en": "Security agencies immediately advance strict legal action against persons involved in damage, looting, and attacks on private property.",
+      "deadline": "immediate",
+      "significance": "high",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-063",
+      "number": 63,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Subsidized and Rehabilitation Packages for Gen-Z Affected Businesses",
+      "summary_en": "Ministry of Finance and NRB issue subsidized and rehabilitation packages for businesses affected during Gen-Z movement.",
+      "deadline": null,
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-064",
+      "number": 64,
+      "section": "G",
+      "category": "governance",
+      "title_en": "PM Delivery Unit — Central KPI Dashboard",
+      "summary_en": "Immediately establish PM Delivery Unit under PM Office for integrated, result-oriented tracking of investment, production, export, productivity. Central dashboard with KPIs, ministry tracking, obstacle resolution.",
+      "deadline": "immediate",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-017"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-065",
+      "number": 65,
+      "section": "G",
+      "category": "economy",
+      "title_en": "End Duplication Among Investment Board, Export Center, Industry Dept",
+      "summary_en": "Form task force within 30 days to prepare roadmap for consolidating Investment Board Nepal, Trade & Export Promotion Center, Department of Industry into single-window service system.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-066",
+      "number": 66,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Unified Small Industry Registration, No Fees — Within 45 Days",
+      "summary_en": "Industries up to Rs 25 crore registered only through Trailu and Small Industry Offices. Abolish registration fees. End duplicate practices. Within 45 days.",
+      "deadline": "45 days",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-067",
+      "number": 67,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Interoperability of Company/Industry/Commerce Data Within 2 Months",
+      "summary_en": "Company Registrar, Industry Dept, Commerce Dept data interoperability within 2 months. Free consultation desk within 15 days. Real-time data system for all registered firms within 3 months.",
+      "deadline": "15 days (desk), 2 months (interop), 3 months (real-time)",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-068",
+      "number": 68,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Centralize CSR Funds into Government Priority Fund",
+      "summary_en": "Centralize industrial CSR funds and channel to government-designated priority sectors. Complete necessary law amendments within 3 months.",
+      "deadline": "3 months",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-069",
+      "number": 69,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Private Sector Protection — Security, Relief, Dialogue (Multi-Part)",
+      "summary_en": "(a) Private Sector Protection Strategy immediately. (b) High-alert security for industries, supply chains. (c) Administrative facilitation for disrupted businesses. (d) Damage data collection, relief/subsidy packages. (e) Activate PM-chaired Industry-Commerce Dialogue Council.",
+      "deadline": "immediate",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-019"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-070",
+      "number": 70,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Ensure Unobstructed Movement of Import/Export Goods",
+      "summary_en": "Ministry of Home Affairs immediately ensures import/export transport operates without obstruction in supply chain.",
+      "deadline": "immediate",
+      "significance": "high",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-071",
+      "number": 71,
+      "section": "G",
+      "category": "economy",
+      "title_en": "Clean Investment Environment — Auto-Approval, Beneficial Ownership, BEPS",
+      "summary_en": "Ensure clean investment environment. Automated investment approval. Strict beneficial ownership disclosure. Implement BEPS international tax standards. Control capital flight and money laundering.",
+      "deadline": null,
+      "significance": "high",
+      "manifesto_links": [
+        "bp-024"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-072",
+      "number": 72,
+      "section": "G",
+      "category": "tourism",
+      "title_en": "Tourism Framework for Koshi, Ramaroshan, Api/Dodi Himal Routes",
+      "summary_en": "Study and present implementable tourism framework within 1 month for Udayapur (Koshi River), Achham (Ramaroshan), Bajura Badimalika, Api Himal and Dodi Himal trekking routes.",
+      "deadline": "1 month",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-048",
+        "bp-050"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-073",
+      "number": 73,
+      "section": "G",
+      "category": "tourism",
+      "title_en": "Wellness Tourism Strategy — Nepal Wellness Year 2027",
+      "summary_en": "Issue wellness tourism strategy within 15 days. Thank all UN member states supporting April 15 International Wellness Day. Establish mechanism to observe Nepal Wellness Year 2027.",
+      "deadline": "15 days",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-048",
+        "bp-075"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-074",
+      "number": 74,
+      "section": "H",
+      "category": "energy",
+      "title_en": "Energy Sector Development (Multi-Part: Export, PPA, NEA Reform)",
+      "summary_en": "(a) Energy export strategy within 1 month. (b) Decide all pending PPAs and licenses within 180 days. (c) Focus exports on peak-hour high-price markets. (d) NEA structural reform roadmap immediately. (e) Multi-dimensional financing (govt, private, foreign, diaspora).",
+      "deadline": "1 month (strategy), 180 days (PPAs)",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-044",
+        "bp-045",
+        "bp-046",
+        "bp-047"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-075",
+      "number": 75,
+      "section": "H",
+      "category": "infrastructure",
+      "title_en": "Integrated Drinking Water Coordination Task Force",
+      "summary_en": "Form high-level task force under PM Office including Kathmandu Khanepani, Nepal Water Supply, and Water Supply Dept. Present integrated structure and reform proposal within 30 days.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-091"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-076",
+      "number": 76,
+      "section": "H",
+      "category": "environment",
+      "title_en": "Fewa Lake Watershed Protection Within 3 Months",
+      "summary_en": "Remove encroachment from Fewa protected watershed area. Advance landslide management, lake conservation, and climate adaptation with stakeholder participation within 3 months.",
+      "deadline": "3 months",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-090"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-077",
+      "number": 77,
+      "section": "H",
+      "category": "infrastructure",
+      "title_en": "Urban Development Bill and Waste Management Bill Within 2 Months",
+      "summary_en": "Present Urban Development Bill and Waste Management Bill to Cabinet within 2 months for submission to Federal Parliament.",
+      "deadline": "2 months",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-092"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-078",
+      "number": 78,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Recover Dormant Bank Accounts (10+ Years) Within 90 Days",
+      "summary_en": "Collect details of bank/financial institution accounts inactive 10+ years. Bring unclaimed funds to state treasury after legal process. Identify other inactive state resources. Within 90 days.",
+      "deadline": "90 days",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-079",
+      "number": 79,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Mandatory E-Billing for Large Businesses Within 1 Month",
+      "summary_en": "Large businesses must implement e-billing system within 1 month for transparent, digital, effective revenue system.",
+      "deadline": "1 month",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-022"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-080",
+      "number": 80,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Tax Automation and Revenue Leakage Control Plan Within 45 Days",
+      "summary_en": "Ministry of Finance prepares and implements work plan within 45 days to automate tax administration, control revenue leakage, and simplify taxpayer services.",
+      "deadline": "45 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-022",
+        "bp-025"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-081",
+      "number": 81,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Consolidate 139+ Government Funds Within 60 Days",
+      "summary_en": "Prepare framework within 60 days for integrating 139+ scattered/duplicate funds of similar nature and investing in high-return projects.",
+      "deadline": "60 days",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-026"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-082",
+      "number": 82,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Mining Sector Reform — Cancel Inactive Licenses, Modernize Labs",
+      "summary_en": "Cancel inactive mining licenses. Strictly regulate active firms. Amend Mines Act 2042 for investment-friendly, transparent rules. Begin installing modern lab equipment within 3 months. Build strategic minerals database.",
+      "deadline": "3 months",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-060"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-083",
+      "number": 83,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Customs Reform — Trade Facilitation, MRP Enforcement",
+      "summary_en": "Restructure customs for trade facilitation. Ensure effective commerce/consumer protection regulation. Mandate and precisely monitor Maximum Retail Price (MRP) in market.",
+      "deadline": null,
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-022"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-084",
+      "number": 84,
+      "section": "I",
+      "category": "economy",
+      "title_en": "Mobilize Dormant Court/Government Bail Deposits Within 60 Days",
+      "summary_en": "Prepare legal basis within 60 days to mobilize large bail/deposit amounts held inactive in courts and government bodies for development.",
+      "deadline": "60 days",
+      "significance": "medium",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-085",
+      "number": 85,
+      "section": "J",
+      "category": "health",
+      "title_en": "Health Sector Reform (Multi-Part: Free Beds, Digital Records, Burn Wards, Air Ambulance)",
+      "summary_en": "(a) Mandate 10% free beds in all hospitals; Free Health Portal within 30 days. (b) Digital patient record system within 3 months; clear referral protocol. (c) Hospital attendance/conduct/cleanliness audit within 1 week. (d) Digital pharmacy stock/price system within 3 months; Sulabh Pharmacies within 100 days. (e) Burn ward establishment process within 30 days. (f) Air ambulance standby in hilly regions immediately.",
+      "deadline": "1 week (audits), 30 days (portal/burns), 100 days (pharmacies)",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-070",
+        "bp-071",
+        "bp-076"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-086",
+      "number": 86,
+      "section": "J",
+      "category": "education",
+      "title_en": "Remove Party Student Orgs, Create Student Council",
+      "summary_en": "Remove party student organization structures from schools/universities within 60 days. Develop Student Council / Voice of Student mechanism within 90 days.",
+      "deadline": "60 days (removal), 90 days (council)",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-061"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-087",
+      "number": 87,
+      "section": "J",
+      "category": "education",
+      "title_en": "University Exam Results Per Ministry Calendar",
+      "summary_en": "University bachelor's and master's exam results must be published per calendar provided by Ministry of Education, Science and Technology.",
+      "deadline": null,
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-066"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-088",
+      "number": 88,
+      "section": "J",
+      "category": "education",
+      "title_en": "No Citizenship Required for Bachelor's Study",
+      "summary_en": "Citizenship shall not be required for students studying up to bachelor's level. Universities shall immediately make procedural arrangements.",
+      "deadline": "immediate",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-062"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-089",
+      "number": 89,
+      "section": "J",
+      "category": "education",
+      "title_en": "End Internal Exams for Grades 1-5 — Alternative Evaluation",
+      "summary_en": "Discontinue internal examinations for students up to grade 5 from next academic session. Prepare alternative evaluation system without psychological pressure.",
+      "deadline": "next academic session",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-062"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-090",
+      "number": 90,
+      "section": "K",
+      "category": "agriculture",
+      "title_en": "Agriculture Reform (Multi-Part: MSP, Cold Storage, Soil Health)",
+      "summary_en": "(a) Begin minimum support price process for major crops within 30 days. (b) Mandatory 25-day payment for crop purchases; national ag market info system; weekly markets; 'One Municipality One Cold Storage' with feasibility study in 10 days. (c) Soil Health Cards for commercial farmers within 3 months.",
+      "deadline": "10 days (cold study), 30 days (MSP), 3 months (soil cards)",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-040",
+        "bp-041",
+        "bp-043"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-091",
+      "number": 91,
+      "section": "K",
+      "category": "social_justice",
+      "title_en": "Landless/Squatter Digital Registry — Solve Within 1000 Days",
+      "summary_en": "Complete digital records of all landless squatters within 60 days. Solve problem within 1000 days. Household surveys, clear criteria (cut-off date, income, assets), GIS database of public/Guthi lands. Phased land provision or apartment model. Public dashboard for transparency.",
+      "deadline": "60 days (registry), 1000 days (solution)",
+      "significance": "critical",
+      "manifesto_links": [
+        "bp-082"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-092",
+      "number": 92,
+      "section": "K",
+      "category": "governance",
+      "title_en": "Protect Public Land — Digital Records, Remove Encroachment",
+      "summary_en": "Immediately begin digital records and monitoring for public land protection. Remove illegal encroachment. Strict prevention of new encroachment. Nepal Child Organization land investigation per Haribabu Commission within 15 days.",
+      "deadline": "immediate (anti-encroachment), 15 days (child org investigation)",
+      "significance": "high",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-093",
+      "number": 93,
+      "section": "L",
+      "category": "governance",
+      "title_en": "Amend Offense Property Regulations Within 2 Months",
+      "summary_en": "Amend Offense-wise Property (Seizure, Control, Confiscation) Regulations within 2 months to simplify and streamline process.",
+      "deadline": "2 months",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-003"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-094",
+      "number": 94,
+      "section": "L",
+      "category": "governance",
+      "title_en": "NPR 10 Million for CIB Technology Upgrade",
+      "summary_en": "Immediately provide at least NPR 10 million (1 crore) to make Nepal Police CIB technology-enabled.",
+      "deadline": "immediate",
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-097"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-095",
+      "number": 95,
+      "section": "L",
+      "category": "foreign_policy",
+      "title_en": "Inter-Ministry Task Force for Regional Crisis Impact (Middle East)",
+      "summary_en": "Form inter-ministerial task force under Foreign Ministry within 30 days to study impact of international/regional crises (esp. Middle East) on economy, foreign employment, supply chains, energy. Report with policy measures within 7 days.",
+      "deadline": "7 days (report), 30 days (task force)",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-096"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-096",
+      "number": 96,
+      "section": "L",
+      "category": "governance",
+      "title_en": "Auction/Manage Vehicles Stranded at Customs",
+      "summary_en": "Immediately collect details of vehicles stranded at customs and arrange utilization, management, or auction.",
+      "deadline": "immediate",
+      "significance": "low",
+      "manifesto_links": [],
+      "status": "announced"
+    },
+    {
+      "id": "ga-097",
+      "number": 97,
+      "section": "L",
+      "category": "infrastructure",
+      "title_en": "Blue Bus Service in All 7 Provinces — 25 Buses in 100 Days",
+      "summary_en": "Operate free Blue Bus service for women's safety in all 7 provinces. Phase 1: at least 25 buses operational within 100 days.",
+      "deadline": "100 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-055"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-098",
+      "number": 98,
+      "section": "L",
+      "category": "infrastructure",
+      "title_en": "CCTV/Dashcam in All Public Transport, SOS Button Within 30 Days",
+      "summary_en": "Install CCTV/Dashcam in all public vehicles and mandate SOS Button in ride-sharing apps for gender-based violence prevention. Emergency info reaches police immediately. Complete within 30 days.",
+      "deadline": "30 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-055"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-099",
+      "number": 99,
+      "section": "L",
+      "category": "economy",
+      "title_en": "Cooperative Small Savers Refund Process Within 100 Days",
+      "summary_en": "Begin process of refunding savings of small savers in cooperatives within 100 days.",
+      "deadline": "100 days",
+      "significance": "high",
+      "manifesto_links": [
+        "bp-030"
+      ],
+      "status": "announced"
+    },
+    {
+      "id": "ga-100",
+      "number": 100,
+      "section": "L",
+      "category": "governance",
+      "title_en": "Call for United National Commitment — All Stakeholders",
+      "summary_en": "All government levels, constitutional bodies, security agencies, political parties, private sector, civil society, and development partners unite for citizen-oriented cooperation. Make necessary policy, structural, and programmatic arrangements. Appeal for active, coordinated, accountable roles.",
+      "deadline": null,
+      "significance": "medium",
+      "manifesto_links": [
+        "bp-100"
+      ],
+      "status": "announced"
+    }
+  ]
+}

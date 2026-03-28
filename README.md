@@ -10,7 +10,7 @@
 Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a public accountability portal that:
 
 - 📊 **Tracks every cabinet minister** from the day they're appointed
-- ✅ **Scores performance** against Ra Swa Pa's bachha patra (election manifesto) and pratigya patra (commitment letter)
+- ✅ **Scores performance** against Ra Swa Pa's bachha patra (100 policy foundations) and karar patra (citizen's agreement)
 - 🤖 **Autonomous AI agents** monitor news 24/7, classify actions, and generate reports
 - 📰 **Scholarly analysis** of political decisions and their impact
 - 🗳️ **Public contributions** — citizens can submit evidence to support or challenge claims
@@ -34,10 +34,10 @@ Content is published in **natural mixed Nepali-English** — the way educated Ne
 
 Each minister receives a transparent 0–100 score across two dimensions:
 
-| Dimension              | Weight | What It Measures                                                                                |
-| ---------------------- | ------ | ----------------------------------------------------------------------------------------------- |
-| Manifesto Compliance   | 70%    | Actions matching bachha patra & pratigya patra commitments (GDP targets, remittance, industry, education, infrastructure, and every other stated commitment) |
-| Public Accountability  | 30%    | What the manifesto can't capture: media sentiment, ministerial transparency (press conferences, RTI responses), and parliamentary engagement |
+| Dimension             | Weight | What It Measures                                                                                                                                          |
+| --------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Manifesto Compliance  | 70%    | Actions matching bachha patra & karar patra commitments (GDP targets, remittance, industry, education, infrastructure, and every other stated commitment) |
+| Public Accountability | 30%    | What the manifesto can't capture: media sentiment, ministerial transparency (press conferences, RTI responses), and parliamentary engagement              |
 
 Full methodology: [/methodology](https://drishtinepal.com/methodology) on the portal.
 
@@ -124,8 +124,9 @@ We welcome contributions! See [docs/contributing.md](docs/contributing.md) for:
 
 - **Facebook**: [facebook.com/DrishtiNepalHQ](https://facebook.com/DrishtiNepalHQ)
 - **X (Twitter)**: [@DrishtiNepalHQ](https://x.com/DrishtiNepalHQ)
+- **Instagram**: [@drishtinepal_hq](https://www.instagram.com/drishtinepal_hq/)
 
-Both accounts are monetized (or will be once eligibility is met). See [Transparency & Monetization](#transparency--monetization) above.
+All accounts are monetized (or will be once eligibility is met). See [Transparency & Monetization](#transparency--monetization) above.
 
 ## License
 

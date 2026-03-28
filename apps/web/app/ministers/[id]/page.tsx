@@ -124,29 +124,19 @@ export default async function MinisterDetailPage({
           {latestScore ? (
             <div className="space-y-4 rounded-xl border border-neutral-200 bg-white p-6">
               <ScoreBar
-                label="Manifesto Compliance (30%)"
+                label="Manifesto Compliance (70%)"
                 score={latestScore.manifesto_compliance}
               />
               <ScoreBar
-                label="Policy Effectiveness (20%)"
-                score={latestScore.policy_effectiveness}
+                label="Public Accountability (30%)"
+                score={latestScore.public_accountability}
               />
-              <ScoreBar
-                label="Transparency (15%)"
-                score={latestScore.transparency}
-              />
-              <ScoreBar
-                label="Financial Prudence (15%)"
-                score={latestScore.financial_prudence}
-              />
-              <ScoreBar
-                label="Public Sentiment (10%)"
-                score={latestScore.public_sentiment}
-              />
-              <ScoreBar
-                label="Parliamentary Activity (10%)"
-                score={latestScore.parliamentary_activity}
-              />
+              <div className="border-t border-neutral-100 pt-4">
+                <ScoreBar
+                  label="Overall"
+                  score={latestScore.overall}
+                />
+              </div>
             </div>
           ) : (
             <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center text-neutral-400">

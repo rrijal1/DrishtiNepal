@@ -31,11 +31,11 @@ CREATE INDEX idx_ministers_status ON ministers(status);
 CREATE INDEX idx_ministers_party ON ministers(party);
 
 -- ===========================================
--- MANIFESTO ITEMS (Bachha Patra & Pratigya Patra)
+-- MANIFESTO ITEMS (Bachha Patra & Karar Patra)
 -- ===========================================
 CREATE TABLE manifesto_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    document_type TEXT NOT NULL CHECK (document_type IN ('bachha_patra', 'pratigya_patra')),
+    document_type TEXT NOT NULL CHECK (document_type IN ('bachha_patra', 'karar_patra')),
     category TEXT NOT NULL,          -- economy, health, education, infrastructure, governance, etc.
     item_text_en TEXT NOT NULL,
     item_text_np TEXT NOT NULL,

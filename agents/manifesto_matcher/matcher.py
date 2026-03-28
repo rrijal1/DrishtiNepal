@@ -1,6 +1,6 @@
 """
 Drishti Nepal - Manifesto Matcher Agent
-Links government actions to bachha patra / pratigya patra commitments.
+Links government actions to bachha patra / karar patra commitments.
 """
 
 import json
@@ -38,40 +38,58 @@ def get_unmatched_actions(limit: int = 30) -> list[dict]:
 
 
 def get_manifesto_items() -> list[dict]:
-    """Get all manifesto items for matching."""
+    """Get all manifesto items for matching, including structured commitment data."""
     result = (
         db.table("manifesto_items")
-        .select("id, item_text_en, category, document_type")
+        .select("id, source_id, item_text_en, title_en, key_commitments, category, document_type")
         .execute()
     )
     return result.data
 
 
 def match_action_to_manifesto(action: dict, manifesto_items: list[dict]) -> list[dict]:
-    """Use AI to find matching manifesto items for an action."""
-    manifesto_text = "\n".join(
-        [
-            f"[{i+1}] ({item['document_type']}/{item['category']}) {item['item_text_en']}"
-            for i, item in enumerate(manifesto_items)
-        ]
-    )
+    """Use AI to find matching manifesto items for an action.
 
-    prompt = f"""You are matching a government action to political manifesto commitments.
+    वाचा पालन — electoral accountability: does this government action
+    deliver on a specific vacha patra commitment? भनाइ (rhetoric) is
+    one thing — गराइ (action) is another. We match actions to concrete
+    commitments, not vague thematic similarity.
+    """
+    manifesto_lines = []
+    for i, item in enumerate(manifesto_items):
+        src = item.get("source_id") or "?"
+        title = item.get("title_en") or item["item_text_en"]
+        commitments = item.get("key_commitments") or []
+        commitments_str = "; ".join(commitments) if commitments else "(no specific commitments listed)"
+        manifesto_lines.append(
+            f"[{i+1}] {src} ({item['document_type']}/{item['category']}) {title}\n"
+            f"    Commitments: {commitments_str}"
+        )
+    manifesto_text = "\n".join(manifesto_lines)
+
+    prompt = f"""You are an objective fact-checker matching a government action to specific manifesto promises.
+
+CRITICAL: We measure DELIVERY against PROMISES — not thematic similarity.
+- A speech or statement repeating a promise is NOT delivery.
+- Only concrete actions (policy enacted, budget allocated, legislation passed, measurable outcome) count as "supports".
+- If the action contradicts or reverses a commitment, mark it "contradicts".
+- If it makes partial progress (e.g. committee formed, bill introduced but not passed), mark it "partially_fulfills".
+- Only match when a clear, specific link exists between the action and a commitment.
 
 ACTION:
 Title: {action['title_en']}
 Description: {action.get('description_en', 'N/A')}
 Category: {action['category']}
 
-MANIFESTO ITEMS (numbered):
+MANIFESTO COMMITMENTS (numbered, each with source ID and specific commitments):
 {manifesto_text}
 
-Which manifesto items does this action relate to? For each match, indicate:
-- The item number
-- Whether the action "supports", "contradicts", or "partially_fulfills" the commitment
-- Your confidence (0.0 to 1.0)
+Which manifesto items does this action CONCRETELY deliver on (or contradict)? For each match:
+- item_number (the bracketed number)
+- link_type: "supports" (concrete delivery), "contradicts" (reversal), or "partially_fulfills" (partial progress)
+- confidence (0.0 to 1.0)
 
-Return a JSON array of matches. If no match, return an empty array [].
+Return a JSON array. If no concrete match, return [].
 Example: [{{"item_number": 3, "link_type": "supports", "confidence": 0.85}}]
 
 Return ONLY valid JSON."""

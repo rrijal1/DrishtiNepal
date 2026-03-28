@@ -2,12 +2,20 @@
 
 ## Core Principles
 
-1. **Accuracy First**: Never trade speed for accuracy. Verify before publishing.
-2. **Source Everything**: Every factual claim must link to a verifiable source.
-3. **Political Neutrality**: Track all parties and ministers equally. No editorial bias.
-4. **Right of Reply**: Any minister or government office can submit corrections.
-5. **Transparency**: AI-generated content is clearly labeled. Methodology is public.
-6. **Public Interest**: Every piece of content must serve the public's right to know.
+1. **वाचा पालन (Electoral Accountability)**: The fundamental lens — did they honor their vacha? Scoring measures the gap between a specific manifesto commitment and verifiable government action. भनाइ (rhetoric) is one thing; गराइ (action) is another. We track both, objectively.
+2. **Accuracy First**: Never trade speed for accuracy. Verify before publishing.
+3. **Source Everything**: Every factual claim must link to a verifiable source.
+4. **Political Neutrality**: Track all parties and ministers equally. No editorial bias.
+5. **Right of Reply**: Any minister or government office can submit corrections.
+6. **Transparency**: AI-generated content is clearly labeled. Methodology is public.
+7. **Public Interest**: Every piece of content must serve the public's right to know.
+
+## Scoring Integrity
+
+- Scores are objective: they measure **actual delivery against stated promises**, not editorial opinion.
+- New data sources (government, news) may be added over time, but the core electoral accountability scoring model stays fixed unless a versioned methodology change is announced publicly.
+- A minister making a statement reaffirming a commitment is **not** the same as fulfilling it. Only verifiable actions, policy implementations, measurable outcomes, and legislation count as delivery.
+- No credit for intent — only results. A bill introduced is progress; a bill passed is delivery; a speech promising action is neither.
 
 ## Content Tiers
 
