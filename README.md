@@ -18,7 +18,7 @@ Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a pub
 
 ### Language
 
-Content is published in **natural mixed Nepali-English** — the way Nepalis actually discuss politics. Core political terms stay in Nepali (मन्त्री, सरकार, बजेट, जवाफदेहिता), while technical/English-origin words (infrastructure, GDP, policy) stay in English. The portal, social posts, and articles all follow this natural code-switching style, plus fully separate English and Nepali versions where needed.
+Content is published in **natural mixed Nepali-English** — the way Nepalis actually discuss politics. Website is avilable both in Nepali as well as English version.
 
 ### What We Will Never Do
 

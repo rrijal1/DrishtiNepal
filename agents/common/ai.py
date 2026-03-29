@@ -34,7 +34,12 @@ def get_nvidia_client() -> OpenAI:
 def get_anthropic_client() -> anthropic.Anthropic:
     global _anthropic_client
     if _anthropic_client is None:
-        _anthropic_client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+        key = os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            raise EnvironmentError(
+                "No AI provider configured: set NVIDIA_API_KEY (preferred) or ANTHROPIC_API_KEY"
+            )
+        _anthropic_client = anthropic.Anthropic(api_key=key)
     return _anthropic_client
 
 
