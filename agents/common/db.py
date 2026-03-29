@@ -14,7 +14,9 @@ def get_supabase_client() -> Client:
     url = os.environ.get("SUPABASE_URL", "")
     key = os.environ.get("SUPABASE_SERVICE_KEY", "")
     if not url or not key:
-        return None
+        raise EnvironmentError(
+            "Missing required environment variables: SUPABASE_URL and/or SUPABASE_SERVICE_KEY"
+        )
     return create_client(url, key)
 
 
