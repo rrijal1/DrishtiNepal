@@ -36,8 +36,8 @@ def log_agent_run(agent_name: str) -> str:
         .insert(
             {
                 "agent_name": agent_name,
-                "run_started_at": datetime.now(timezone.utc).isoformat(),
-                "status": "running",
+                "started_at": datetime.now(timezone.utc).isoformat(),
+                "run_status": "running",
             }
         )
         .execute()
@@ -54,8 +54,8 @@ def complete_agent_run(
 ):
     """Complete an agent log entry."""
     update = {
-        "run_ended_at": datetime.now(timezone.utc).isoformat(),
-        "status": status,
+        "completed_at": datetime.now(timezone.utc).isoformat(),
+        "run_status": status,
         "items_processed": items_processed,
         "items_created": items_created,
     }
