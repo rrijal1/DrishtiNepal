@@ -42,19 +42,30 @@ def calculate_public_accountability_pure(actions: list[dict]) -> float:
         return 50.0
 
     transparency_categories = {
-        "press_conference", "statement", "rti_response", "announcement"
+        "press_conference",
+        "statement",
+        "rti_response",
+        "announcement",
     }
     parliament_categories = {
-        "parliament", "bill", "committee", "qa_session", "legislation"
+        "parliament",
+        "bill",
+        "committee",
+        "qa_session",
+        "legislation",
     }
     sentiment_map = {"positive": 80, "neutral": 50, "negative": 20, "mixed": 40}
 
-    sentiment_score = sum(
-        sentiment_map.get(a["sentiment"], 50) for a in actions
-    ) / len(actions)
-    transparency_count = sum(1 for a in actions if a.get("category") in transparency_categories)
+    sentiment_score = sum(sentiment_map.get(a["sentiment"], 50) for a in actions) / len(
+        actions
+    )
+    transparency_count = sum(
+        1 for a in actions if a.get("category") in transparency_categories
+    )
     transparency_score = min(100, 50 + transparency_count * 10)
-    parliament_count = sum(1 for a in actions if a.get("category") in parliament_categories)
+    parliament_count = sum(
+        1 for a in actions if a.get("category") in parliament_categories
+    )
     parliament_score = min(100, 30 + parliament_count * 10)
 
     return round(
@@ -89,7 +100,9 @@ class TestManifestoCompliance:
         # Both clamp to 0, but a mix of broken with fulfilled should score lower
         # than the equivalent mix with not_started.
         score_with_broken = calculate_manifesto_compliance_pure(["broken", "fulfilled"])
-        score_not_started = calculate_manifesto_compliance_pure(["not_started", "fulfilled"])
+        score_not_started = calculate_manifesto_compliance_pure(
+            ["not_started", "fulfilled"]
+        )
         assert score_with_broken < score_not_started
 
     def test_score_is_clamped_to_zero(self):
@@ -99,7 +112,9 @@ class TestManifestoCompliance:
 
     def test_mixed_statuses(self):
         # fulfilled(1.0) + partially_fulfilled(0.6) + not_started(0.0) = 1.6 / 3 * 100 ≈ 53.3
-        score = calculate_manifesto_compliance_pure(["fulfilled", "partially_fulfilled", "not_started"])
+        score = calculate_manifesto_compliance_pure(
+            ["fulfilled", "partially_fulfilled", "not_started"]
+        )
         assert abs(score - 53.33) < 0.1
 
     def test_in_progress_partial_credit(self):
@@ -153,12 +168,16 @@ class TestOverallScore:
         assert abs(total_weight - 1.0) < 1e-9
 
     def test_equal_scores_produce_same_overall(self):
-        score = compute_overall_score({"manifesto_compliance": 60, "public_accountability": 60})
+        score = compute_overall_score(
+            {"manifesto_compliance": 60, "public_accountability": 60}
+        )
         assert score == 60.0
 
     def test_manifesto_dominates(self):
         # manifesto=100, accountability=0 → 70
-        score = compute_overall_score({"manifesto_compliance": 100, "public_accountability": 0})
+        score = compute_overall_score(
+            {"manifesto_compliance": 100, "public_accountability": 0}
+        )
         assert score == 70.0
 
     def test_missing_dimension_defaults_to_50(self):
@@ -167,5 +186,7 @@ class TestOverallScore:
 
     def test_known_case(self):
         # manifesto=80 * 0.7 + accountability=60 * 0.3 = 56 + 18 = 74
-        score = compute_overall_score({"manifesto_compliance": 80, "public_accountability": 60})
+        score = compute_overall_score(
+            {"manifesto_compliance": 80, "public_accountability": 60}
+        )
         assert score == 74.0

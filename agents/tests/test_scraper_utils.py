@@ -27,9 +27,18 @@ def is_relevant(title: str, body: str, minister_names: list[dict]) -> bool:
         if minister["name_en"].lower() in text or minister["name_np"] in text:
             return True
     keywords = [
-        "cabinet", "minister", "ministry", "मन्त्री", "मन्त्रिपरिषद्",
-        "मन्त्रालय", "cabinet decision", "राजपत्र", "सरकार", "रास्वपा",
-        "rastriya swatantra", "rsp",
+        "cabinet",
+        "minister",
+        "ministry",
+        "मन्त्री",
+        "मन्त्रिपरिषद्",
+        "मन्त्रालय",
+        "cabinet decision",
+        "राजपत्र",
+        "सरकार",
+        "रास्वपा",
+        "rastriya swatantra",
+        "rsp",
     ]
     return any(kw in text for kw in keywords)
 
@@ -93,7 +102,9 @@ class TestIsRelevant:
         assert not is_relevant("", "", self.MINISTERS)
 
     def test_body_also_checked(self):
-        assert is_relevant("Weather update", "Minister announces new policy", self.MINISTERS)
+        assert is_relevant(
+            "Weather update", "Minister announces new policy", self.MINISTERS
+        )
 
     def test_second_minister_name_matches(self):
         assert is_relevant("Bimala Rai Poudyal visits province", "", self.MINISTERS)
@@ -113,12 +124,14 @@ class TestNewsSourceConfig:
 
     def test_news_sources_not_empty(self):
         from agents.common.config import NEWS_SOURCES
+
         assert len(NEWS_SOURCES) > 0
 
     def test_language_values_valid(self):
         from agents.common.config import NEWS_SOURCES
+
         valid_languages = {"en", "np"}
         for source in NEWS_SOURCES:
-            assert source["language"] in valid_languages, (
-                f"Source {source['name']} has invalid language: {source['language']}"
-            )
+            assert (
+                source["language"] in valid_languages
+            ), f"Source {source['name']} has invalid language: {source['language']}"
