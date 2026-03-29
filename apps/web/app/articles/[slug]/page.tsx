@@ -1,13 +1,9 @@
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
-import { getPostData, getAllPostSlugs } from "@/lib/articles";
+import { getPostData, getAllPostSlugs, postsDirectory } from "@/lib/articles";
 import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
-
-export const revalidate = 300; // Revalidate every 5 minutes
-
-const postsDirectory = path.join(process.cwd(), 'content/articles');
 
 // Generate static pages at build time
 export async function generateStaticParams() {
@@ -19,8 +15,8 @@ export async function generateStaticParams() {
   return [...dbSlugs, ...filePosts];
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const filePath = path.join(postsDirectory, `${slug}.md`);
   const isHumanPost = fs.existsSync(filePath);
 
@@ -47,8 +43,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return { title, description, openGraph: { title, description } };
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const filePath = path.join(postsDirectory, `${slug}.md`);
   const isHumanPost = fs.existsSync(filePath);
 

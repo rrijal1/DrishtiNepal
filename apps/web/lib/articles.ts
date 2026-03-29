@@ -3,7 +3,21 @@ import path from 'path';
 import matter from 'gray-matter';
 import { compileMDX } from 'next-mdx-remote/rsc';
 
-const postsDirectory = path.join(process.cwd(), 'content/articles');
+// Resolve directory relative to the process cwd, which is the package dir in dev/prod
+// but might be the project root in some build environments.
+const findPostsDirectory = () => {
+  const rootDir = process.cwd();
+  const localDir = path.join(rootDir, 'content/articles');
+  if (fs.existsSync(localDir)) return localDir;
+  
+  // Try going up to project root if in apps/web
+  const monorepoDir = path.join(rootDir, '../../content/articles');
+  if (fs.existsSync(monorepoDir)) return monorepoDir;
+  
+  return localDir; // fallback
+};
+
+export const postsDirectory = findPostsDirectory();
 
 export interface PostData {
   slug: string;
@@ -58,7 +72,7 @@ export function getAllPostSlugs() {
   });
 }
 
-export async function getPostData(slug: string) {
+export async function getPostData(slug: string): Promise<PostData & { content: any }> {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
 
@@ -75,6 +89,10 @@ export async function getPostData(slug: string) {
   return {
     slug,
     content,
+    title: matterResult.data.title,
+    date: matterResult.data.date,
+    author: matterResult.data.author,
+    excerpt: matterResult.data.excerpt,
     ...matterResult.data,
-  };
+  } as PostData & { content: any };
 }
