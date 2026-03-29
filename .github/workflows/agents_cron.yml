@@ -4,9 +4,7 @@ on:
     schedule:
         # 3x/day: morning, midday, evening Nepal Time
         # 07:00 NPT = 01:15 UTC, 13:00 NPT = 07:15 UTC, 20:00 NPT = 14:15 UTC
-        - cron: "15 1 * * *"
-        - cron: "15 7 * * *"
-        - cron: "15 14 * * *"
+        - cron: "15 1 1 * *"
     workflow_dispatch: # Allow manual trigger
 
 jobs:
