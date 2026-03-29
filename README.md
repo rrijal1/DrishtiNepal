@@ -28,8 +28,6 @@ Content is published in **natural mixed Nepali-English** — the way Nepalis act
 - Suppress or alter content based on financial pressure
 - Hide our funding sources
 
----
-
 ## Scoring Methodology
 
 Each minister receives a transparent 0–100 score across two dimensions:
