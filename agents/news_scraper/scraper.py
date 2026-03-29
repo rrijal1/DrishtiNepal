@@ -1,14 +1,18 @@
 """
 Drishti Nepal - News Scraper Agent
-Runs every 30 minutes. Fetches news from whitelisted Nepali & English sources,
-filters for cabinet/minister-related content, stores for processing.
+Runs on a schedule. Fetches news from whitelisted RSS sources concurrently,
+filters for relevance, checks for duplicates in batches, and stores new
+items for later processing by other agents.
 """
 
-import json
+import asyncio
+import itertools
+from typing import List, Dict
+
 import feedparser
+import httpx
 
 from agents.common.db import db
-from agents.common.ai import cheap_completion
 from agents.common.config import NEWS_SOURCES
 from agents.common.utils import (
     setup_logger,
@@ -21,16 +25,26 @@ from agents.common.utils import (
 logger = setup_logger("news_scraper")
 
 HEADERS = {"User-Agent": "DrishtiNepal/1.0 (https://drishtinepal.com)"}
+MAX_ARTICLES_PER_FEED = 25
+HTTP_TIMEOUT = 15  # seconds
 
 
-def fetch_rss_feed(source: dict) -> list[dict]:
-    """Parse an RSS feed and return structured entries."""
+async def fetch_and_parse_rss_feed(
+    client: httpx.AsyncClient, source: Dict
+) -> List[Dict]:
+    """Asynchronously fetch and parse an RSS feed."""
     if not source.get("rss_url"):
         return []
+    url = source["rss_url"]
     try:
-        feed = feedparser.parse(source["rss_url"])
+        response = await client.get(url, headers=HEADERS, timeout=HTTP_TIMEOUT)
+        response.raise_for_status()
+
+        # feedparser is synchronous, so run it in a thread to not block asyncio loop
+        feed = await asyncio.to_thread(feedparser.parse, response.text)
+
         entries = []
-        for entry in feed.entries[:20]:  # Limit per source
+        for entry in feed.entries[:MAX_ARTICLES_PER_FEED]:
             entries.append(
                 {
                     "source_name": source["name"],
@@ -40,15 +54,18 @@ def fetch_rss_feed(source: dict) -> list[dict]:
                     "published_at": entry.get("published", None),
                 }
             )
+        logger.info(f"Fetched {len(entries)} entries from {source['name']}")
         return entries
+    except httpx.HTTPStatusError as e:
+        logger.error(f"HTTP error fetching {url} for {source['name']}: {e}")
     except Exception as e:
-        logger.error(f"Failed to fetch RSS from {source['name']}: {e}")
-        return []
+        logger.error(f"Failed to fetch/parse RSS from {source['name']}: {e}")
+    return []
 
 
-def is_relevant(title: str, body: str, minister_names: list[dict]) -> bool:
+def is_relevant(title: str, body: str, minister_names: List[Dict]) -> bool:
     """Check if a news item is relevant to cabinet/ministers using keyword matching."""
-    text = (title + " " + body).lower()
+    text = (title + " " + (body or "")).lower()
 
     # Check minister names
     for minister in minister_names:
@@ -57,125 +74,83 @@ def is_relevant(title: str, body: str, minister_names: list[dict]) -> bool:
 
     # Check generic cabinet/government keywords
     keywords = [
-        "cabinet",
-        "minister",
-        "ministry",
-        "मन्त्री",
-        "मन्त्रिपरिषद्",
-        "मन्त्रालय",
-        "cabinet decision",
-        "राजपत्र",
-        "सरकार",
-        "रास्वपा",
-        "rastriya swatantra",
-        "rsp",
+        "cabinet", "minister", "ministry", "मन्त्री", "मन्त्रिपरिषद्",
+        "मन्त्रालय", "cabinet decision", "राजपत्र", "सरकार", "रास्वपा",
+        "rastriya swatantra", "rsp", "prime minister", "प्रधानमन्त्री",
     ]
     return any(kw in text for kw in keywords)
 
 
-def is_duplicate(t_hash: str) -> bool:
-    """Check if this news title was already scraped."""
-    result = (
-        db.table("raw_news").select("id").eq("title_hash", t_hash).limit(1).execute()
-    )
-    return len(result.data) > 0
+def store_news_items(items: List[Dict]):
+    """Store scraped news items in the database in a single batch."""
+    if not items:
+        return
+    
+    result = db.table("raw_news").insert(items).execute()
+    logger.info(f"Successfully stored {len(result.data)} new items in database.")
 
 
-def extract_with_ai(title: str, body: str) -> dict | None:
-    """Use AI to extract structured data from a news article."""
-    prompt = f"""Extract structured information from this Nepali news article.
-
-Title: {title}
-
-Body (excerpt): {body[:1500]}
-
-Return a JSON object with:
-- "ministers_mentioned": list of minister names mentioned (empty list if none)
-- "category": one of "decision", "statement", "policy", "legislation", "scandal", "achievement", "appointment", "other"
-- "sentiment": one of "positive", "negative", "neutral", "mixed"
-- "summary_en": 2-3 sentence English summary
-- "summary_np": 2-3 sentence Nepali summary
-- "is_cabinet_related": boolean - true if directly related to cabinet minister activities
-
-Return ONLY valid JSON, no other text."""
-
-    try:
-        response = cheap_completion(prompt, max_tokens=512)
-        # Extract JSON from response
-        response = response.strip()
-        if response.startswith("```"):
-            response = response.split("```")[1]
-            if response.startswith("json"):
-                response = response[4:]
-        return json.loads(response)
-    except (json.JSONDecodeError, Exception) as e:
-        logger.error(f"AI extraction failed: {e}")
-        return None
-
-
-def store_news_item(item: dict, ai_result: dict | None):
-    """Store a scraped news item in the database."""
-    db.table("raw_news").insert(
-        {
-            "source_name": item["source_name"],
-            "source_url": item["source_url"],
-            "title": item["title"],
-            "body": item.get("body", ""),
-            "published_at": item.get("published_at"),
-            "title_hash": title_hash(item["title"]),
-            "processed": False,
-            "processing_result": ai_result,
-        }
-    ).execute()
-
-
-def run():
+async def run():
     """Main entry point for the news scraper agent."""
     run_id = log_agent_run("news_scraper")
-    items_processed = 0
-    items_created = 0
+    total_articles_fetched = 0
+    total_new_items_stored = 0
 
     try:
         minister_names = get_minister_names()
         logger.info(f"Tracking {len(minister_names)} active ministers")
 
-        for source in NEWS_SOURCES:
-            logger.info(f"Fetching from {source['name']}...")
+        rss_sources = [s for s in NEWS_SOURCES if s.get("type") == "rss"]
+        
+        async with httpx.AsyncClient() as client:
+            fetch_tasks = [fetch_and_parse_rss_feed(client, source) for source in rss_sources]
+            all_entries_nested = await asyncio.gather(*fetch_tasks)
+        
+        all_entries = list(itertools.chain.from_iterable(all_entries_nested))
+        total_articles_fetched = len(all_entries)
+        logger.info(f"Fetched a total of {total_articles_fetched} articles from {len(rss_sources)} sources.")
 
-            if source["type"] == "rss":
-                entries = fetch_rss_feed(source)
-            else:
-                logger.info(f"Skipping {source['name']} (scrape not yet implemented)")
+        if not all_entries:
+            complete_agent_run(run_id, "success", 0, 0)
+            logger.info("No articles found in this run.")
+            return
+
+        # Batch duplicate check
+        for entry in all_entries:
+            entry['title_hash'] = title_hash(entry['title'])
+        
+        hashes_to_check = [entry['title_hash'] for entry in all_entries]
+        result = db.table("raw_news").select("title_hash").in_("title_hash", hashes_to_check).execute()
+        existing_hashes = {item['title_hash'] for item in result.data}
+        logger.info(f"Found {len(existing_hashes)} existing articles in database.")
+
+        # Filter out duplicates and irrelevant articles
+        new_items_to_store = []
+        for entry in all_entries:
+            if entry['title_hash'] in existing_hashes:
                 continue
+            if not is_relevant(entry["title"], entry.get("body", ""), minister_names):
+                continue
+            
+            # Add fields for database insertion
+            entry['processed'] = False
+            entry['processing_result'] = None # This will be filled by the generator agent
+            new_items_to_store.append(entry)
 
-            for entry in entries:
-                items_processed += 1
-                t_hash = title_hash(entry["title"])
+        # Store all new items at once
+        store_news_items(new_items_to_store)
+        total_new_items_stored = len(new_items_to_store)
 
-                if is_duplicate(t_hash):
-                    continue
-
-                if not is_relevant(
-                    entry["title"], entry.get("body", ""), minister_names
-                ):
-                    continue
-
-                # AI extraction for relevant articles
-                ai_result = extract_with_ai(entry["title"], entry.get("body", ""))
-                store_news_item(entry, ai_result)
-                items_created += 1
-                logger.info(f"  Stored: {entry['title'][:80]}...")
-
-        complete_agent_run(run_id, "success", items_processed, items_created)
+        complete_agent_run(run_id, "success", total_articles_fetched, total_new_items_stored)
         logger.info(
-            f"Completed: {items_processed} processed, {items_created} new items stored"
+            f"Completed: {total_articles_fetched} processed, {total_new_items_stored} new items stored"
         )
 
     except Exception as e:
-        logger.error(f"Agent failed: {e}")
-        complete_agent_run(run_id, "error", items_processed, items_created, str(e))
+        logger.error(f"Agent failed: {e}", exc_info=True)
+        complete_agent_run(run_id, "error", total_articles_fetched, total_new_items_stored, str(e))
         raise
 
 
 if __name__ == "__main__":
-    run()
+    asyncio.run(run())

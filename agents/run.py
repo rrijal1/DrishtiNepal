@@ -14,6 +14,7 @@ logger = setup_logger("runner")
 AGENTS = {
     "scraper": ("agents.news_scraper.scraper", "News Scraper"),
     "generator": ("agents.content_generator.generator", "Content Generator"),
+    "enricher": ("agents.image_enricher.enricher", "Image Enricher"),
     "publisher": ("agents.social_publisher.publisher", "Social Publisher"),
     "matcher": ("agents.manifesto_matcher.matcher", "Manifesto Matcher"),
     "scorer": ("agents.scoring_agent.scorer", "Scoring Agent"),

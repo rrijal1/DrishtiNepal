@@ -8,3 +8,4 @@ playwright
 schedule
 python-dotenv
 Pillow
+httpx

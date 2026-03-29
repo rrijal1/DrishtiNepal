@@ -1,0 +1,7 @@
+{
+  "tools": {
+    "google_search": {}
+  },
+  "ui.inlineThinkingMode": "full",
+  "temperature": 1.0
+}
