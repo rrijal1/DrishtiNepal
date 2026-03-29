@@ -51,17 +51,22 @@ def run_initial_analysis(limit: int = 50) -> int:
     Stage 1: Fetch newly scraped articles and enrich them with an initial AI analysis.
     """
     logger.info("--- Stage 1: Running Initial AI Analysis ---")
+    
+    # Filter to only process items scraped on or after the specified date
+    start_date = "2026-03-27T00:00:00+00:00"
+
     newly_scraped_items = (
         db.table("raw_news")
         .select("id, title, body")
         .is_("processing_result", "null")
         .eq("processed", False)
+        .gte("scraped_at", start_date) # Added date filter
         .limit(limit)
         .execute()
     ).data
 
     if not newly_scraped_items:
-        logger.info("No new items to analyze.")
+        logger.info("No new items to analyze since the specified start date.")
         return 0
 
     logger.info(f"Found {len(newly_scraped_items)} new items to analyze.")
@@ -82,12 +87,17 @@ def run_initial_analysis(limit: int = 50) -> int:
 
 def fetch_analyzed_news(limit: int = 20) -> List[Dict]:
     """Get analyzed news items that haven't been turned into posts yet."""
+    
+    # Filter to only process items scraped on or after the specified date
+    start_date = "2026-03-27T00:00:00+00:00"
+    
     result = (
         db.table("raw_news")
         .select("*")
         .eq("processed", False)
         .is_("duplicate_of", "null")
         .not_.is_("processing_result", "null")
+        .gte("scraped_at", start_date) # Added date filter
         .order("scraped_at", desc=False)
         .limit(limit)
         .execute()
