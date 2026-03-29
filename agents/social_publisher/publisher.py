@@ -5,7 +5,6 @@ Publishes new portal posts to Facebook Page (@DrishtiNepalHQ) and X (@DrishtiNep
 
 import os
 import requests
-from datetime import datetime, timezone
 
 from agents.common.db import db
 from agents.common.ai import cheap_completion

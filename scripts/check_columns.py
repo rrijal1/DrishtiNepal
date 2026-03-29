@@ -1,7 +1,9 @@
 """Verify database schema columns match frontend expectations."""
+
 import psycopg2
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 conn = psycopg2.connect(os.environ["DATABASE_URL"])

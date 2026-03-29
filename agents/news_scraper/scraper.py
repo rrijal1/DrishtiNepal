@@ -6,9 +6,6 @@ filters for cabinet/minister-related content, stores for processing.
 
 import json
 import feedparser
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime, timezone
 
 from agents.common.db import db
 from agents.common.ai import cheap_completion

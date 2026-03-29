@@ -3,11 +3,9 @@ Drishti Nepal - Scoring Agent
 Daily recalculation of minister performance scores.
 """
 
-import json
 from datetime import datetime, timezone, timedelta
 
 from agents.common.db import db
-from agents.common.ai import cheap_completion
 from agents.common.config import SCORING_WEIGHTS
 from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
 

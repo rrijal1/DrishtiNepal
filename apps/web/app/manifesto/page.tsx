@@ -1,3 +1,4 @@
+import { ManifestoItemRow } from "@/components/ManifestoItemRow";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 300;
@@ -116,45 +117,7 @@ export default async function ManifestoPage() {
               </h2>
               <div className="space-y-3">
                 {categoryItems.map((item: any) => (
-                  <div
-                    key={item.id}
-                    className="rounded-lg border border-neutral-200 bg-white p-5"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-neutral-800">
-                          {item.title_en}
-                        </h3>
-                        {item.title_np && (
-                          <p className="text-sm text-neutral-400 font-nepali">
-                            {item.title_np}
-                          </p>
-                        )}
-                        {item.description_en && (
-                          <p className="mt-2 text-sm text-neutral-600">
-                            {item.description_en}
-                          </p>
-                        )}
-                        {/* Assigned ministers */}
-                        {item.minister_manifesto_assignments?.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {item.minister_manifesto_assignments.map(
-                              (a: any) => (
-                                <a
-                                  key={a.minister_id}
-                                  href={`/ministers/${a.minister_id}`}
-                                  className="rounded-full bg-[#1e3a5f]/5 px-2.5 py-0.5 text-xs font-medium text-[#1e3a5f] hover:bg-[#1e3a5f]/10"
-                                >
-                                  {a.ministers?.name_en}
-                                </a>
-                              ),
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <StatusChip status={item.status} />
-                    </div>
-                  </div>
+                  <ManifestoItemRow key={item.id} item={item} />
                 ))}
               </div>
             </div>
@@ -188,30 +151,6 @@ function SummaryCard({
       </p>
       <p className="mt-1 text-sm text-neutral-500">{label}</p>
     </div>
-  );
-}
-
-function StatusChip({ status }: { status: string }) {
-  const map: Record<string, { bg: string; label: string }> = {
-    completed: { bg: "bg-emerald-100 text-emerald-700", label: "Completed" },
-    in_progress: { bg: "bg-blue-100 text-blue-700", label: "In Progress" },
-    partially_fulfilled: {
-      bg: "bg-amber-100 text-amber-700",
-      label: "Partial",
-    },
-    not_started: {
-      bg: "bg-neutral-100 text-neutral-500",
-      label: "Not Started",
-    },
-    contradicted: { bg: "bg-red-100 text-red-700", label: "Contradicted" },
-  };
-  const s = map[status] ?? map.not_started;
-  return (
-    <span
-      className={`flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${s.bg}`}
-    >
-      {s.label}
-    </span>
   );
 }
 

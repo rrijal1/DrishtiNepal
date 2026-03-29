@@ -33,7 +33,7 @@ def get_unmatched_actions(limit: int = 30) -> list[dict]:
         .in_("action_id", action_ids)
         .execute()
     )
-    linked_ids = {l["action_id"] for l in existing_links.data}
+    linked_ids = {link["action_id"] for link in existing_links.data}
     return [a for a in result.data if a["id"] not in linked_ids]
 
 
@@ -41,7 +41,9 @@ def get_manifesto_items() -> list[dict]:
     """Get all manifesto items for matching, including structured commitment data."""
     result = (
         db.table("manifesto_items")
-        .select("id, source_id, item_text_en, title_en, key_commitments, category, document_type")
+        .select(
+            "id, source_id, item_text_en, title_en, key_commitments, category, document_type"
+        )
         .execute()
     )
     return result.data
@@ -60,7 +62,11 @@ def match_action_to_manifesto(action: dict, manifesto_items: list[dict]) -> list
         src = item.get("source_id") or "?"
         title = item.get("title_en") or item["item_text_en"]
         commitments = item.get("key_commitments") or []
-        commitments_str = "; ".join(commitments) if commitments else "(no specific commitments listed)"
+        commitments_str = (
+            "; ".join(commitments)
+            if commitments
+            else "(no specific commitments listed)"
+        )
         manifesto_lines.append(
             f"[{i+1}] {src} ({item['document_type']}/{item['category']}) {title}\n"
             f"    Commitments: {commitments_str}"
