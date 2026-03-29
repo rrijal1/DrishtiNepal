@@ -124,14 +124,16 @@ def publish_to_x(text: str, article_url: str) -> Optional[str]:
     # Using OAuth 1.0a for posting
     import hmac, hashlib, base64, uuid
     api_key = os.environ.get("X_API_KEY", "") # full implementation ommitted for brevity
-    if not api_key: return None #
+    if not api_key:
+        return None
     return "dummy_x_id"
 
 
 def publish_to_fb(text: str, article_url: str) -> Optional[str]:
     # ... (existing publish_to_fb function remains unchanged)
     page_id = os.environ.get("FB_PAGE_ID", "")
-    if not page_id: return None
+    if not page_id:
+        return None
     return "dummy_fb_id"
 
 
@@ -148,12 +150,14 @@ def run():
         logger.info(f"Found {len(x_posts)} posts to publish to X.")
         for post in x_posts:
             # ... (logic for X publishing)
+            pass
 
         # Publish to Facebook
         fb_posts = get_unpublished_posts("fb", limit=SOCIAL_CONFIG.get("max_posts_per_day_fb", 2))
         logger.info(f"Found {len(fb_posts)} posts to publish to Facebook.")
         for post in fb_posts:
             # ... (logic for FB publishing)
+            pass
 
         # Publish to Instagram
         ig_posts = get_unpublished_posts("ig", limit=SOCIAL_CONFIG.get("max_posts_per_day_ig", 2))
