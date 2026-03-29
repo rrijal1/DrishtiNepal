@@ -13,7 +13,7 @@ export default async function MinistersPage() {
   const { data: ministers } = await supabase
     .from("ministers")
     .select("*")
-    .eq("is_active", true)
+    .eq("status", "active")
     .order("overall_score", { ascending: false });
 
   return (

@@ -132,10 +132,7 @@ export default async function MinisterDetailPage({
                 score={latestScore.public_accountability}
               />
               <div className="border-t border-neutral-100 pt-4">
-                <ScoreBar
-                  label="Overall"
-                  score={latestScore.overall}
-                />
+                <ScoreBar label="Overall" score={latestScore.overall} />
               </div>
             </div>
           ) : (

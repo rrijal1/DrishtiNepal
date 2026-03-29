@@ -15,7 +15,7 @@ export default async function ScoresPage() {
     .select(
       "id, name_en, name_np, portfolio_en, photo_url, overall_score, party",
     )
-    .eq("is_active", true)
+    .eq("status", "active")
     .order("overall_score", { ascending: false });
 
   // Get latest scores for each minister

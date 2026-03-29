@@ -102,14 +102,15 @@ def store_post(content: dict, source_news_ids: list[str]):
     status = "published" if auto_publish else "review"
 
     post_data = {
-        "type": content.get("type", "news_update"),
+        "category": content.get("type", "news_update"),
         "slug": create_slug(content["title_en"]),
         "title_en": content["title_en"],
         "title_np": content.get("title_np", ""),
-        "body_en": content["body_en"],
-        "body_np": content.get("body_np", ""),
+        "content_en": content["body_en"],
+        "content_np": content.get("body_np", ""),
         "excerpt_en": content.get("excerpt_en", ""),
         "excerpt_np": content.get("excerpt_np", ""),
+        "ai_generated": True,
         "tags": content.get("tags", []),
         "author_type": "agent",
         "author_name": "Drishti Nepal AI",
