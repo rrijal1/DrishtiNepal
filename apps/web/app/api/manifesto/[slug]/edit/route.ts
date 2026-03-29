@@ -1,12 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 
-// Use service key for write operations from API routes
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-  process.env.SUPABASE_SERVICE_KEY ?? "",
-);
-
 const ALLOWED_FIELDS = new Set([
   "item_text_en",
   "item_text_np",
@@ -24,6 +18,12 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
+
+  // Initialize inside handler so env vars are available at request time (not build time)
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    process.env.SUPABASE_SERVICE_KEY ?? "",
+  );
 
   let body: Record<string, unknown>;
   try {
