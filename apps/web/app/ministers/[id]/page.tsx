@@ -1,6 +1,7 @@
 import { ScoreBadge, ScoreBar } from "@/components/ScoreBadge";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
+import { getLocale } from "@/lib/i18n";
 
 export const revalidate = 300;
 
@@ -10,15 +11,20 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const locale = await getLocale();
   const { data: m } = await supabase
     .from("ministers")
-    .select("name_en, portfolio_en")
+    .select("name_en, name_np, portfolio_en, portfolio_np")
     .eq("id", id)
     .single();
   if (!m) return { title: "Minister Not Found — Drishti Nepal" };
+  
+  const name = locale === "en" ? m.name_en : (m.name_np || m.name_en);
+  const portfolio = locale === "en" ? m.portfolio_en : (m.portfolio_np || m.portfolio_en);
+  
   return {
-    title: `${m.name_en} — ${m.portfolio_en} | Drishti Nepal`,
-    description: `Accountability profile and score for ${m.name_en}, ${m.portfolio_en}`,
+    title: `${name} — ${portfolio} | Drishti Nepal`,
+    description: `Accountability profile and score for ${name}, ${portfolio}`,
   };
 }
 
@@ -28,6 +34,7 @@ export default async function MinisterDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const locale = await getLocale();
 
   const { data: minister } = await supabase
     .from("ministers")
@@ -57,6 +64,22 @@ export default async function MinisterDetailPage({
 
   const latestScore = scores?.[0];
   const m = minister;
+  
+  const t = {
+    back: locale === "en" ? "← Back to Ministers" : "← मन्त्रीहरूमा फर्कनुहोस्",
+    scoreTitle: locale === "en" ? "Score Breakdown" : "स्कोरको विस्तृत विवरण",
+    manifestoLabel: locale === "en" ? "Manifesto Compliance (70%)" : "वाचा पत्र पालना (७०%)",
+    accountabilityLabel: locale === "en" ? "Public Accountability (30%)" : "सार्वजनिक जवाफदेहिता (३०%)",
+    overallLabel: locale === "en" ? "Overall" : "समग्र स्कोर",
+    noScore: locale === "en" ? "Score not yet calculated." : "स्कोर अझै गणना गरिएको छैन।",
+    recentActions: locale === "en" ? "Recent Actions" : "हालैका कार्यहरू",
+    noActions: locale === "en" ? "No actions tracked yet." : "कुनै कार्यहरू ट्र्याक गरिएको छैन।",
+    manifestoTitle: locale === "en" ? "Manifesto Commitments" : "वाचा पत्रका प्रतिबद्धताहरू",
+    noManifesto: locale === "en" ? "No manifesto items assigned yet." : "कुनै वाचा पत्रका बुँदाहरू तोकिएको छैन।",
+  };
+
+  const name = locale === "en" ? m.name_en : (m.name_np || m.name_en);
+  const portfolio = locale === "en" ? m.portfolio_en : (m.portfolio_np || m.portfolio_en);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -65,7 +88,7 @@ export default async function MinisterDetailPage({
         href="/ministers"
         className="mb-6 inline-flex items-center gap-1 text-sm text-neutral-500 transition hover:text-neutral-800"
       >
-        ← Back to Ministers
+        {t.back}
       </a>
 
       {/* Header */}
@@ -88,17 +111,14 @@ export default async function MinisterDetailPage({
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-bold text-neutral-800">
-                {m.name_en}
+                {name}
               </h1>
-              <p className="text-lg text-neutral-400 font-nepali">
-                {m.name_np}
-              </p>
-              <p className="mt-1 text-neutral-500">{m.portfolio_en}</p>
-              {m.portfolio_np && (
-                <p className="text-sm text-neutral-400 font-nepali">
-                  {m.portfolio_np}
+              {locale === "en" && m.name_np && (
+                <p className="text-lg text-neutral-400 font-nepali">
+                  {m.name_np}
                 </p>
               )}
+              <p className={clsx("mt-1 text-neutral-500", locale === "np" && "font-nepali")}>{portfolio}</p>
             </div>
             <ScoreBadge score={m.overall_score} size="lg" />
           </div>
@@ -119,31 +139,31 @@ export default async function MinisterDetailPage({
       <div className="mt-10 grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <h2 className="mb-4 text-xl font-bold text-neutral-800">
-            Score Breakdown
+            {t.scoreTitle}
           </h2>
           {latestScore ? (
             <div className="space-y-4 rounded-xl border border-neutral-200 bg-white p-6">
               <ScoreBar
-                label="Manifesto Compliance (70%)"
+                label={t.manifestoLabel}
                 score={latestScore.manifesto_compliance}
               />
               <ScoreBar
-                label="Public Accountability (30%)"
+                label={t.accountabilityLabel}
                 score={latestScore.public_accountability}
               />
               <div className="border-t border-neutral-100 pt-4">
-                <ScoreBar label="Overall" score={latestScore.overall} />
+                <ScoreBar label={t.overallLabel} score={latestScore.overall} />
               </div>
             </div>
           ) : (
             <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center text-neutral-400">
-              Score not yet calculated. Check back after agents run.
+              {t.noScore}
             </div>
           )}
 
           {/* Activity timeline */}
           <h2 className="mb-4 mt-10 text-xl font-bold text-neutral-800">
-            Recent Actions
+            {t.recentActions}
           </h2>
           {actions && actions.length > 0 ? (
             <div className="space-y-3">
@@ -155,9 +175,9 @@ export default async function MinisterDetailPage({
                   <SentimentDot sentiment={a.sentiment} />
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-neutral-800">
-                      {a.title_en}
+                      {locale === "en" ? a.title_en : (a.title_np || a.title_en)}
                     </h3>
-                    {a.title_np && (
+                    {locale === "en" && a.title_np && (
                       <p className="text-sm text-neutral-400 font-nepali">
                         {a.title_np}
                       </p>
@@ -166,7 +186,7 @@ export default async function MinisterDetailPage({
                       <span>{a.category}</span>
                       <span>·</span>
                       <span>
-                        {new Date(a.action_date).toLocaleDateString()}
+                        {new Date(a.action_date).toLocaleDateString(locale === "en" ? "en-US" : "ne-NP")}
                       </span>
                     </div>
                   </div>
@@ -175,7 +195,7 @@ export default async function MinisterDetailPage({
             </div>
           ) : (
             <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center text-neutral-400">
-              No actions tracked yet.
+              {t.noActions}
             </div>
           )}
         </div>
@@ -183,7 +203,7 @@ export default async function MinisterDetailPage({
         {/* Sidebar — Manifesto items */}
         <div>
           <h2 className="mb-4 text-xl font-bold text-neutral-800">
-            Manifesto Commitments
+            {t.manifestoTitle}
           </h2>
           {manifestoLinks && manifestoLinks.length > 0 ? (
             <div className="space-y-3">
@@ -193,14 +213,17 @@ export default async function MinisterDetailPage({
                   className="rounded-lg border border-neutral-200 bg-white p-4"
                 >
                   <h3 className="text-sm font-semibold text-neutral-800">
-                    {link.manifesto_items?.title_en}
+                    {locale === "en" ? link.manifesto_items?.title_en : (link.manifesto_items?.title_np || link.manifesto_items?.title_en)}
                   </h3>
                   <p className="mt-1 text-xs text-neutral-500">
-                    {link.manifesto_items?.description_en?.slice(0, 100)}…
+                    {locale === "en" 
+                      ? link.manifesto_items?.item_text_en?.slice(0, 100) 
+                      : (link.manifesto_items?.item_text_np || link.manifesto_items?.item_text_en)?.slice(0, 100)}…
                   </p>
                   <div className="mt-2">
                     <StatusChip
                       status={link.manifesto_items?.status ?? "not_started"}
+                      locale={locale}
                     />
                   </div>
                 </div>
@@ -208,7 +231,7 @@ export default async function MinisterDetailPage({
             </div>
           ) : (
             <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-center text-sm text-neutral-400">
-              No manifesto items assigned yet.
+              {t.noManifesto}
             </div>
           )}
         </div>
@@ -231,24 +254,42 @@ function SentimentDot({ sentiment }: { sentiment: string }) {
   );
 }
 
-function StatusChip({ status }: { status: string }) {
-  const map: Record<string, { bg: string; label: string }> = {
-    completed: { bg: "bg-emerald-100 text-emerald-700", label: "Completed" },
-    in_progress: { bg: "bg-blue-100 text-blue-700", label: "In Progress" },
-    partially_fulfilled: {
-      bg: "bg-amber-100 text-amber-700",
-      label: "Partial",
+function StatusChip({ status, locale }: { status: string; locale: string }) {
+  const map: Record<string, Record<string, { bg: string; label: string }>> = {
+    en: {
+      completed: { bg: "bg-emerald-100 text-emerald-700", label: "Completed" },
+      in_progress: { bg: "bg-blue-100 text-blue-700", label: "In Progress" },
+      partially_fulfilled: {
+        bg: "bg-amber-100 text-amber-700",
+        label: "Partial",
+      },
+      not_started: {
+        bg: "bg-neutral-100 text-neutral-500",
+        label: "Not Started",
+      },
+      broken: { bg: "bg-red-100 text-red-700", label: "Broken" },
     },
-    not_started: {
-      bg: "bg-neutral-100 text-neutral-500",
-      label: "Not Started",
-    },
-    contradicted: { bg: "bg-red-100 text-red-700", label: "Contradicted" },
+    np: {
+      completed: { bg: "bg-emerald-100 text-emerald-700", label: "सम्पन्न" },
+      in_progress: { bg: "bg-blue-100 text-blue-700", label: "प्रगतिमा" },
+      partially_fulfilled: {
+        bg: "bg-amber-100 text-amber-700",
+        label: "आंशिक",
+      },
+      not_started: {
+        bg: "bg-neutral-100 text-neutral-500",
+        label: "सुरु नभएको",
+      },
+      broken: { bg: "bg-red-100 text-red-700", label: "तोडिएको" },
+    }
   };
-  const s = map[status] ?? map.not_started;
+  const s = map[locale]?.[status] ?? map[locale]?.not_started;
   return (
     <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${s.bg}`}>
       {s.label}
     </span>
   );
 }
+
+import clsx from "clsx";
+

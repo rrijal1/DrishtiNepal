@@ -16,21 +16,25 @@ from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
 logger = setup_logger("content_generator")
 
 # This function is moved from the scraper agent
-def extract_with_ai(title: str, body: str) -> Optional[Dict]:
+def extract_with_ai(title: str, body: str, minister_names: List[str]) -> Optional[Dict]:
     """Use AI to extract structured data from a news article."""
+    ministers_str = ", ".join(minister_names)
     prompt = f"""Extract structured information from this Nepali news article.
+
+CURRENT CABINET MINISTERS:
+{ministers_str}
 
 Title: {title}
 
 Body (excerpt): {(body or "")[:2000]}
 
 Return a JSON object with:
-- "ministers_mentioned": list of minister names mentioned (empty list if none)
+- "ministers_mentioned": ONLY names from the list above that are mentioned in the article (empty list if none)
 - "category": one of "decision", "statement", "policy", "legislation", "scandal", "achievement", "appointment", "other"
 - "sentiment": one of "positive", "negative", "neutral", "mixed"
 - "summary_en": 2-3 sentence English summary
 - "summary_np": 2-3 sentence Nepali summary
-- "is_cabinet_related": boolean - true if directly related to cabinet minister activities
+- "is_cabinet_related": boolean - true if directly related to activities of the CURRENT cabinet ministers listed above
 
 Return ONLY valid JSON, no other text."""
 
@@ -52,6 +56,11 @@ def run_initial_analysis(limit: int = 50) -> int:
     """
     logger.info("--- Stage 1: Running Initial AI Analysis ---")
     
+    # Fetch current ministers
+    from agents.common.utils import get_minister_names
+    ministers_data = get_minister_names()
+    minister_names = [m['name_en'] for m in ministers_data]
+    
     # Filter to only process items scraped on or after the specified date
     start_date = "2026-03-27T00:00:00+00:00"
 
@@ -72,7 +81,7 @@ def run_initial_analysis(limit: int = 50) -> int:
     logger.info(f"Found {len(newly_scraped_items)} new items to analyze.")
     items_analyzed = 0
     for item in newly_scraped_items:
-        ai_result = extract_with_ai(item['title'], item.get('body'))
+        ai_result = extract_with_ai(item['title'], item.get('body'), minister_names)
         if ai_result:
             try:
                 db.table("raw_news").update({"processing_result": ai_result}).eq("id", item["id"]).execute()

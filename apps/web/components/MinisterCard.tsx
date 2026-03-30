@@ -11,8 +11,11 @@ interface Minister {
   overall_score: number;
 }
 
-export function MinisterCard({ minister }: { minister: Minister }) {
+export function MinisterCard({ minister, locale = "en" }: { minister: Minister; locale?: string }) {
   const m = minister;
+  const name = locale === "en" ? m.name_en : (m.name_np || m.name_en);
+  const portfolio = locale === "en" ? m.portfolio_en : (m.portfolio_np || m.portfolio_en);
+  
   return (
     <a
       href={`/ministers/${m.id}`}
@@ -36,13 +39,15 @@ export function MinisterCard({ minister }: { minister: Minister }) {
 
         <div className="min-w-0 flex-1">
           <h3 className="truncate font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
-            {m.name_en}
+            {name}
           </h3>
-          <p className="truncate text-sm text-neutral-400 font-nepali">
-            {m.name_np}
-          </p>
-          <p className="mt-1 truncate text-xs text-neutral-500">
-            {m.portfolio_en}
+          {locale === "en" && (
+            <p className="truncate text-sm text-neutral-400 font-nepali">
+              {m.name_np}
+            </p>
+          )}
+          <p className={clsx("mt-1 truncate text-xs text-neutral-500", locale === "np" && "font-nepali")}>
+            {portfolio}
           </p>
         </div>
 
@@ -55,9 +60,12 @@ export function MinisterCard({ minister }: { minister: Minister }) {
           {m.party}
         </span>
         <span className="text-xs font-medium text-[#1e3a5f] opacity-0 transition group-hover:opacity-100">
-          View Profile →
+          {locale === "en" ? "View Profile →" : "प्रोफाइल हेर्नुहोस् →"}
         </span>
       </div>
     </a>
   );
 }
+
+import clsx from "clsx";
+

@@ -1,9 +1,13 @@
 import { MinisterCard } from "@/components/MinisterCard";
 import { supabase } from "@/lib/supabase";
+import { getLocale, translations } from "@/lib/i18n";
 
 export const revalidate = 300; // ISR: revalidate every 5 min
 
 export default async function HomePage() {
+  const locale = await getLocale();
+  const t = translations[locale].home;
+
   const { data: ministers } = await supabase
     .from("ministers")
     .select("*")
@@ -38,27 +42,25 @@ export default async function HomePage() {
               AI-Powered Government Accountability
             </p>
             <h1 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-6xl">
-              Tracking Every Promise.
+              {t.heroTitle}
               <br />
-              <span className="text-red-400">Every Decision.</span>
+              <span className="text-red-400">{t.heroSubtitle}</span>
             </h1>
             <p className="mt-5 max-w-xl text-lg leading-relaxed text-blue-100/80">
-              Drishti Nepal monitors cabinet ministers 24/7 — matching their
-              actions against their election manifestos so citizens can see who
-              delivers and who doesn&apos;t.
+              {t.heroDescription}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="/ministers"
                 className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#1e3a5f] shadow-lg transition hover:bg-neutral-100"
               >
-                View Ministers →
+                {t.viewMinisters}
               </a>
               <a
                 href="/scores"
                 className="rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
               >
-                Score Dashboard
+                {t.scoreDashboard}
               </a>
             </div>
           </div>
@@ -66,15 +68,15 @@ export default async function HomePage() {
           {/* Live stat pills */}
           <div className="mt-12 flex flex-wrap gap-4">
             <StatPill
-              label="Ministers Tracked"
+              label={t.ministersTracked}
               value={ministers?.length ?? 0}
             />
             <StatPill
-              label="Posts Published"
+              label={t.postsPublished}
               value={recentPosts?.length ?? 0}
               suffix="+"
             />
-            <StatPill label="Sources Monitored" value={20} />
+            <StatPill label={t.sourcesMonitored} value={20} />
           </div>
         </div>
       </section>
@@ -82,12 +84,12 @@ export default async function HomePage() {
       {/* ─── Minister Grid ─── */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionHeading
-          title="Cabinet Ministers"
-          subtitle="Current scorecard for every minister in the Ra Swa Pa cabinet."
+          title={locale === "en" ? "Cabinet Ministers" : "मन्त्रिपरिषद्का सदस्यहरू"}
+          subtitle={locale === "en" ? "Current scorecard for every minister in the Ra Swa Pa cabinet." : "रास्वपा क्याबिनेटका प्रत्येक मन्त्रीको हालको स्कोरकार्ड।"}
           href="/ministers"
         />
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {ministers?.map((m) => <MinisterCard key={m.id} minister={m} />) ?? (
+          {ministers?.map((m) => <MinisterCard key={m.id} minister={m} locale={locale} />) ?? (
             <p className="col-span-full text-center text-neutral-400">
               No ministers loaded yet. Check back soon.
             </p>
@@ -99,8 +101,8 @@ export default async function HomePage() {
       <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <SectionHeading
-            title="Latest Cabinet Decisions"
-            subtitle="Major government decisions and their impact on manifesto commitments."
+            title={locale === "en" ? "Latest Cabinet Decisions" : "पछिल्ला क्याबिनेट निर्णयहरू"}
+            subtitle={locale === "en" ? "Major government decisions and their impact on manifesto commitments." : "प्रमुख सरकारी निर्णयहरू र वाचा पत्रका प्रतिबद्धताहरूमा उनीहरूको प्रभाव।"}
             href="/decisions"
           />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -112,18 +114,18 @@ export default async function HomePage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="font-semibold text-neutral-800">
-                      {d.title_en}
+                      {locale === "en" ? d.title_en : (d.title_np || d.title_en)}
                     </h3>
-                    {d.title_np && (
+                    {locale === "en" && d.title_np && (
                       <p className="mt-0.5 text-sm text-neutral-400 font-nepali">
                         {d.title_np}
                       </p>
                     )}
                   </div>
-                  <SignificanceBadge level={d.significance} />
+                  <SignificanceBadge level={d.significance} locale={locale} />
                 </div>
                 <p className="mt-2 text-xs text-neutral-400">
-                  {new Date(d.decision_date).toLocaleDateString("en-US", {
+                  {new Date(d.decision_date).toLocaleDateString(locale === "en" ? "en-US" : "ne-NP", {
                     year: "numeric",
                     month: "short",
                     day: "numeric",
@@ -142,8 +144,8 @@ export default async function HomePage() {
       {/* ─── Recent Posts ─── */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionHeading
-          title="Recent Analysis"
-          subtitle="AI-generated and human-reviewed accountability reports."
+          title={locale === "en" ? "Recent Analysis" : "हालैका विश्लेषणहरू"}
+          subtitle={locale === "en" ? "AI-generated and human-reviewed accountability reports." : "AI द्वारा उत्पन्न र मानव-समीक्षा गरिएका जवाफदेहिता रिपोर्टहरू।"}
           href="/articles"
         />
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -157,15 +159,15 @@ export default async function HomePage() {
                 {p.category}
               </span>
               <h3 className="mt-3 font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
-                {p.title_en}
+                {locale === "en" ? p.title_en : (p.title_np || p.title_en)}
               </h3>
-              {p.title_np && (
+              {locale === "en" && p.title_np && (
                 <p className="mt-1 text-sm text-neutral-400 font-nepali">
                   {p.title_np}
                 </p>
               )}
               <p className="mt-3 text-xs text-neutral-400">
-                {new Date(p.published_at).toLocaleDateString("en-US", {
+                {new Date(p.published_at).toLocaleDateString(locale === "en" ? "en-US" : "ne-NP", {
                   year: "numeric",
                   month: "short",
                   day: "numeric",
@@ -185,32 +187,32 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-neutral-800 sm:text-3xl">
-              How Drishti Nepal Works
+              {locale === "en" ? "How Drishti Nepal Works" : "दृष्टि नेपालले कसरी काम गर्छ?"}
             </h2>
             <p className="mt-2 text-neutral-500">
-              Fully transparent, autonomous political accountability pipeline.
+              {locale === "en" ? "Fully transparent, autonomous political accountability pipeline." : "पूर्ण पारदर्शी, स्वायत्त राजनीतिक जवाफदेहिता पाइपलाइन।"}
             </p>
           </div>
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <HowStep
               step="01"
-              title="Monitor 24/7"
-              desc="AI agents scrape 20+ Nepali & English news sources and government portals every 30 minutes."
+              title={locale === "en" ? "Monitor 24/7" : "२४/७ निगरानी"}
+              desc={locale === "en" ? "AI agents scrape 20+ Nepali & English news sources and government portals every 30 minutes." : "AI एजेन्टहरूले प्रत्येक ३० मिनेटमा २० भन्दा बढी नेपाली र अंग्रेजी समाचार स्रोतहरू र सरकारी पोर्टलहरू स्क्रेप गर्छन्।"}
             />
             <HowStep
               step="02"
-              title="Extract & Match"
-              desc="Political actions are extracted and matched against Ra Swa Pa's bachha patra and karar patra commitments."
+              title={locale === "en" ? "Extract & Match" : "निकाल्नुहोस् र मिलाउनुहोस्"}
+              desc={locale === "en" ? "Political actions are extracted and matched against Ra Swa Pa's bachha patra and karar patra commitments." : "राजनीतिक कार्यहरू निकालिन्छन् र रास्वपाको वाचा पत्र र करार पत्रका प्रतिबद्धताहरूसँग मिलाइन्छन्।"}
             />
             <HowStep
               step="03"
-              title="Score"
-              desc="वाचा पालन — ministers receive transparent scores: 70% manifesto compliance (did they deliver on their vacha?) and 30% public accountability (sentiment, transparency, parliamentary engagement)."
+              title={locale === "en" ? "Score" : "स्कोर"}
+              desc={locale === "en" ? "वाचा पालन — ministers receive transparent scores based on manifesto compliance and public accountability." : "वाचा पालन — मन्त्रीहरूले वाचा पत्रको पालना र सार्वजनिक जवाफदेहिताको आधारमा पारदर्शी स्कोर प्राप्त गर्छन्।"}
             />
             <HowStep
               step="04"
-              title="Publish"
-              desc="Bilingual reports auto-publish to web, Facebook, and X. Citizens can submit evidence via PRs."
+              title={locale === "en" ? "Publish" : "प्रकाशन"}
+              desc={locale === "en" ? "Bilingual reports auto-publish to web, Facebook, and X. Citizens can submit evidence via PRs." : "द्विभाषी रिपोर्टहरू वेब, फेसबुक र एक्समा स्वतः प्रकाशित हुन्छन्। नागरिकहरूले प्रमाण पेश गर्न सक्छन्।"}
             />
           </div>
         </div>
@@ -220,24 +222,23 @@ export default async function HomePage() {
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="rounded-2xl bg-[#1e3a5f] p-8 text-center sm:p-12">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            Democracy Needs Your Eyes
+            {locale === "en" ? "Democracy Needs Your Eyes" : "लोकतन्त्रलाई तपाईंको आँखा चाहिन्छ"}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-blue-100/70">
-            Have evidence of a minister&apos;s actions? Found an error in our
-            data? Contribute to a more accountable Nepal.
+            {locale === "en" ? "Have evidence of a minister's actions? Found an error in our data? Contribute to a more accountable Nepal." : "मन्त्रीका कार्यहरूको प्रमाण छ? हाम्रो डाटामा त्रुटि फेला पार्नुभयो? अझ बढी जवाफदेही नेपालका लागि योगदान गर्नुहोस्।"}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a
               href="/submit"
               className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#1e3a5f] transition hover:bg-neutral-100"
             >
-              Submit Evidence
+              {locale === "en" ? "Submit Evidence" : "प्रमाण पेश गर्नुहोस्"}
             </a>
             <a
               href="https://github.com/rrijal1/DrishtiNepal"
               className="rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
             >
-              Contribute on GitHub
+              {locale === "en" ? "Contribute on GitHub" : "GitHub मा योगदान गर्नुहोस्"}
             </a>
           </div>
         </div>
@@ -315,17 +316,23 @@ function HowStep({
   );
 }
 
-function SignificanceBadge({ level }: { level: string }) {
+function SignificanceBadge({ level, locale }: { level: string; locale: string }) {
   const colors: Record<string, string> = {
     high: "bg-red-50 text-red-700",
     medium: "bg-amber-50 text-amber-700",
     low: "bg-green-50 text-green-700",
   };
+  
+  const labels: Record<string, Record<string, string>> = {
+    en: { high: "High", medium: "Medium", low: "Low" },
+    np: { high: "उच्च", medium: "मध्यम", low: "न्यून" }
+  };
+
   return (
     <span
       className={`flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[level] ?? "bg-neutral-100 text-neutral-600"}`}
     >
-      {level}
+      {labels[locale]?.[level] ?? level}
     </span>
   );
 }

@@ -14,6 +14,7 @@ logger = setup_logger("runner")
 AGENTS = {
     "scraper": ("agents.news_scraper.scraper", "News Scraper"),
     "generator": ("agents.content_generator.generator", "Content Generator"),
+    "extractor": ("agents.action_extractor", "Action Extractor"),
     "enricher": ("agents.image_enricher.enricher", "Image Enricher"),
     "publisher": ("agents.social_publisher.publisher", "Social Publisher"),
     "matcher": ("agents.manifesto_matcher.matcher", "Manifesto Matcher"),
@@ -33,7 +34,17 @@ def main():
     try:
         # Dynamic import
         module = __import__(module_path, fromlist=["run"])
-        module.run()
+        run_func = module.run
+        
+        # Check if it's a coroutine function
+        import asyncio
+        import inspect
+        
+        if inspect.iscoroutinefunction(run_func):
+            asyncio.run(run_func())
+        else:
+            run_func()
+            
         logger.info(f"{display_name} completed successfully.")
     except Exception as e:
         logger.error(f"{display_name} failed: {e}\n{traceback.format_exc()}")

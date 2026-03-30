@@ -57,6 +57,24 @@ def _nvidia_completion(prompt: str, system: str, model: str, max_tokens: int) ->
     return response.choices[0].message.content
 
 
+def get_embedding(text: str, model: str = "nvidia/nv-embedqa-e5-v5") -> list[float]:
+    """Get vector embedding for a string using NVIDIA NIM."""
+    client = get_nvidia_client()
+    text = text.replace("\n", " ")
+    
+    # Some models require input_type
+    extra_body = {}
+    if "embedqa" in model or "e5" in model:
+        extra_body["input_type"] = "query"
+        
+    response = client.embeddings.create(
+        input=[text], 
+        model=model,
+        extra_body=extra_body
+    )
+    return response.data[0].embedding
+
+
 def cheap_completion(prompt: str, system: str = "", max_tokens: int = 1024) -> str:
     """Routine tasks: extraction, classification, translation.
     Uses NVIDIA NIM (free) if configured, otherwise falls back to Anthropic Haiku."""
