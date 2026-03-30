@@ -35,13 +35,23 @@ export default async function ManifestoPage() {
       <div className="mb-10 grid gap-4 sm:grid-cols-4">
         <SummaryCard label="Total Commitments" value={items?.length ?? 0} />
         <SummaryCard
-          label="Completed"
-          value={items?.filter((i) => i.status === "completed").length ?? 0}
+          label="Fulfilled"
+          value={
+            items?.filter(
+              (i) => i.status === "fulfilled" || i.status === "completed",
+            ).length ?? 0
+          }
           color="text-emerald-600"
         />
         <SummaryCard
           label="In Progress"
-          value={items?.filter((i) => i.status === "in_progress").length ?? 0}
+          value={
+            items?.filter(
+              (i) =>
+                i.status === "in_progress" ||
+                i.status === "partially_fulfilled",
+            ).length ?? 0
+          }
           color="text-blue-600"
         />
         <SummaryCard
@@ -60,7 +70,9 @@ export default async function ManifestoPage() {
             </span>
             <span className="font-bold text-neutral-800">
               {Math.round(
-                (items.filter((i) => i.status === "completed").length /
+                (items.filter(
+                  (i) => i.status === "fulfilled" || i.status === "completed",
+                ).length /
                   items.length) *
                   100,
               )}
@@ -72,13 +84,13 @@ export default async function ManifestoPage() {
               <div
                 className="bg-emerald-500 transition-all"
                 style={{
-                  width: `${(items.filter((i) => i.status === "completed").length / items.length) * 100}%`,
+                  width: `${(items.filter((i) => i.status === "fulfilled" || i.status === "completed").length / items.length) * 100}%`,
                 }}
               />
               <div
                 className="bg-blue-400 transition-all"
                 style={{
-                  width: `${(items.filter((i) => i.status === "in_progress").length / items.length) * 100}%`,
+                  width: `${(items.filter((i) => i.status === "in_progress" || i.status === "partially_fulfilled").length / items.length) * 100}%`,
                 }}
               />
               <div
