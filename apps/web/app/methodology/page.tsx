@@ -1,7 +1,7 @@
 export const metadata = {
   title: "Scoring Methodology — Drishti Nepal",
   description:
-    "How we calculate ministerial accountability scores across 2 transparent dimensions.",
+    "How we calculate ministerial accountability scores across 3 tiers: Outcomes, Initiatives, and Evidence.",
 };
 
 export default function MethodologyPage() {
@@ -12,7 +12,7 @@ export default function MethodologyPage() {
       </h1>
       <p className="mt-2 text-neutral-500">
         How Drishti Nepal calculates ministerial accountability scores. Version
-        2.0 — fully open source and peer-reviewable.
+        3.0 — fully open source and peer-reviewable.
       </p>
 
       <div className="prose prose-neutral mt-10 max-w-none">
@@ -41,71 +41,202 @@ export default function MethodologyPage() {
           <li>No credit for intent — only verifiable results.</li>
         </ul>
 
-        <h2>Overview</h2>
+        <h2>The Three-Tier Model</h2>
         <p>
-          Each minister receives a composite score from 0 to 100 across two
-          dimensions. Scores are recalculated daily at midnight NPT (18:15 UTC).
+          Each minister receives a composite score from 0 to 100 across{" "}
+          <strong>three tiers</strong>. Scores are recalculated daily at
+          midnight NPT (18:15 UTC). The tiers are designed to answer three
+          distinct questions:
         </p>
+        <ol>
+          <li>
+            <strong>Tier 1 — Outcomes (50%):</strong> Is Nepal actually getting
+            better? Are real-world indicators moving toward manifesto targets?
+          </li>
+          <li>
+            <strong>Tier 2 — Initiatives (30%):</strong> Is the government
+            acting on its commitments? How many manifesto items are being
+            executed?
+          </li>
+          <li>
+            <strong>Tier 3 — Evidence (20%):</strong> Will these initiatives
+            actually work? What does international and local evidence say?
+          </li>
+        </ol>
         <p>
-          We keep scoring lean deliberately. Ra Swa Pa&apos;s bachha patra and
-          karar patra already define what ministers promised — GDP targets,
-          remittance policy, industrialization, education, infrastructure, and
-          more. That is the primary accountability lens. The second dimension
-          captures everything the manifesto cannot: how the public and press
-          perceive a minister, whether they communicate openly, and whether they
-          participate in the legislature they were elected to serve.
+          The worst case scenario this system must catch: all 100 action items
+          marked &quot;done&quot;, every minister gets a 100 on initiatives, but
+          GDP per capita drops. That&apos;s a failure — and Tier 1 will say so.
         </p>
 
-        <h2>Dimensions & Weights</h2>
-
-        <h3>1. Manifesto Compliance — 70%</h3>
+        <h2>Tier 1 — Outcome Score (50%)</h2>
         <p>
-          How well a minister&apos;s actions match their party&apos;s election
-          commitments (bachha patra + karar patra). This covers every stated
-          commitment — GDP growth targets, remittance policy, industrialization,
-          education access, infrastructure, agriculture, and any other item in
-          the manifesto assigned to their ministry.
+          Measures whether Nepal is <em>actually moving</em> toward the
+          manifesto&apos;s stated goals. This is the primary score — results
+          matter, not activity.
+        </p>
+        <p>
+          Indicator areas are derived directly from the Karar Patra&apos;s 5
+          priority areas, which collectively cover all 100 Bachha Patra items.
+          Each area is weighted by its proportion of manifesto items:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Karar Patra Area</th>
+              <th>Weight</th>
+              <th>Key Indicators</th>
+              <th>Sources</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Integrity &amp; Good Governance</td>
+              <td>18%</td>
+              <td>TI CPI, E-Gov Index, WGI Corruption Percentile</td>
+              <td>TI, UN, World Bank</td>
+            </tr>
+            <tr>
+              <td>Middle-Class Expansion</td>
+              <td>42%</td>
+              <td>
+                GDP per capita, GDP growth, health insurance, poverty rate
+              </td>
+              <td>NRB, CBS, World Bank</td>
+            </tr>
+            <tr>
+              <td>Jobs, Jobs, Jobs</td>
+              <td>20%</td>
+              <td>Formal jobs created, unemployment rate, migration outflow</td>
+              <td>CBS, ILO, DoFE</td>
+            </tr>
+            <tr>
+              <td>Connectivity</td>
+              <td>15%</td>
+              <td>Installed MW, highway km, internet penetration</td>
+              <td>NEA, DoR, NTA</td>
+            </tr>
+            <tr>
+              <td>Diaspora</td>
+              <td>5%</td>
+              <td>Online voting, diaspora fund, remittance dependency</td>
+              <td>EC, NRB, MoFA</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>How it works:</p>
+        <ul>
+          <li>
+            Each manifesto target is base-lined at government formation (March
+            2026)
+          </li>
+          <li>
+            Current values are pulled from authoritative sources (NRB, CBS,
+            World Bank, IMF)
+          </li>
+          <li>
+            Score = weighted distance toward each target, grouped by priority
+            area
+          </li>
+          <li>
+            Updated as new data becomes available (quarterly for most macro
+            indicators)
+          </li>
+          <li>
+            Direction-aware: for indicators like poverty rate, lower is better
+          </li>
+        </ul>
+
+        <h2>Tier 2 — Initiative Score (30%)</h2>
+        <p>
+          A factual count of government activity toward manifesto commitments.
+          Not a quality judgment — just what&apos;s moving.
         </p>
         <ul>
-          <li>Each manifesto item assigned to the minister is tracked</li>
+          <li>Tracks all 100 Bachha Patra items + Karar Patra commitments</li>
           <li>
-            Status values: completed (100), in_progress (50),
-            partially_fulfilled (30), not_started (0), contradicted (−20)
+            Status values: fulfilled (100%), partially_fulfilled (60%),
+            in_progress (30%), not_started (0%), broken (−30%)
           </li>
-          <li>Score = average status value across all assigned items</li>
+          <li>
+            Score = average status value across all items assigned to a minister
+          </li>
+          <li>
+            Source: gazette notifications, cabinet decisions, parliamentary
+            records, news
+          </li>
           <li>
             Ministers with no assigned items default to 50 pending data entry
           </li>
         </ul>
 
-        <h3>2. Public Accountability — 30%</h3>
+        <h2>Tier 3 — Evidence Score (20%)</h2>
         <p>
-          Captures dimensions the manifesto cannot quantify. Composed of three
-          equally weighted sub-signals:
+          For each initiative, does international and local evidence suggest it
+          will actually produce the intended outcome? This is{" "}
+          <strong>not a yes/no verdict</strong> — it&apos;s a probability with
+          citations.
         </p>
         <ul>
           <li>
-            <strong>Media sentiment (50% of this score)</strong> — AI-analyzed
-            tone of news coverage over the rolling 30-day window. Positive = 80,
-            Neutral = 50, Mixed = 40, Negative = 20.
+            Based on: peer-reviewed research, World Bank evaluations, OECD
+            evidence library, comparable country experiences, Nepal-specific
+            studies
           </li>
           <li>
-            <strong>Transparency (30% of this score)</strong> — Press
-            conferences held, public statements made, RTI responses. Measures
-            whether the minister communicates openly.
+            AI agent drafts the assessment; community editors + domain experts
+            review and approve
           </li>
+          <li>Score = average probability across assessed items × 100</li>
           <li>
-            <strong>Parliamentary engagement (20% of this score)</strong> —
-            Q&amp;A sessions attended, bills introduced or supported, committee
-            participation.
+            Revisited over time: as actual results arrive, assessments are
+            compared against reality for a feedback loop
           </li>
         </ul>
+        <p>Example:</p>
+        <blockquote>
+          <strong>Initiative:</strong> &quot;Build 500km of new highway in first
+          year&quot;
+          <br />
+          <strong>Evidence probability:</strong> 0.35 (Low-Moderate)
+          <br />
+          <strong>Citations:</strong> World Bank Transport Sector Review (2024)
+          shows Nepal&apos;s average highway construction pace at 80km/year.
+        </blockquote>
 
         <h2>Composite Score Formula</h2>
         <div className="rounded-lg bg-neutral-100 p-4 font-mono text-sm">
-          Overall = (manifesto_compliance × 0.70) + (public_accountability ×
-          0.30)
+          Overall = (outcome_score × 0.50) + (initiative_score × 0.30) +
+          (evidence_score × 0.20)
         </div>
+
+        <h2>Scoring Governance</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Decision</th>
+              <th>Who Decides</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Outcome data entry (Tier 1)</td>
+              <td>AI auto-publishes from verified sources</td>
+            </tr>
+            <tr>
+              <td>Initiative status updates (Tier 2)</td>
+              <td>AI extracts from gazette/news; moderators verify</td>
+            </tr>
+            <tr>
+              <td>Evidence assessments (Tier 3)</td>
+              <td>AI drafts; community editors + domain experts approve</td>
+            </tr>
+            <tr>
+              <td>Methodology changes</td>
+              <td>Public discussion → editor consensus</td>
+            </tr>
+          </tbody>
+        </table>
 
         <h2>Score Labels</h2>
         <table>
@@ -145,6 +276,20 @@ export default function MethodologyPage() {
           </tbody>
         </table>
 
+        <h2>Version History</h2>
+        <ul>
+          <li>
+            <strong>v3.0</strong> (April 2026) — Three-tier model: Outcomes
+            (50%), Initiatives (30%), Evidence (20%). Added 20 baseline outcome
+            indicators across 5 karar patra areas. Evidence probability
+            assessments for manifesto items.
+          </li>
+          <li>
+            <strong>v2.0</strong> (March 2026) — Two-dimension model: Manifesto
+            Compliance (70%), Public Accountability (30%). Initial launch.
+          </li>
+        </ul>
+
         <h2>Data Integrity</h2>
         <ul>
           <li>
@@ -152,9 +297,8 @@ export default function MethodologyPage() {
             government portals
           </li>
           <li>
-            New data sources may be added over time, but the core electoral
-            accountability scoring model stays fixed unless a versioned
-            methodology change is publicly announced
+            Outcome indicators are sourced from NRB, CBS, World Bank, IMF, and
+            other authoritative bodies
           </li>
           <li>
             AI extractions are confidence-scored; low-confidence items require

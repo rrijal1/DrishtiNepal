@@ -1,7 +1,7 @@
+import { Header } from "@/components/Header";
+import { getLocale, translations } from "@/lib/i18n";
 import type { Metadata } from "next";
 import "./globals.css";
-import { getLocale, translations } from "@/lib/i18n";
-import { LanguageToggle } from "@/components/LanguageToggle";
 
 export const metadata: Metadata = {
   title: "Drishti Nepal | दृष्टि नेपाल — Cabinet Accountability Portal",
@@ -54,72 +54,11 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-neutral-50 text-neutral-800 antialiased">
-        <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-lg">
-          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            {/* Logo */}
-            <a href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1e3a5f] text-white font-bold text-lg">
-                द
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-lg font-bold text-[#1e3a5f]">
-                  Drishti Nepal
-                </span>
-                <span className="text-[10px] font-medium text-neutral-400 font-nepali">
-                  दृष्टि नेपाल
-                </span>
-              </div>
-            </a>
-
-            {/* Navigation */}
-            <nav className="hidden items-center gap-1 md:flex">
-              <NavLink href="/ministers">{t.ministers}</NavLink>
-              <NavLink href="/decisions">{t.decisions}</NavLink>
-              <NavLink href="/manifesto">{t.manifesto}</NavLink>
-              <NavLink href="/scores">{t.scores}</NavLink>
-              <NavLink href="/articles">{t.articles}</NavLink>
-              <NavLink href="/submit">{t.submit}</NavLink>
-            </nav>
-
-            {/* Language toggle + mobile menu */}
-            <div className="flex items-center gap-3">
-              <LanguageToggle currentLocale={locale} />
-              {/* Mobile hamburger */}
-              <button className="rounded-md p-2 text-neutral-600 md:hidden hover:bg-neutral-100">
-                <svg
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M3 6h14M3 10h14M3 14h14" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </header>
+        <Header locale={locale} navLabels={t} />
         <main>{children}</main>
         <Footer />
       </body>
     </html>
-  );
-}
-
-function NavLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a
-      href={href}
-      className="rounded-md px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900"
-    >
-      {children}
-    </a>
   );
 }
 

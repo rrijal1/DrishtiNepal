@@ -1,0 +1,44 @@
+name: Manifesto Sync
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - "data/manifesto/**"
+    workflow_dispatch:
+        inputs:
+            force_reembed:
+                description: "Force re-embed all items (e.g. after model change)"
+                type: boolean
+                default: false
+
+jobs:
+    sync-manifesto:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: "3.13"
+                  cache: "pip"
+                  cache-dependency-path: agents/requirements.txt
+
+            - name: Install dependencies
+              run: pip install -r agents/requirements.txt
+
+            - name: Seed manifesto data to DB
+              env:
+                  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+                  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+              run: python -m agents.seed manifesto
+
+            - name: Re-embed manifesto items
+              env:
+                  NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+                  NVIDIA_BASE_URL: ${{ secrets.NVIDIA_BASE_URL }}
+                  EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
+                  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+                  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+              run: python scripts/embed_manifesto.py --force

@@ -1,8 +1,8 @@
-import { supabase } from "@/lib/supabase";
 import { getSortedPostsData } from "@/lib/articles";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
-export const revalidate = 0; // Revalidate on every request for now
+export const revalidate = 60;
 
 export const metadata = {
   title: "Articles & Analysis — Drishti Nepal",
@@ -59,9 +59,10 @@ export default async function ArticlesPage() {
 
   // 4. Combine and sort all posts
   const allPosts = [...unifiedAiPosts, ...unifiedHumanPosts].sort((a, b) => {
-    return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
+    return (
+      new Date(b.published_at).getTime() - new Date(a.published_at).getTime()
+    );
   });
-
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

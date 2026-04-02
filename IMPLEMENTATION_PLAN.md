@@ -1,585 +1,676 @@
-# Drishti Nepal (दृष्टि नेपाल) — Cabinet Accountability Portal
+# Drishti Nepal (दृष्टि नेपाल) — Implementation Plan
 
-## Implementation Plan
+## Mission
 
-**Mission:** Hold Nepal's government accountable by tracking every cabinet minister's performance against Ra Swa Pa's _Bachha Patra_ (100 policy foundations) and _Karar Patra_ (citizen's agreement), delivering unbiased information to the public 24/7 through autonomous agents.
+Hold Nepal's government accountable by measuring **real outcomes** — not just activity — against Ra Swa Pa's _Bachha Patra_ and _Karar Patra_ (citizen's agreement). Deliver verifiable, evidence-based accountability to the public 24/7 through autonomous agents and open-source community governance.
 
 ---
 
-## 1. System Overview
+## 1. Core Philosophy
+
+### What We Measure
+
+The manifesto (Bachha Patra + Karar Patra) is the **source of truth**. It contains specific, measurable promises: a $100B economy, poverty reduction, infrastructure targets, governance reforms.
+
+We don't just check if the government is busy. We check if Nepal is actually getting better.
+
+**The worst case scenario this system must catch:** All 100 action items are marked "done", every minister gets a 100 rating, but GDP per capita drops from $1,500 to $1,000. That's a failure, and our system must say so.
+
+### How We Govern Content
+
+| Content Type                                          | Who Publishes                                          |
+| ----------------------------------------------------- | ------------------------------------------------------ |
+| Factual data (indicator updates, initiative counts)   | AI auto-publishes                                      |
+| Analysis (evidence assessments, trend interpretation) | AI drafts → community editors + domain experts approve |
+
+This is an **open-source project**. "Human review" means community contributors + editors, not a single gatekeeper.
+
+### What We Will Never Do
+
+- Accept money from political parties or politicians
+- Run paid political ads or sponsored political content
+- Sell user data
+- Suppress or alter content based on financial pressure
+- Hide our funding sources
+- Make absolute verdicts without evidence — we present probabilities and citations
+
+---
+
+## 2. Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                  DRISHTI NEPAL ARCHITECTURE                      │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────┐   │
-│  │  DATA AGENTS  │──▶│   CONTENT    │──▶│   WEB PORTAL     │   │
-│  │  (Scrapers +  │   │   PIPELINE   │   │   (Next.js SSG)  │   │
-│  │   AI Agents)  │   │  (AI Review) │   │                  │   │
-│  └──────┬───────┘   └──────┬───────┘   └────────┬─────────┘   │
-│         │                  │                     │              │
-│         ▼                  ▼                     ▼              │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────┐   │
-│  │  SOURCE DBs   │   │  SUPABASE    │   │  SOCIAL MEDIA    │   │
-│  │  (News, Govt  │   │  (Postgres + │   │  PUBLISHER       │   │
-│  │   Gazette)    │   │   Storage)   │   │  (FB + X Bot)    │   │
-│  └──────────────┘   └──────────────┘   └──────────────────┘   │
-│                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  PUBLIC CONTRIBUTION SYSTEM (GitHub PRs + Review Queue)   │  │
-│  └──────────────────────────────────────────────────────────┘  │
-│                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │  SCORING ENGINE (Automated + Human Review Hybrid)         │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                    DRISHTI NEPAL ARCHITECTURE                        │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌────────────────┐  ┌────────────────┐  ┌─────────────────────┐  │
+│  │  DATA AGENTS    │─▶│  CONTENT       │─▶│  WEB PORTAL         │  │
+│  │  - News scraper │  │  PIPELINE      │  │  (Next.js SSG+ISR)  │  │
+│  │  - Gazette mon. │  │  - AI extract  │  │  - Minister cards   │  │
+│  │  - Parliament   │  │  - Classify    │  │  - Manifesto tracker│  │
+│  │  - Action extr. │  │  - Match to    │  │  - Scores (3 tiers) │  │
+│  │  - Outcome pull │  │    manifesto   │  │  - Articles         │  │
+│  └───────┬────────┘  └───────┬────────┘  └──────────┬──────────┘  │
+│          │                   │                       │              │
+│          ▼                   ▼                       ▼              │
+│  ┌────────────────┐  ┌────────────────┐  ┌─────────────────────┐  │
+│  │  DATA SOURCES   │  │  SUPABASE      │  │  SOCIAL MEDIA       │  │
+│  │  - News RSS     │  │  (Postgres +   │  │  PUBLISHER          │  │
+│  │  - Nepal Gazette│  │   pgvector +   │  │  (FB + X + IG)      │  │
+│  │  - Parliament   │  │   Storage)     │  │                     │  │
+│  │  - NRB/CBS/     │  │                │  │                     │  │
+│  │    World Bank   │  │                │  │                     │  │
+│  └────────────────┘  └────────────────┘  └─────────────────────┘  │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │  SCORING ENGINE (3-Tier: Outcomes → Initiatives → Evidence)   │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+│                                                                     │
+│  ┌───────────────────────────────────────────────────────────────┐  │
+│  │  COMMUNITY GOVERNANCE (Open Source: PRs + Review Queue)       │  │
+│  └───────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Core Modules
+## 3. The Scoring Engine (Three Tiers)
 
-### Module 1: Minister Profile System
+This is the intellectual core of the project. Every score is grounded in verifiable, observable data.
 
-- **Profile Page** per minister: photo, portfolio, date of appointment, political background
-- **Timeline View**: chronological feed of every action, decision, statement
-- **Score Dashboard**: real-time score against manifesto commitments
-- **Comparison View**: promised vs. delivered
+### Tier 1 — Outcome Score (The Real Verdict)
 
-### Module 2: Autonomous Data Agents (24/7)
+Measures whether Nepal is actually moving toward the manifesto's stated goals. This is the primary score.
 
-Lightweight Python agents running on scheduled cron jobs (NOT always-on servers):
+Indicator areas are **derived directly from the Karar Patra's 5 priority areas**, which collectively cover all 100 Bachha Patra items. Nothing is hardcoded — if the manifesto changes, the indicators change.
 
-| Agent                | Frequency      | Source                                                                         | Purpose                                  |
-| -------------------- | -------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
-| `news_scraper`       | Every 30 min   | Nepali news sites (ekantipur, onlinekhabar, ratopati, setopati, himalayatimes) | Collect minister-related news            |
-| `gazette_monitor`    | Every 6 hrs    | Nepal Gazette (rajpatra)                                                       | Track official government decisions      |
-| `parliament_tracker` | Every 2 hrs    | Parliament website                                                             | Track legislative activities             |
-| `social_listener`    | Every 1 hr     | X/Twitter, FB                                                                  | Track minister statements                |
-| `manifesto_matcher`  | Every 12 hrs   | Internal DB                                                                    | Match actions against bachha/karar patra |
-| `scoring_agent`      | Every 24 hrs   | Internal DB                                                                    | Recalculate minister scores              |
-| `content_generator`  | On new data    | AI Pipeline                                                                    | Generate analysis posts                  |
-| `social_publisher`   | On new content | Portal DB                                                                      | Publish to FB and X                      |
-| `scholarly_curator`  | Weekly         | Academic sources + AI                                                          | Generate political analysis              |
+| Karar Patra Area                        | Key Targets (from manifesto)                                                                                                                                              | Bachha Patra Items                                                                                   | Sources                                  |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **pp-001: Integrity & Good Governance** | Anti-Corruption Mega-Campaign; Universal digital government services; Major TI CPI improvement; End politicization of state institutions; Investigate deals since 2076 BS | bp-001 → bp-018 (18 items: governance, justice, social justice)                                      | TI CPI, World Bank WGI, e-Gov Index, CBS |
+| **pp-002: Middle-Class Expansion**      | 7% GDP growth; Per capita ≥ $3,000; $100B economy; 100% insured health; Education reform; Integrated social security; Universal financial inclusion; End usurious lending | bp-019 → bp-060 (42 items: economy, agriculture, energy, tourism, technology, infrastructure, labor) | NRB, CBS, World Bank, IMF, MoF           |
+| **pp-003: Jobs, Jobs, Jobs**            | 500,000 new formal jobs; Reduce forced migration; Priority sectors: IT, construction, tourism, agriculture, minerals, industry, service trade                             | bp-061 → bp-080 (20 items: education, health, labor, sports, social justice)                         | CBS, ILO, DoFE, MoLESS                   |
+| **pp-004: Connectivity**                | 15,000 MW installed; 30,000 km national highways; High-speed internet to all settlements; Reliable energy grid; 10 signature projects completed                           | bp-081 → bp-095 (15 items: infrastructure, environment, health, social justice)                      | NEA, DoR, NTA, NPC, CBS                  |
+| **pp-005: Diaspora**                    | Online voting for Nepalis abroad; Citizenship continuity for descendants; Sovereign Diaspora Fund; Safe investment & dignified return; Decent foreign employment          | bp-096 → bp-100 (5 items: foreign policy, diaspora, governance)                                      | NRB, DoFE, Election Commission, MoFA     |
 
-### Module 3: Content Pipeline
+The Bachha Patra's **8 goals for 2087 BS** (5-year targets) provide time-bound benchmarks within these areas — e.g., 5,000 MW domestic consumption, IT exports > Rs 50B/year, 50% air pollution reduction.
+
+**How it works:**
+
+1. Each manifesto target is base-lined at the time of government formation (March 2026)
+2. Current values are pulled from authoritative sources (see Sources column)
+3. The outcome score = weighted distance toward each target, grouped by priority area
+4. Updated as new data becomes available (quarterly for most macro indicators)
+5. Weights reflect the manifesto's own structure — pp-002 covers 42% of all items, pp-005 covers 5%
+
+**Key principle:** Results matter, not activity. If all initiatives are "done" but outcomes worsen, the outcome score reflects reality. The indicator areas are not our opinion — they are the party's own commitments.
+
+### Tier 2 — Initiative Score (Observable Activity)
+
+A factual count of government activity. Not a quality judgment — just what's moving.
+
+- Track all 100 bachha patra items + karar patra commitments + any additional government initiatives
+- Status: completed / in_progress / not_started / stalled / cancelled
+- Displayed as: "67 completed · 18 in progress · 15 not started"
+- Each initiative links to the manifesto goal(s) it's meant to advance
+- Source: gazette notifications, cabinet decisions, parliamentary records, news
+- put a start and end time, we also need to check againat promsised timeline.
+
+### Tier 3 — Evidence Probability (Will These Initiatives Work?)
+
+For each initiative, does international and local evidence suggest it will actually produce the intended outcome?
+
+**This is not a yes/no verdict.** It's a probability with citations.
+
+- Based on: peer-reviewed research, World Bank project evaluations, OECD evidence library, comparable country experiences, Nepal-specific studies
+- AI agent drafts the assessment; community editors + domain experts review and approve
+- **Revisited over time:** as actual results arrive, the initial probability assessment is compared against reality. Did our evidence-based prediction prove correct? This creates a feedback loop that improves future assessments.
+
+Example:
+
+> **Initiative:** "Build 500km of new highway in first year"
+> **Evidence probability:** 0.35 (Low-Moderate)
+> **Citations:** World Bank Transport Sector Review (2024) shows Nepal's average highway construction pace at 80km/year. India took 5 years to scale from similar baseline. Budget allocation of NRs 40B is 60% of estimated requirement.
+> **Reassessment (6 months later):** 45km completed. Revised probability: 0.15. Initial assessment was generous — procurement delays were the primary blocker, consistent with ADB findings on Nepal infrastructure projects.
+
+### Scoring Governance
+
+| Decision                           | Who Decides                                            |
+| ---------------------------------- | ------------------------------------------------------ |
+| Outcome data entry (Tier 1)        | AI auto-publishes from verified sources                |
+| Initiative status updates (Tier 2) | AI extracts from gazette/news; moderators verify       |
+| Evidence assessments (Tier 3)      | AI drafts; community editors + domain experts approve  |
+| Methodology changes                | Public discussion → editor consensus                   |
+| Reassessment triggers              | AI flags when new data arrives; humans make final call |
+
+---
+
+## 4. Data Agents
+
+Lightweight Python agents running via GitHub Actions cron (free for public repos). No always-on server required.
+
+### Current Agents (Built)
+
+| Agent               | Schedule          | Source                                                          | Purpose                                                             | Status                            |
+| ------------------- | ----------------- | --------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------- |
+| `news_scraper`      | 3×/day            | RSS: ekantipur, onlinekhabar (en), setopati (en), kathmandupost | Collect minister-related news (cross-source dedup, 2+ keyword gate) | ✅ Running                        |
+| `action_extractor`  | After generator   | `raw_news` table                                                | Extract structured actions from news, generate embeddings           | ✅ Running                        |
+| `content_generator` | After scraper     | `raw_news` + AI (5 concurrent calls, 25-item cap, 3-day window) | Generate bilingual analysis posts                                   | ✅ Running                        |
+| `manifesto_matcher` | Daily             | `actions` + `manifesto_items`                                   | Match actions to manifesto via vector similarity + AI verification  | ✅ Running                        |
+| `scoring_agent`     | Daily             | All tables                                                      | Calculate minister scores                                           | ✅ Running (needs tiered rewrite) |
+| `social_publisher`  | After content gen | `posts` table                                                   | Publish to Facebook, X, Instagram                                   | ✅ Running                        |
+| `image_enricher`    | After content gen | `posts` table                                                   | Scrape og:image from source URLs                                    | ✅ Running                        |
+
+### Agents To Build
+
+| Agent                | Schedule           | Source                                             | Purpose                                                                                                   |
+| -------------------- | ------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `gazette_monitor`    | Every 6 hrs        | rajpatra.dop.gov.np + manual entry dashboard       | Track official government decisions, gazette notifications                                                |
+| `parliament_tracker` | Every 2 hrs        | hr.parliament.gov.np, na.parliament.gov.np         | Track bills, committees, Q&A sessions                                                                     |
+| `outcome_tracker`    | Weekly             | NRB API, CBS, World Bank Open Data, IMF            | Pull and store economic/social indicators for Tier 1 scoring                                              |
+| `evidence_assessor`  | On new initiatives | Research databases, World Bank evaluations         | Draft Tier 3 evidence probability assessments                                                             |
+| `scholarly_curator`  | Weekly             | Academic sources + AI                              | Generate long-form political analysis                                                                     |
+| `open_data_monitor`  | Daily              | opennepal.net + National Data Exchange (when live) | Pull structured government datasets (economy, health, education, infrastructure) as they become available |
+
+### Agent Pipeline
 
 ```
-Raw Data → AI Extraction → Fact Verification → Content Generation → Editorial Review → Publish
+News RSS ──▶ news_scraper ──▶ action_extractor ──▶ manifesto_matcher
+                                     │                      │
+                                     ▼                      ▼
+                              content_generator      scoring_agent
+                                     │                      │
+                                     ▼                      ▼
+                              social_publisher        Score snapshots
+                                     │
+                                     ▼
+                              FB / X / Instagram
+
+Gazette ──▶ gazette_monitor ──▶ initiative status updates ──▶ Tier 2
+
+NRB/CBS/WB ──▶ outcome_tracker ──▶ outcome_indicators ──▶ Tier 1
+
+Open Data Nepal ──▶ open_data_monitor ──▶ structured indicators ──▶ Tier 1 + Tier 2
+
+New initiative ──▶ evidence_assessor ──▶ draft assessment ──▶ Editor review ──▶ Tier 3
 ```
 
-1. **Extraction**: AI agent extracts relevant facts from scraped news
-2. **Deduplication**: NLP-based duplicate detection across sources
-3. **Classification**: Auto-tag as achievement / failure / neutral / decision
-4. **Manifesto Mapping**: Link to specific bachha patra / karar patra commitments
-5. **Content Generation**: AI drafts analysis post (Nepali + English)
-6. **Human Review Queue**: Flag high-impact posts for human editor review
-7. **Auto-publish**: Low-risk factual updates publish automatically
-8. **Social Distribution**: Auto-post to FB page and X account
+### Content Review Tiers
 
-### Module 4: Scoring Engine
+| Tier            | What                                                                             | Action                                      |
+| --------------- | -------------------------------------------------------------------------------- | ------------------------------------------- |
+| Auto-publish    | Factual news summaries, gazette references, indicator updates, initiative counts | AI publishes directly                       |
+| Quick review    | Action classifications, manifesto linkages, score updates                        | AI publishes; flagged for retroactive check |
+| Full review     | Evidence assessments, scholarly articles, trend analysis                         | AI drafts → community + editors approve     |
+| Editor-in-chief | Anything potentially defamatory, legally sensitive, or politically explosive     | Senior editor must approve                  |
 
-Each minister scored on 0–100 scale across two dimensions:
+### AI Configuration
 
-| Dimension             | Weight | Measurement                                           |
-| --------------------- | ------ | ----------------------------------------------------- |
-| Manifesto Compliance  | 70%    | Fulfilled / assigned bachha patra items               |
-| Public Accountability | 30%    | Sentiment (50%), Transparency (30%), Parliament (20%) |
+All AI is OpenAI-API-compatible. Currently using NVIDIA NIM (free tier). Models are swappable via environment variables.
 
-**Sub-scores within Public Accountability:**
+| Task                                              | Model                        | Env Var             |
+| ------------------------------------------------- | ---------------------------- | ------------------- |
+| Routine (extraction, classification, translation) | Qwen/DeepSeek via NVIDIA NIM | `NVIDIA_MODEL`      |
+| Deep analysis (scholarly, complex matching)       | Claude Sonnet (Anthropic)    | `ANTHROPIC_API_KEY` |
+| Embeddings                                        | Any OpenAI-compatible model  | `EMBEDDING_MODEL`   |
 
-- **Media Sentiment (50%)**: Tone of news coverage (positive/negative/neutral/mixed)
-- **Transparency (30%)**: Press conferences, public statements, RTI responses, announcements
-- **Parliamentary Engagement (20%)**: Q&A sessions, bills, committees, legislation
-
-**Scoring methodology:**
-
-- Each commitment from bachha/karar patra digitized with structured `source_id` (bp-001 → bp-100, pp-001 → pp-005)
-- Key commitments, measurability, and target metrics tracked per item
-- AI agent matches government actions to checklist items via embedding similarity
-- Human reviewers validate AI-matched scores weekly
-- Public can challenge scores via evidence-backed submissions
-
-### Module 5: Public Contribution (PR System)
-
-- **Web form** for evidence submission (not GitHub-native — too technical for public)
-- Backend creates structured entries in review queue
-- Required: source link, evidence screenshot, minister name, claim being challenged
-- **Review workflow**: Auto-check → Community vote → Editor approval → Published
-- Contributors earn reputation scores; top contributors featured
-
-### Module 6: Scholarly Reflections
-
-- Weekly AI-assisted deep analysis on policy trends
-- Guest scholar submission portal
-- Peer review by editorial board
-- Long-form articles with citations
+Embedding dimensions are **not locked in the schema** — pgvector columns accept any size. Switch models by changing the env var and re-running the embed script with `--force`.
 
 ---
 
-## 3. Technology Stack (Cost-Optimized)
+## 5. The Manifesto as Source of Truth
 
-### Frontend
+### Why the Manifesto, Not the Government's Action Plan
 
-| Component     | Technology                                 | Monthly Cost                                 |
-| ------------- | ------------------------------------------ | -------------------------------------------- |
-| Web Framework | **Next.js 14** (App Router, SSG + ISR)     | $0 (Vercel free tier covers ~100K pageviews) |
-| Hosting       | **Vercel** (free → $20/mo Pro when needed) | $0–20                                        |
-| UI Framework  | **Tailwind CSS** + **shadcn/ui**           | $0                                           |
-| i18n          | **next-intl** (Nepali + English)           | $0                                           |
-| Analytics     | **Umami** (self-hosted on same VPS)        | $0                                           |
+**The manifesto is a party document.** RSP published the Bachha Patra and Karar Patra to win votes — these are the specific promises made to citizens in exchange for a mandate to govern. We track against the manifesto because that is the only binding commitment: it is what they asked for votes on.
 
-### Backend & Database
+**The 100-point governance agenda is the government's own action plan.** It was released after taking power and represents how the cabinet intends to operate. Because RSP holds close to a two-thirds majority, the plan is heavily shaped by the manifesto — but it is not the same thing. The government wrote its own report card. We don't score against that.
 
-| Component        | Technology                                            | Monthly Cost |
-| ---------------- | ----------------------------------------------------- | ------------ |
-| Database         | **Supabase** (Free tier: 500MB, 2 projects)           | $0–25        |
-| Auth             | **Supabase Auth**                                     | $0           |
-| Storage          | **Supabase Storage** (1GB free)                       | $0           |
-| API Layer        | **Next.js API Routes** + **Supabase Edge Functions**  | $0           |
-| Full-text Search | **Supabase pg_trgm** or **Meilisearch** (self-hosted) | $0           |
+This distinction matters: the government may mark all 100 agendas as "completed" and call it a success. We will ask a different question — did the manifesto promises actually get fulfilled? Those are not always the same answer.
 
-### AI & Agents
+The government may release further action plans (100-day plans, annual programmes, sectoral roadmaps). These are all useful **evidence of activity**, and we track them as inputs. The scorecard is still the manifesto.
 
-| Component                 | Technology                                          | Monthly Cost    |
-| ------------------------- | --------------------------------------------------- | --------------- |
-| Agent Runtime             | **Python** scripts on **cron** (VPS)                | Included in VPS |
-| Cheap LLM (routine tasks) | **Claude 3.5 Haiku** / **GPT-4o-mini**              | ~$30–50         |
-| Quality LLM (analysis)    | **Claude Sonnet** (weekly scholarly posts)          | ~$20–30         |
-| Embeddings                | **Voyage AI** or **OpenAI text-embedding-3-small**  | ~$5             |
-| Scraping                  | **Playwright** + **BeautifulSoup4**                 | $0              |
-| NLP (Nepali)              | Custom fine-tuned models / **Google Translate API** | ~$10            |
-| Agent Orchestration       | **LangGraph** or custom Python DAGs                 | $0              |
+### Data Files
 
-### Infrastructure
+| File                               | What it is                                                                                                           | Items |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----- |
+| `data/manifesto/bachha_patra.json` | **RSP party manifesto** — 100 policy foundations, the scorecard (bp-001 → bp-100)                                    | 100   |
+| `data/manifesto/karar_patra.json`  | **RSP party manifesto** — 5 priority areas with measurable targets (pp-001 → pp-005)                                 | 5     |
+| `data/government/100_agendas.json` | **Government action plan** — cabinet's 100-point reform agenda (ga-001 → ga-100); useful evidence, not the scorecard | 100   |
+| `data/ministers/cabinet_2026.json` | Cabinet members with portfolio assignments                                                                           | 16    |
 
-| Component           | Technology                                             | Monthly Cost |
-| ------------------- | ------------------------------------------------------ | ------------ |
-| VPS (agents + jobs) | **Hetzner CX22** (2 vCPU, 4GB RAM) or **DigitalOcean** | $5–10        |
-| Domain              | drishtinepal.com / drishtinepal.com.np                 | $12/year     |
-| SSL                 | **Let's Encrypt** (auto)                               | $0           |
-| CDN                 | **Cloudflare** (free tier)                             | $0           |
-| Email               | **Resend** (free tier: 3K emails/mo)                   | $0           |
-| CI/CD               | **GitHub Actions** (free for public repos)             | $0           |
-| Monitoring          | **Uptime Kuma** (self-hosted) + **Sentry** (free tier) | $0           |
+### Relationship: Manifesto → Government Plans → Actions → Outcomes
 
-### Social Media
+```
+MANIFESTO (Bachha Patra + Karar Patra)  ← THE SCORECARD
+  = RSP's promises to voters
+  = Party document, published pre-election
+  = What we measure against. Full stop.
 
-| Component       | Technology                                                | Monthly Cost |
-| --------------- | --------------------------------------------------------- | ------------ |
-| X (Twitter) API | **Basic** tier ($100/mo) or **Free** (read + post limits) | $0–100       |
-| Facebook API    | **Graph API** (free for page management)                  | $0           |
-| Scheduling      | Custom Python bot on VPS cron                             | $0           |
+        ▼ (government's interpretation of those promises)
 
-### **Estimated Monthly Infra Cost: $70–250/mo**
+GOVERNMENT ACTION PLANS (100-point agenda + future plans)
+  = Cabinet's operational plan for governing
+  = Written by the govt itself — not a neutral source
+  = Useful as evidence of intent and activity
+  = NOT the scorecard (they could complete all 100 and still break manifesto promises)
 
----
+        ▼ (actual execution)
 
-## 4. Cost Optimization Strategies
+ACTIONS (What actually happens)
+  = Bills passed, budgets allocated, policies enacted, people arrested
+  = Tracked by agents from news, gazette, parliament
+  = Mapped back to manifesto items, not to the govt's own plan
 
-### Principle: "Pay for intelligence, not infrastructure"
+        ▼ (real-world results)
 
-1. **Static-first architecture**: SSG pages rebuild on content change, not per-request. Cuts server costs to near-zero.
+OUTCOMES (What actually changes in Nepal)
+  = GDP, poverty rate, employment, infrastructure, health, governance
+  = Verified from NRB, CBS, World Bank, IMF
+  = THE REAL VERDICT on whether manifesto promises are being kept
+```
 
-2. **Tiered AI usage**:
-   - **Haiku/4o-mini** ($0.25/1M input tokens): News extraction, classification, deduplication, tagging — 95% of AI calls
-   - **Sonnet** ($3/1M input tokens): Weekly scholarly analysis, complex manifesto matching — 5% of AI calls
-   - **Never use Opus/GPT-4 for routine tasks**
+### Translation & Versioning
 
-3. **Smart scraping**:
-   - RSS feeds first (free, structured)
-   - Scrape only when RSS unavailable
-   - Cache aggressively, deduplicate before AI processing
-   - Respect rate limits to avoid IP blocks
-
-4. **Edge caching**: Cloudflare CDN caches static content globally for free
-
-5. **Batch processing**: Accumulate data, process in batches every 30 min instead of real-time (saves API calls)
-
-6. **Open-source everything**: Public GitHub repo = free CI/CD, free community contributions
-
-7. **Progressive scaling**: Start with free tiers, upgrade only when traffic demands
+- Manifesto text is AI-translated from original Nepali. Translation will be reviewed and corrected over time.
+- **Any change to manifesto JSON files triggers automatic re-sync**: GitHub Action re-seeds DB + re-embeds all items.
+- Manual trigger available when switching embedding models: `force_reembed = true`.
 
 ---
 
-## 5. Revenue & Sustainability
+## 6. Data Model
 
-Revenue and staffing details are maintained privately. The project targets self-sustainability through social media monetization, ad revenue, sponsored scholarly content, and community donations.
-
----
-
-## 6. Data Model (Core Entities)
+### Core Tables
 
 ```
 ministers
-├── id (uuid)
+├── id (uuid, PK)
 ├── name_en, name_np
 ├── photo_url
-├── portfolio_en, portfolio_np (ministry name)
+├── portfolio_en, portfolio_np
 ├── party
 ├── appointed_date
 ├── previous_roles[] (jsonb)
 ├── bio_summary_en, bio_summary_np
 ├── overall_score (0–100)
-├── status (active/resigned/reshuffled/dismissed)
+├── status (active | resigned | reshuffled | dismissed)
 └── metadata (jsonb)
 
 manifesto_items
-├── id (uuid)
-├── source_id (text, unique: bp-001→bp-100, pp-001→pp-005)
+├── id (uuid, PK)
+├── source_id (unique: bp-001→bp-100, pp-001→pp-005)
 ├── document_type (bachha_patra | karar_patra)
-├── category (economy | health | education | infrastructure | governance | ...)
+├── category
 ├── title_en, title_np
 ├── item_text_en, item_text_np
-├── key_commitments[] (jsonb — array of commitment strings)
+├── key_commitments[] (jsonb)
 ├── measurable (boolean)
-├── target_metrics (jsonb — {metric, target, unit})
+├── target_metrics (jsonb)
 ├── priority (critical | high | medium | low)
 ├── status (not_started | in_progress | partially_fulfilled | fulfilled | broken | irrelevant)
-├── current_situation_en/np (karar patra only)
-├── goal_en/np (karar patra only)
-├── key_targets[] (jsonb — karar patra only)
-├── bachha_patra_links[] (jsonb — karar patra cross-refs)
-├── embedding (vector 1536)
-├── assigned_ministers[] (fk → ministers via junction)
+├── embedding (vector — dimension-agnostic)
 └── metadata (jsonb)
 
 governance_agendas
-├── id (uuid)
-├── source_id (text, unique: ga-001→ga-100)
-├── number, section (A–L)
-├── category
-├── title_en, title_np
-├── summary_en, summary_np
-├── deadline (raw text: "7 days", "immediate", etc.)
-├── deadline_date (computed absolute date)
-├── significance (critical | high | medium | low)
-├── status (announced | in_progress | completed | delayed | stalled | cancelled)
+├── id (uuid, PK)
+├── source_id (unique: ga-001→ga-100)
+├── number, section, category
+├── title_en, summary_en
+├── deadline, deadline_date
+├── significance, status
 ├── manifesto_links[] (jsonb — bp-XXX IDs)
-├── assigned_ministry (text)
-├── evidence[] (jsonb)
-└── metadata (jsonb)
+└── evidence[] (jsonb)
 
 actions
-├── id (uuid)
-├── minister_id (fk → ministers)
+├── id (uuid, PK)
+├── minister_id (FK → ministers)
 ├── action_date
-├── title_en, title_np
-├── description_en, description_np
-├── category (decision | statement | policy | legislation | scandal | achievement |
-│             appointment | press_conference | rti_response | parliament | bill |
-│             committee | qa_session | announcement | other)
+├── title_en, title_np, description_en, description_np
+├── category (decision | statement | policy | legislation | scandal | achievement | ...)
 ├── sentiment (positive | negative | neutral | mixed)
-├── linked_manifesto_items[] (fk → manifesto_items via junction)
-├── sources[] (jsonb — {url, title, published_at})
-├── evidence_files[] (storage paths)
+├── sources[] (jsonb), evidence_files[]
 ├── ai_confidence_score (0–1)
-├── human_verified (boolean)
-├── published (boolean)
-├── embedding (vector 1536)
+├── human_verified, published (boolean)
+├── embedding (vector — dimension-agnostic)
 └── metadata (jsonb)
+```
 
-cabinet_decisions
-├── id (uuid)
-├── decision_date
-├── title_en, title_np
-├── summary_en, summary_np
-├── full_text_url
-├── category
-├── impact_assessment_en/np
-├── gazette_reference
-├── linked_manifesto_items[] (fk → manifesto_items via junction)
-├── responsible_ministers[] (fk → ministers via junction)
+### Scoring Tables (New — Tiered Model)
+
+```
+outcome_indicators
+├── id (uuid, PK)
+├── indicator_name (e.g. "gdp_per_capita", "poverty_headcount")
+├── category (economy | health | education | infrastructure | governance)
+├── manifesto_item_id (FK → manifesto_items, nullable)
+├── baseline_value (numeric — value at government formation)
+├── baseline_date (date)
+├── target_value (numeric — manifesto target)
+├── target_date (date)
+├── current_value (numeric)
+├── current_date (date)
+├── source (text — "World Bank", "NRB", "CBS", etc.)
+├── source_url (text)
+├── unit (text — "USD", "%", "km", etc.)
+└── updated_at (timestamptz)
+
+initiative_evidence
+├── id (uuid, PK)
+├── manifesto_item_id (FK → manifesto_items)
+├── agenda_id (FK → governance_agendas, nullable)
+├── probability (numeric 0.0–1.0)
+├── assessment_en (text — AI-drafted, editor-approved)
+├── citations[] (jsonb — [{title, url, source, year}])
+├── status (draft | under_review | approved | needs_reassessment)
+├── assessed_at (timestamptz)
+├── reassessed_at (timestamptz, nullable)
+├── reassessment_reason (text, nullable)
+├── reviewed_by (text — editor/community member)
 └── metadata (jsonb)
 
 scores
-├── id (uuid)
-├── minister_id (fk → ministers)
-├── period_start, period_end (date range)
-├── manifesto_compliance (0–100, weight 70%)
-├── public_accountability (0–100, weight 30%)
-├── overall (weighted 0–100)
-├── breakdown (jsonb — detailed sub-scores)
-├── methodology_version (default 'v2')
-└── calculated_at
+├── id (uuid, PK)
+├── minister_id (FK → ministers)
+├── period_start, period_end
+├── outcome_score (numeric — Tier 1)
+├── initiative_score (numeric — Tier 2)
+├── evidence_score (numeric — Tier 3)
+├── overall (numeric — weighted composite)
+├── breakdown (jsonb — detailed per-indicator scores)
+├── methodology_version (text)
+└── scored_at (timestamptz)
+```
 
-posts (published content)
-├── id (uuid)
-├── type (news_update | analysis | scholarly | cabinet_decision | score_update |
-│         public_submission | agenda_update)
-├── slug (unique)
-├── title_en, title_np
-├── body_en, body_np (markdown)
-├── minister_ids[] (fk → ministers via junction)
-├── tags[]
-├── author_type (agent | editor | scholar | public)
-├── author_name
-├── status (draft | review | published | archived)
-├── published_at
-├── fb_post_id, x_post_id
-├── fb_published, x_published
-├── view_count
-└── metadata (jsonb)
+### Supporting Tables
 
-public_submissions
-├── id (uuid)
-├── submitter_name (optional)
-├── submitter_email
-├── target_post_id (fk → posts, optional)
-├── target_minister_id (fk → ministers)
-├── claim_text
-├── evidence_urls[] (jsonb)
-├── evidence_files[]
-├── submission_type (support | challenge | new_info | correction)
-├── status (pending | under_review | accepted | rejected | needs_more_info)
-├── reviewer_notes
-├── reviewed_by, reviewed_at
-├── submitter_reputation_score
-└── submitted_at
-
-scholarly_articles
-├── id (uuid)
-├── title_en, title_np
-├── author_name, author_bio
-├── body_en, body_np (markdown)
-├── category (policy_analysis | political_economy | governance | opinion | comparative | historical)
-├── peer_reviewed (boolean)
-├── post_id (fk → posts)
-└── published_at
+```
+cabinet_decisions              — Tracked government decisions
+raw_news                       — Scraped RSS items with AI processing results
+posts                          — Published content (bilingual, AI-labeled)
+post_ministers                  — Junction: posts → ministers
+action_manifesto_links         — Junction: actions → manifesto (with link_type, confidence)
+minister_manifesto_assignments — Junction: ministers → manifesto items
+public_submissions             — Citizen evidence submissions
+manifesto_edits                — Community PR-style corrections to manifesto text
+agent_logs                     — Per-run logging for all agents
 ```
 
 ---
 
-## 7. Agent Pipeline Detail
+## 7. Web Portal
 
-### Agent 1: News Scraper (`agents/news_scraper.py`)
+### Pages
 
-```
-Schedule: Every 30 minutes
+| Route               | Purpose                                                                       | Data Source               |
+| ------------------- | ----------------------------------------------------------------------------- | ------------------------- |
+| `/`                 | Home — minister grid, recent posts, key stats                                 | DB (ISR 300s)             |
+| `/ministers`        | All ministers with filter pills (All / Top / Needs Improvement / By Ministry) | DB (ISR 300s)             |
+| `/ministers/[id]`   | Minister detail — score breakdown, timeline, manifesto links                  | DB (ISR 300s)             |
+| `/manifesto`        | Manifesto tracker — grouped by category, progress bars                        | DB (ISR 300s)             |
+| `/manifesto/[slug]` | Item detail — related actions, cabinet decisions, propose edit                | DB (ISR 300s)             |
+| `/scores`           | Ranking table with all three score tiers                                      | DB (ISR 300s)             |
+| `/decisions`        | Cabinet decisions list                                                        | DB (ISR 300s)             |
+| `/articles`         | Merged AI + human-written articles                                            | DB + filesystem (ISR 60s) |
+| `/articles/[slug]`  | Article detail                                                                | DB or filesystem          |
+| `/submit`           | Public evidence submission form                                               | Writes to DB              |
+| `/methodology`      | Scoring methodology explained                                                 | Static                    |
+| `/about`            | About the project, ethics, funding                                            | Static                    |
 
-Whitelisted Sources — Nepali:
-  - ekantipur.com (RSS + scrape)
-  - onlinekhabar.com (RSS)
-  - ratopati.com (RSS)
-  - setopati.net (RSS)
-  - nagariknews.nagariknetwork.com (RSS)
-  - himalayakhabar.com (scrape)
+### Technology
 
-Whitelisted Sources — English:
-  - kathmandupost.com (RSS)
-  - nepalitimes.com (RSS)
-  - recordnepal.com (scrape)
-  - theannapurnaexpress.com (RSS)
-  - myrepublica.nagariknetwork.com (RSS)
-
-Whitelisted Sources — Government / Official:
-  - rajpatra.dop.gov.np (Nepal Gazette)
-  - opmcm.gov.np (PM & Cabinet Office)
-  - hr.parliament.gov.np (House of Representatives)
-  - na.parliament.gov.np (National Assembly)
-  - mof.gov.np (Ministry of Finance)
-  - npc.gov.np (National Planning Commission)
-  - oag.gov.np (Auditor General)
-  - election.gov.np (Election Commission)
-  - ciaa.gov.np (CIAA - Anti-Corruption)
-
-Pipeline:
-1. Fetch RSS feeds / scrape headlines
-2. Filter: keyword match against minister names, party names, ministry names
-3. Deduplicate against existing entries (title similarity > 0.85)
-4. For new articles: fetch full text
-5. AI Extract (Haiku): {minister, action, date, category, sentiment, summary}
-6. Store in `raw_news` table with source attribution
-7. Flag for content pipeline
-```
-
-### Agent 2: Content Generator (`agents/content_generator.py`)
-
-```
-Trigger: New raw_news entries flagged
-Pipeline:
-1. Batch unprocessed news items (max 20 per run)
-2. Group by minister
-3. AI Generate (Haiku):
-   - Bilingual summary (EN/NP)
-   - Classification (achievement/failure/neutral/decision)
-   - Link to manifesto items (similarity search against embeddings)
-4. Auto-publish if: factual news update + AI confidence > 0.9
-5. Queue for human review if: opinion/analysis + confidence < 0.9
-6. Create `posts` entry
-```
-
-### Agent 3: Social Publisher (`agents/social_publisher.py`)
-
-```
-Trigger: New published post
-Pipeline:
-1. Generate social-optimized text (280 chars for X, longer for FB)
-2. Generate card image (minister photo + headline + score) using Pillow/Canvas
-3. Post to X via API
-4. Post to FB Page via Graph API
-5. Store post IDs for engagement tracking
-6. Respect rate limits and optimal posting times (Nepal timezone)
-```
-
-### Agent 4: Scoring Agent (`agents/scoring_agent.py`)
-
-```
-Schedule: Daily at midnight NPT
-Pipeline:
-1. For each active minister:
-   a. Count actions by category in scoring period
-   b. Calculate manifesto compliance: fulfilled_items / total_assigned_items
-   c. Aggregate sentiment from news coverage
-   d. Check parliamentary records
-   e. AI Analysis (Sonnet, weekly): qualitative assessment
-2. Apply weighted formula
-3. Store new score snapshot
-4. If score changed significantly (>5 pts): generate score update post
-5. Update minister profile overall_score
-```
-
-### Agent 5: Manifesto Matcher (`agents/manifesto_matcher.py`)
-
-```
-Schedule: Every 12 hours
-Pipeline:
-1. Load all manifesto items with embeddings
-2. Load recent unmatched actions
-3. For each action:
-   a. Compute embedding similarity against manifesto items
-   b. If similarity > threshold: create candidate link
-   c. AI Verify (Haiku): "Does this action fulfill/violate this manifesto item?"
-4. Update manifesto item status
-5. Flag significant matches for human review
-```
+- **Framework:** Next.js (App Router, SSG + ISR)
+- **Hosting:** Vercel (free → Pro when needed)
+- **UI:** Tailwind CSS
+- **Database:** Supabase (Postgres + pgvector + Storage)
+- **i18n:** Cookie-based locale toggle (English primary; Nepali later)
 
 ---
 
-## 8. Implementation Phases
+## 8. Community & Open Source Governance
 
-### Phase 1: Foundation (Week 1–2)
+**Drishti Nepal is a public-interest open-source project.** The code, data, scoring methodology and editorial decisions are all public. Anyone can read them, challenge them, and improve them. There is no single gatekeeper — the community is the editor.
 
-- [ ] Set up GitHub repository (public)
-- [ ] Initialize Next.js project with TypeScript
-- [ ] Set up Supabase project (DB + Auth + Storage)
-- [ ] Design and create database schema
-- [ ] Digitize Ra Swa Pa bachha patra + karar patra into structured data
-- [ ] Create minister profiles (current cabinet)
-- [ ] Build basic portal: home, minister list, minister profile pages
-- [ ] Deploy to Vercel
+The GitHub repository is the source of record for everything: manifesto data, methodology, agent code, and editorial guidelines. If something is wrong, the fix is a pull request.
 
-### Phase 2: Agent Infrastructure (Week 3–4)
+### Roles
 
-- [ ] Set up VPS (Hetzner/DigitalOcean)
-- [ ] Build news scraper agent (start with 3 sources)
-- [ ] Build content generator agent
-- [ ] Build manifesto matcher agent
-- [ ] Set up cron scheduling
-- [ ] Build admin dashboard for monitoring agents
+| Role            | How to get it                           | What you can do                                                                          |
+| --------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| **Public**      | Anyone — no account needed on portal    | Read everything, submit evidence, flag content, propose manifesto edits via the web form |
+| **Contributor** | Open a GitHub account and submit a PR   | Fix data, add sources, write content, propose new data sources, open issues for anything |
+| **Moderator**   | Trusted contributor, invited by editors | Approve manifesto text edits, review Tier 3 assessments, merge contributor PRs           |
+| **Editor**      | Core team member                        | Final publish/reject on all content, manage review queue, approve methodology changes    |
 
-### Phase 3: Content & Scoring (Week 5–6)
+### How to Contribute — GitHub Workflows
 
-- [ ] Build scoring engine
-- [ ] Build cabinet decision tracker
-- [ ] Create minister timeline view
-- [ ] Create manifesto tracker dashboard
-- [ ] Build editorial review queue (admin panel)
-- [ ] First round of content generation + human review
+Everything flows through GitHub. The repo is public and all contributions go through PRs.
 
-### Phase 4: Social & Distribution (Week 7–8)
+#### Fix or improve manifesto data
 
-- [ ] Set up FB Page (Drishti Nepal / दृष्टि नेपाल) — @DrishtiNepalHQ
-- [ ] Set up X account (@DrishtiNepalHQ)
-- [ ] Build social publisher agent
-- [ ] Build card image generator
-- [ ] Optimize posting schedule for Nepal audience
-- [ ] Start daily publishing
+The manifesto JSON files (`bachha_patra.json`, `karar_patra.json`) are the source of truth. If a translation is wrong, a target is missing, or a category is incorrectly assigned:
 
-### Phase 5: Public Participation (Week 9–10)
+1. Fork the repo → edit the JSON file directly
+2. Open a PR with a clear title: `fix(manifesto): correct translation for bp-023`
+3. Cite the original Nepali source in the PR description
+4. A moderator reviews and merges → GitHub Action auto-reseeds the DB and re-embeds
 
-- [ ] Build public submission form
-- [ ] Build review queue for submissions
-- [ ] Build contributor reputation system
-- [ ] Add comment system (Supabase-based)
-- [ ] Community guidelines and moderation rules
+#### Propose a new data source
 
-### Phase 6: Monetization & Scale (Week 11–12)
+If you know of a better or additional source for any indicator (NRB datasets, World Bank API, CBS reports, NGO studies):
 
-- [ ] Apply for FB Page monetization
-- [ ] Apply for X creator monetization
-- [ ] Add Google AdSense to portal
-- [ ] Add donation page (eSewa/Khalti integration for Nepal)
-- [ ] Hire team members
-- [ ] Launch PR campaign
+1. Open a GitHub Issue with the label `data-source`
+2. Include: what the source covers, URL, update frequency, data format, and which manifesto item(s) it's relevant to
+3. A moderator triages and tags it for the relevant agent sprint
+
+#### Flag incorrect or misleading content
+
+Any published post, score, or assessment can be flagged:
+
+- **Via the portal:** Every article and score page has a "Flag this content" link (to be built) → writes to `public_submissions` table with type `flag`
+- **Via GitHub:** Open an Issue with label `content-flag` and the URL of the item
+- Flagged content is reviewed within 48 hours. If valid, it's corrected with a visible edit notice.
+
+#### Report a coverage gap
+
+If a government action, gazette decision, or minister announcement was missed:
+
+1. Open a GitHub Issue with label `coverage-gap`
+2. Include: date, source URL, which manifesto item it's relevant to
+3. The team manually adds it or adjusts the scraper/extractor config
+
+#### Fix or improve agent code
+
+Standard open-source workflow:
+
+1. Fork → branch off `main` with a descriptive name (`feat/gazette-monitor`, `fix/scraper-dedup`)
+2. All agents have tests in `agents/tests/`. New features need a test.
+3. Open a PR — CI runs tests automatically via GitHub Actions
+4. One editor approval required to merge
+
+#### Propose a methodology change
+
+Scoring methodology changes are the most consequential and require the most scrutiny:
+
+1. Open a GitHub Issue with label `methodology` and describe the change and rationale
+2. A public discussion period of at least 7 days
+3. Editor consensus required — no unilateral changes
+4. If merged, the methodology version in `scores` table is bumped. Historical scores are preserved.
+
+### Public Flagging — What Can Be Flagged
+
+| Flag Type             | How                           | Response                                           |
+| --------------------- | ----------------------------- | -------------------------------------------------- |
+| Factual error         | Portal flag or GitHub issue   | Editor reviews within 48 hrs; corrects with notice |
+| Missing evidence      | Portal submit or GitHub issue | Added to review queue for next agent run           |
+| Translation error     | PR against manifesto JSON     | Moderator review; auto-reseeds on merge            |
+| Bias / unfair framing | GitHub issue `content-flag`   | Editor review; public thread if disputed           |
+| Missing coverage      | GitHub issue `coverage-gap`   | Triage within 7 days                               |
+| New data source       | GitHub issue `data-source`    | Triage within 7 days                               |
+| Methodology concern   | GitHub issue `methodology`    | Public discussion; editor consensus required       |
+| Broken feature / bug  | GitHub issue `bug`            | Standard open-source bug triage                    |
+
+### Suggesting New Data Sources
+
+We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. If you know of sources that are not yet integrated, open a `data-source` issue. High-priority gaps:
+
+| Gap                               | Why it matters                                                            | Potential sources                                          |
+| --------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Nepal Gazette (Rajpatra)          | Official govt decisions — primary source for Tier 2                       | rajpatra.dop.gov.np (PDF scraping needed)                  |
+| Parliament records                | Bills, votes, committee reports                                           | hr.parliament.gov.np, na.parliament.gov.np                 |
+| DoFE (Dept of Foreign Employment) | Migration data — covers 500k jobs promise + diaspora                      | dfe.gov.np reports (semi-annual)                           |
+| NEA reports                       | Energy production — covers 15,000 MW target                               | nea.org.np annual reports                                  |
+| NTA (National Telecom Authority)  | Internet coverage data — covers connectivity target                       | nta.gov.np                                                 |
+| CBS household surveys             | Poverty, employment, income data                                          | cbs.gov.np                                                 |
+| Transparency International CPI    | Corruption perception — covers governance targets                         | transparency.org (annual)                                  |
+| OAG (Auditor General) reports     | Budget execution, financial compliance                                    | oagnepal.gov.np (annual)                                   |
+| CIAA (anti-corruption body)       | Corruption cases — covers accountability promises                         | ciaa.gov.np                                                |
+| Academic / NGO studies on Nepal   | Evidence for Tier 3 probability assessments                               | Tribhuvan University, Martin Chautari, IDS Nepal           |
+| Open Data Nepal Portal            | Aggregated govt datasets (economy, health, education, infrastructure)     | opennepal.net (varies by dataset)                          |
+| National Data Exchange Platform   | Real-time official data (when launched under RSP digital governance push) | TBD — monitor for launch within 100 days of govt formation |
+| CBS Statistical Pocket Book       | Comprehensive national statistics for Tier 1 baselines                    | cbs.gov.np (annual)                                        |
+
+### Transparency Guarantees
+
+- **All scoring methodology** is versioned and publicly documented in `/docs/methodology.md`
+- **Every AI-generated post** is labeled as AI-generated on the portal
+- **Edit history** on manifesto items and evidence assessments is public (stored in `manifesto_edits` table)
+- **Agent logs** are stored publicly — you can see what each agent ran, when, and what it produced
+- **Funding sources** are publicly disclosed on the `/about` page
+- **No content is ever silently deleted** — corrections are made with visible edit notices
 
 ---
 
-## 9. Nepali Language Strategy
+## 9. Implementation Phases
 
-- All content bilingual: Nepali (primary) + English
-- AI generates in English first, then translates to Nepali via:
-  - Google Translate API for first pass
-  - Human editor polishes Nepali text
-- UI in both languages with toggle
-- Social posts: Nepali for FB (larger Nepali audience), English for X (diaspora + international)
-- Nepali Unicode font support (Preeti/Kantipur fonts NOT used — standard Unicode devanagari)
+### Phase 0 — Launch (This Week) ← CURRENT
+
+- [x] Database schema applied (17 tables)
+- [x] Ministers, manifesto, agendas seeded (15 ministers, 105 manifesto items, 100 agendas)
+- [x] All 7 agents built and running locally
+- [x] GitHub Actions for agent cron + CI
+- [x] Manifesto sync workflow (auto re-seed + re-embed on data change)
+- [ ] Apply migration 006 (pgvector + embeddings + RPC)
+- [ ] Deploy frontend to Vercel
+- [ ] Verify agents run successfully via GitHub Actions
+
+### Phase 1 — Tiered Scoring Foundation (Weeks 1–2)
+
+- [ ] Create `outcome_indicators` table
+- [ ] Create `initiative_evidence` table
+- [ ] Seed baseline indicators from NRB/CBS/World Bank
+- [ ] Build `outcome_tracker` agent (pull latest indicators)
+- [ ] Rewrite `scoring_agent` for 3-tier model
+- [ ] Redesign `/scores` page to show all three tiers (add Recharts for score visualizations)
+- [ ] Update `/methodology` page to explain tiered scoring
+
+### Phase 2 — Coverage Completeness (Weeks 3–5)
+
+- [ ] Build `gazette_monitor` agent (scraper + manual entry fallback)
+- [ ] Build `parliament_tracker` agent
+- [ ] Build `open_data_monitor` agent (opennepal.net + National Data Exchange when live)
+- [ ] Build moderator dashboard for content review queue
+- [ ] Build `evidence_assessor` agent (drafts Tier 3 assessments)
+- [ ] Community review workflow (AI flags → editor approves)
+- [ ] Score history charts on minister profiles
+
+### Phase 3 — Distribution & Credibility (Weeks 5–8)
+
+- [ ] Social publisher running autonomously via cron
+- [ ] Card image generator (minister photo + headline + score)
+- [ ] Full-text search (pg_trgm already enabled)
+- [ ] Nepali language content pipeline
+- [ ] Default to Nepali locale via browser language detection (fall back to English)
+- [ ] Umami analytics integration
+- [ ] SEO optimization (including Nepali meta tags + schema markup for scores)
+
+### Phase 4 — Sustainability (Months 2–3)
+
+- [ ] FB Page + X account monetization applications
+- [ ] Donation page (eSewa/Khalti for Nepal, Stripe for diaspora) with transparent "Sponsor Transparency" page showing all funding sources
+- [ ] Apply for civic tech grants: Accountability Lab Nepal Incubator, EU CSO projects, Internews/EJN seed grants, UNDP Civic Tech Innovation Challenge
+- [ ] Scholarly content program
+- [ ] Expand tracking to other parties (when coalition/opposition data is relevant)
+- [ ] Funding target: 40% grants, 40% donations, 20% community/services by Year 2
 
 ---
 
-## 10. Editorial & Ethics Guidelines
+## 10. Editorial & Legal
 
 ### Principles
 
-1. **Factual accuracy above speed** — Never publish unverified claims
-2. **Source attribution** — Every claim linked to verifiable source
-3. **Political neutrality** — Track ALL parties equally (start with Ra Swa Pa as they're in power; expand)
-4. **Right of reply** — Ministers/offices can submit corrections
-5. **Transparent methodology** — Scoring formula publicly documented
-6. **AI transparency** — Label AI-generated content clearly
+1. **Results over activity** — A completed initiative with no measurable outcome is not an achievement
+2. **Factual accuracy above speed** — Never publish unverified claims
+3. **Source everything** — Every number links to NRB/CBS/World Bank/IMF or a named news source
+4. **No absolute verdicts** — Present probabilities and evidence, not opinions
+5. **Political neutrality** — Track ALL parties equally
+6. **Right of reply** — Ministers/offices can submit corrections via the portal
+7. **AI transparency** — All AI-generated content clearly labeled
+8. **Open methodology** — Scoring formula publicly documented and debatable
 
-### Content Review Tiers
+### Legal Compliance (Nepal)
 
-- **Tier 1 (Auto-publish)**: Factual news summaries, score updates, gazette references
-- **Tier 2 (Quick review)**: Action classifications, manifesto linkages
-- **Tier 3 (Full review)**: Scholarly articles, opinion pieces, controversy-related posts
-- **Tier 4 (Editor-in-Chief)**: Anything potentially defamatory or legally sensitive
-
-### Legal Considerations (Nepal)
-
-- Comply with Nepal's Electronic Transactions Act, 2063
+- Comply with Electronic Transactions Act, 2063
 - Comply with Press and Publication Act
-- No defamation — stick to verifiable facts
-- Register as online media with Press Council Nepal (if required)
-- Data privacy: don't collect unnecessary personal data from users
+- No defamation — verifiable facts only
+- Register as online media with Press Council Nepal if required
+- Minimal personal data collection from users
 
 ---
 
 ## 11. Risk Mitigation
 
-| Risk                            | Mitigation                                                                 |
-| ------------------------------- | -------------------------------------------------------------------------- |
-| AI generates inaccurate content | Multi-tier review system; AI confidence thresholds; human oversight        |
-| Legal threats from politicians  | Stick to facts, source everything, legal counsel on retainer               |
-| Scraper blocked by news sites   | Rotate user agents, use RSS first, multiple source redundancy              |
-| Social media account suspended  | Follow platform TOS strictly, avoid spam patterns, appeal process ready    |
-| Funding gap before monetization | Minimal burn rate ($500/mo), crowdfunding, NGO grants                      |
-| Agent downtime                  | Monitoring + alerts (Uptime Kuma), auto-restart (systemd), manual fallback |
-| Bias accusations                | Transparent methodology, public scoring formula, accept corrections        |
-| Data loss                       | Daily automated backups to Cloudflare R2 (free tier)                       |
+| Risk                                  | Mitigation                                                                                                                                                    |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Outcome data unavailable or delayed   | CBS/NRB publish quarterly; World Bank annually. Use most recent available + clearly show data date. For lagging indicators, Tier 2 and 3 scores fill the gap. |
+| AI generates inaccurate content       | Tiered review: auto-publish only facts; analysis requires human approval. AI confidence thresholds.                                                           |
+| Scoring methodology contested         | Fully public methodology. Open GitHub issues for methodology debates. Version the methodology.                                                                |
+| Legal threats from politicians        | Stick to verifiable facts from named sources. Legal counsel on retainer.                                                                                      |
+| Scraper blocked by news sites         | RSS first. Multiple source redundancy. Rotate user agents.                                                                                                    |
+| Embedding model changes               | Dimension-agnostic vector columns. One-click re-embed via GitHub Action.                                                                                      |
+| Community capture / bad-faith editors | Tiered permissions. Editors have final say. Public audit trail on all changes.                                                                                |
+| Agent downtime                        | GitHub Actions cron with retry. Agent logs table for monitoring. Manual trigger fallback.                                                                     |
 
 ---
 
-## 12. Key Metrics to Track
+## 12. Key Metrics
 
-- **Portal**: Daily active users, page views, time on site, bounce rate
-- **Social**: Follower growth, engagement rate, reach, shares
-- **Content**: Posts/week, AI vs human authored ratio, accuracy rate
-- **Revenue**: Monthly revenue by channel, cost per post, revenue per follower
-- **Impact**: Government responses to coverage, manifesto items status changes, public submissions/month
-- **Technical**: Agent uptime %, scraper success rate, AI cost per article
+### Impact Metrics (What Actually Matters)
+
+- Government responses to our coverage
+- Manifesto item status changes correlated with our reporting
+- Public submissions per month
+- Citation by journalists and researchers
+- Accuracy rate of Tier 3 predictions vs. actual outcomes
+
+### Operational Metrics
+
+- Agent uptime % and success rate
+- Posts per week (AI vs. human authored)
+- Time from event to published post
+- Indicator freshness (days since last outcome data update)
+- Community: active contributors, pending reviews, edit proposals
 
 ---
 
-_This plan is designed to be lean, automated, transparent, and sustainable. The key insight is that autonomous AI agents handle the high-volume repetitive work (scraping, classification, scoring), while humans focus on quality control, editorial judgment, and community building._
+## 13. Cost Structure
+
+### Principle: "Pay for intelligence, not infrastructure"
+
+| Component          | Technology                             | Monthly Cost   |
+| ------------------ | -------------------------------------- | -------------- |
+| Frontend hosting   | Vercel (free tier)                     | $0             |
+| Database           | Supabase (free → $25 Pro)              | $0–25          |
+| Agent compute      | GitHub Actions (free for public repos) | $0             |
+| AI — routine tasks | NVIDIA NIM free tier (Qwen/DeepSeek)   | $0             |
+| AI — deep analysis | Anthropic Claude Sonnet                | ~$20–30        |
+| AI — embeddings    | NVIDIA NIM free tier                   | $0             |
+| Domain             | drishtinepal.com                       | $12/year       |
+| CDN                | Cloudflare (free)                      | $0             |
+| X API              | Free tier (basic post + read)          | $0             |
+| Facebook API       | Graph API (free)                       | $0             |
+| **Total**          |                                        | **~$25–60/mo** |
+
+Cost stays minimal because: static-first architecture (Vercel ISR), free AI tier for 95% of calls, GitHub Actions instead of a VPS, and open-source community labor.
+
+---
+
+_This is a living document. The scoring methodology will evolve as we learn what's measurable and what isn't. Every change will be versioned, publicly discussed, and applied transparently._

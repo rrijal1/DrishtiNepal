@@ -128,6 +128,7 @@ export default function AboutPage() {
           <li>Office of the Auditor General (oag.gov.np)</li>
           <li>Election Commission (election.gov.np)</li>
           <li>CIAA (ciaa.gov.np)</li>
+          <li>Open Data Nepal (opennepal.net)</li>
         </ul>
 
         <h2>Editorial Principles</h2>

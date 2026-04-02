@@ -1,6 +1,12 @@
 """
-Drishti Nepal - Scoring Agent
-Daily recalculation of minister performance scores.
+Drishti Nepal — Scoring Agent (v3 — Three-Tier Model)
+Daily recalculation of minister and national scores.
+
+Tier 1 — Outcome Score: Are real-world indicators moving toward manifesto targets?
+Tier 2 — Initiative Score: How many manifesto items are being acted on?
+Tier 3 — Evidence Score: Does evidence suggest initiatives will produce results?
+
+The composite overall score uses configurable weights from SCORING_WEIGHTS.
 """
 
 from datetime import datetime, timezone, timedelta
@@ -11,14 +17,171 @@ from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
 
 logger = setup_logger("scoring_agent")
 
-
-def get_active_ministers() -> list[dict]:
-    result = db.table("ministers").select("*").eq("status", "active").execute()
-    return result.data
+METHODOLOGY_VERSION = "v3"
 
 
-def calculate_manifesto_compliance(minister_id: str) -> float:
-    """Score based on fulfilled vs total assigned manifesto items."""
+# ─────────────────────────────────────────────────────────────────
+# Tier 1: Outcome Score
+# ─────────────────────────────────────────────────────────────────
+
+
+def calculate_outcome_score_national() -> dict:
+    """
+    Calculate the national outcome score by measuring progress toward
+    manifesto targets across all outcome indicators.
+
+    Returns a dict with overall score and per-priority-area breakdown.
+    """
+    result = db.table("outcome_indicators").select("*").execute()
+    indicators = result.data
+
+    if not indicators:
+        return {"score": 50.0, "breakdown": {}, "indicator_count": 0}
+
+    # Group by priority area
+    by_area: dict[str, list] = {}
+    for ind in indicators:
+        area = ind.get("priority_area", "unknown")
+        by_area.setdefault(area, []).append(ind)
+
+    # Weight by manifesto structure (pp-002 covers 42% of items, pp-005 covers 5%)
+    area_weights = {
+        "pp-001": 0.18,  # 18 bachha patra items
+        "pp-002": 0.42,  # 42 items
+        "pp-003": 0.20,  # 20 items
+        "pp-004": 0.15,  # 15 items
+        "pp-005": 0.05,  # 5 items
+    }
+
+    area_scores = {}
+    weighted_total = 0.0
+    weight_sum = 0.0
+
+    for area, inds in by_area.items():
+        area_progress = []
+        for ind in inds:
+            progress = _indicator_progress(ind)
+            if progress is not None:
+                area_progress.append(progress)
+
+        if area_progress:
+            area_score = sum(area_progress) / len(area_progress) * 100
+            area_score = max(0, min(100, area_score))
+        else:
+            area_score = 50.0  # No data yet
+
+        area_scores[area] = round(area_score, 2)
+        weight = area_weights.get(area, 0.10)
+        weighted_total += area_score * weight
+        weight_sum += weight
+
+    overall = round(weighted_total / weight_sum, 2) if weight_sum > 0 else 50.0
+
+    return {
+        "score": overall,
+        "breakdown": area_scores,
+        "indicator_count": len(indicators),
+    }
+
+
+def _indicator_progress(ind: dict) -> float | None:
+    """
+    Calculate progress fraction (0.0 to 1.0) for a single indicator.
+    Returns None if data is insufficient.
+    """
+    baseline = ind.get("baseline_value")
+    current = ind.get("current_value")
+    target = ind.get("target_value")
+
+    if baseline is None or current is None or target is None:
+        return None
+
+    direction = ind.get("direction", "higher_is_better")
+
+    if direction == "higher_is_better":
+        needed = target - baseline
+        achieved = current - baseline
+    else:
+        needed = baseline - target
+        achieved = baseline - current
+
+    if needed == 0:
+        return 1.0 if achieved >= 0 else 0.0
+
+    progress = achieved / needed
+    return max(0.0, min(1.0, progress))
+
+
+def calculate_outcome_score_minister(minister_id: str) -> float:
+    """
+    Calculate a minister-level outcome score based on the indicators
+    linked to manifesto items assigned to that minister.
+    Falls back to national score if no specific assignments.
+    """
+    # Get manifesto items assigned to this minister
+    assignments = (
+        db.table("minister_manifesto_assignments")
+        .select("manifesto_item_id, manifesto_items(source_id)")
+        .eq("minister_id", minister_id)
+        .execute()
+    )
+    if not assignments.data:
+        return 50.0  # Default — no assignments yet
+
+    # Get the source_ids for assigned items
+    assigned_source_ids = set()
+    for a in assignments.data:
+        mi = a.get("manifesto_items")
+        if mi and mi.get("source_id"):
+            assigned_source_ids.add(mi["source_id"])
+
+    # Get indicators linked to those items or their priority areas
+    all_indicators = db.table("outcome_indicators").select("*").execute()
+
+    relevant = [
+        ind
+        for ind in all_indicators.data
+        if ind.get("priority_area") in assigned_source_ids
+        or (
+            ind.get("manifesto_item_id")
+            and any(
+                a["manifesto_item_id"] == ind["manifesto_item_id"]
+                for a in assignments.data
+            )
+        )
+    ]
+
+    if not relevant:
+        return 50.0
+
+    progresses = [_indicator_progress(ind) for ind in relevant]
+    progresses = [p for p in progresses if p is not None]
+
+    if not progresses:
+        return 50.0
+
+    return round(sum(progresses) / len(progresses) * 100, 2)
+
+
+# ─────────────────────────────────────────────────────────────────
+# Tier 2: Initiative Score
+# ─────────────────────────────────────────────────────────────────
+
+STATUS_SCORE_MAP = {
+    "fulfilled": 1.0,
+    "partially_fulfilled": 0.6,
+    "in_progress": 0.3,
+    "not_started": 0.0,
+    "broken": -0.3,
+    "irrelevant": None,  # Excluded from calculation
+}
+
+
+def calculate_initiative_score(minister_id: str) -> dict:
+    """
+    Calculate initiative score for a minister based on manifesto item statuses.
+    Returns score and status counts.
+    """
     assignments = (
         db.table("minister_manifesto_assignments")
         .select("manifesto_item_id")
@@ -26,93 +189,92 @@ def calculate_manifesto_compliance(minister_id: str) -> float:
         .execute()
     )
     if not assignments.data:
-        return 50.0  # Default if no assignments yet
+        return {"score": 50.0, "counts": {}, "total": 0}
 
     item_ids = [a["manifesto_item_id"] for a in assignments.data]
     items = db.table("manifesto_items").select("status").in_("id", item_ids).execute()
 
-    total = len(items.data)
-    if total == 0:
-        return 50.0
+    if not items.data:
+        return {"score": 50.0, "counts": {}, "total": 0}
 
-    score_map = {
-        "fulfilled": 1.0,
-        "partially_fulfilled": 0.6,
-        "in_progress": 0.3,
-        "not_started": 0.0,
-        "broken": -0.5,
-    }
+    counts = {}
+    scores = []
+    for item in items.data:
+        status = item["status"]
+        counts[status] = counts.get(status, 0) + 1
+        score_val = STATUS_SCORE_MAP.get(status)
+        if score_val is not None:
+            scores.append(score_val)
 
-    score_sum = sum(score_map.get(item["status"], 0) for item in items.data)
-    return max(0, min(100, (score_sum / total) * 100))
+    if not scores:
+        return {"score": 50.0, "counts": counts, "total": len(items.data)}
+
+    raw = sum(scores) / len(scores)
+    score = round(max(0, min(100, raw * 100)), 2)
+
+    return {"score": score, "counts": counts, "total": len(items.data)}
 
 
-def calculate_public_accountability(minister_id: str, days: int = 30) -> float:
+# ─────────────────────────────────────────────────────────────────
+# Tier 3: Evidence Score
+# ─────────────────────────────────────────────────────────────────
+
+
+def calculate_evidence_score(minister_id: str) -> dict:
     """
-    30% dimension — captures what the manifesto cannot:
-      - Media sentiment (50% of this sub-score): tone of news coverage
-      - Transparency (30%): press conferences, public statements, RTI responses
-      - Parliamentary engagement (20%): Q&A sessions, bills, committee activity
-    All three are derived from scraped actions data until richer sources are available.
+    Calculate evidence score from approved initiative_evidence assessments
+    linked to the minister's assigned manifesto items.
     """
-    since = (datetime.now(timezone.utc) - timedelta(days=days)).date().isoformat()
-    actions = (
-        db.table("actions")
-        .select("sentiment, category")
+    assignments = (
+        db.table("minister_manifesto_assignments")
+        .select("manifesto_item_id")
         .eq("minister_id", minister_id)
-        .gte("action_date", since)
         .execute()
     )
-    if not actions.data:
-        return 50.0
+    if not assignments.data:
+        return {"score": 50.0, "assessed": 0, "total": 0}
 
-    # Media sentiment sub-score
-    sentiment_map = {"positive": 80, "neutral": 50, "negative": 20, "mixed": 40}
-    sentiment_score = sum(
-        sentiment_map.get(a["sentiment"], 50) for a in actions.data
-    ) / len(actions.data)
+    item_ids = [a["manifesto_item_id"] for a in assignments.data]
 
-    # Transparency sub-score: presence of press/communication actions
-    # These categories must match the CHECK constraint in actions.category
-    transparency_categories = {
-        "press_conference",
-        "statement",
-        "rti_response",
-        "announcement",
-    }
-    transparency_count = sum(
-        1 for a in actions.data if a.get("category") in transparency_categories
-    )
-    transparency_score = min(100, 50 + transparency_count * 10)
-
-    # Parliamentary engagement sub-score: presence of legislative actions
-    parliament_categories = {
-        "parliament",
-        "bill",
-        "committee",
-        "qa_session",
-        "legislation",
-    }
-    parliament_count = sum(
-        1 for a in actions.data if a.get("category") in parliament_categories
-    )
-    parliament_score = min(100, 30 + parliament_count * 10)
-
-    return round(
-        sentiment_score * 0.50 + transparency_score * 0.30 + parliament_score * 0.20, 2
+    evidence = (
+        db.table("initiative_evidence")
+        .select("probability, status")
+        .in_("manifesto_item_id", item_ids)
+        .in_("status", ["approved", "under_review"])
+        .execute()
     )
 
+    if not evidence.data:
+        return {"score": 50.0, "assessed": 0, "total": len(item_ids)}
 
-def compute_overall_score(dimensions: dict) -> float:
-    """Weighted average of all dimensions."""
-    total = 0
+    probabilities = [
+        e["probability"] for e in evidence.data if e["probability"] is not None
+    ]
+
+    if not probabilities:
+        return {"score": 50.0, "assessed": 0, "total": len(item_ids)}
+
+    avg_prob = sum(probabilities) / len(probabilities)
+    score = round(avg_prob * 100, 2)
+
+    return {"score": score, "assessed": len(probabilities), "total": len(item_ids)}
+
+
+# ─────────────────────────────────────────────────────────────────
+# Composite Score
+# ─────────────────────────────────────────────────────────────────
+
+
+def compute_overall(tier_scores: dict) -> float:
+    """Weighted average of all three tiers."""
+    total = 0.0
     for key, weight in SCORING_WEIGHTS.items():
-        total += dimensions.get(key, 50) * weight
+        total += tier_scores.get(key, 50.0) * weight
     return round(total, 2)
 
 
-def store_score(minister_id: str, dimensions: dict, overall: float):
-    """Store a score snapshot."""
+def store_score(minister_id: str, tier_scores: dict, breakdown: dict, overall: float):
+    """Store a score snapshot with all three tiers."""
     now = datetime.now(timezone.utc)
     period_end = now.date().isoformat()
     period_start = (now - timedelta(days=30)).date().isoformat()
@@ -122,11 +284,12 @@ def store_score(minister_id: str, dimensions: dict, overall: float):
             "minister_id": minister_id,
             "period_start": period_start,
             "period_end": period_end,
-            "manifesto_compliance": dimensions["manifesto_compliance"],
-            "public_accountability": dimensions["public_accountability"],
+            "outcome_score": tier_scores["outcome_score"],
+            "initiative_score": tier_scores["initiative_score"],
+            "evidence_score": tier_scores["evidence_score"],
             "overall": overall,
-            "breakdown": dimensions,
-            "methodology_version": "v2",
+            "breakdown": breakdown,
+            "methodology_version": METHODOLOGY_VERSION,
         }
     ).execute()
 
@@ -136,30 +299,79 @@ def store_score(minister_id: str, dimensions: dict, overall: float):
     ).execute()
 
 
+# ─────────────────────────────────────────────────────────────────
+# Main
+# ─────────────────────────────────────────────────────────────────
+
+
 def run():
     """Main entry point for the scoring agent."""
     run_id = log_agent_run("scoring_agent")
     items_processed = 0
 
     try:
-        ministers = get_active_ministers()
-        logger.info(f"Scoring {len(ministers)} active ministers")
+        # First, compute the national outcome score (shared context)
+        national_outcome = calculate_outcome_score_national()
+        logger.info(
+            f"National Outcome Score: {national_outcome['score']}/100 "
+            f"({national_outcome['indicator_count']} indicators)"
+        )
+        for area, score in national_outcome["breakdown"].items():
+            logger.info(f"  {area}: {score}/100")
+
+        # Score each minister
+        ministers_result = (
+            db.table("ministers").select("*").eq("status", "active").execute()
+        )
+        ministers = ministers_result.data
+        logger.info(f"Scoring {len(ministers)} active ministers (v3 — 3-tier model)")
 
         for minister in ministers:
             mid = minister["id"]
             name = minister["name_en"]
 
-            dimensions = {
-                "manifesto_compliance": calculate_manifesto_compliance(mid),
-                "public_accountability": calculate_public_accountability(mid),
+            # Tier 1 — Outcome
+            outcome = calculate_outcome_score_minister(mid)
+
+            # Tier 2 — Initiative
+            initiative = calculate_initiative_score(mid)
+
+            # Tier 3 — Evidence
+            evidence = calculate_evidence_score(mid)
+
+            tier_scores = {
+                "outcome_score": outcome,
+                "initiative_score": initiative["score"],
+                "evidence_score": evidence["score"],
             }
 
-            overall = compute_overall_score(dimensions)
-            store_score(mid, dimensions, overall)
+            overall = compute_overall(tier_scores)
+
+            breakdown = {
+                "outcome": {
+                    "score": outcome,
+                    "note": "Based on outcome indicators for assigned manifesto areas",
+                },
+                "initiative": {
+                    "score": initiative["score"],
+                    "counts": initiative["counts"],
+                    "total": initiative["total"],
+                },
+                "evidence": {
+                    "score": evidence["score"],
+                    "assessed": evidence["assessed"],
+                    "total": evidence["total"],
+                },
+                "national_outcome": national_outcome["breakdown"],
+            }
+
+            store_score(mid, tier_scores, breakdown, overall)
             items_processed += 1
 
             logger.info(
-                f"  {name}: {overall}/100 (manifesto: {dimensions['manifesto_compliance']:.0f}, accountability: {dimensions['public_accountability']:.0f})"
+                f"  {name}: {overall}/100 "
+                f"(outcome: {outcome:.0f}, initiative: {initiative['score']:.0f}, "
+                f"evidence: {evidence['score']:.0f})"
             )
 
         complete_agent_run(run_id, "success", items_processed, items_processed)

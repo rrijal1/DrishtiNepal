@@ -19,6 +19,11 @@ AGENTS = {
     "publisher": ("agents.social_publisher.publisher", "Social Publisher"),
     "matcher": ("agents.manifesto_matcher.matcher", "Manifesto Matcher"),
     "scorer": ("agents.scoring_agent.scorer", "Scoring Agent"),
+    "outcome": ("agents.outcome_tracker.tracker", "Outcome Tracker"),
+    "gazette": ("agents.gazette_monitor.monitor", "Gazette Monitor"),
+    "parliament": ("agents.parliament_tracker.tracker", "Parliament Tracker"),
+    "opendata": ("agents.open_data_monitor.monitor", "Open Data Monitor"),
+    "evidence": ("agents.evidence_assessor.assessor", "Evidence Assessor"),
 }
 
 
@@ -35,16 +40,16 @@ def main():
         # Dynamic import
         module = __import__(module_path, fromlist=["run"])
         run_func = module.run
-        
+
         # Check if it's a coroutine function
         import asyncio
         import inspect
-        
+
         if inspect.iscoroutinefunction(run_func):
             asyncio.run(run_func())
         else:
             run_func()
-            
+
         logger.info(f"{display_name} completed successfully.")
     except Exception as e:
         logger.error(f"{display_name} failed: {e}\n{traceback.format_exc()}")

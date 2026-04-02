@@ -104,10 +104,18 @@ NEWS_SOURCES_ENGLISH = [
 # Combined list for the scraper agent
 NEWS_SOURCES = NEWS_SOURCES_NEPALI + NEWS_SOURCES_ENGLISH
 
-# Scoring weights
-# Two-dimension model: manifesto compliance is the primary accountability lens;
-# public accountability covers what the manifesto cannot (sentiment, transparency, parliament).
+# Scoring weights — 3-tier model (v3)
+# Tier 1 (Outcome) is the real verdict — weighted highest.
+# Tier 2 (Initiative) tracks activity — factual but not sufficient alone.
+# Tier 3 (Evidence) is the forward-looking probability — weighted lowest until data matures.
 SCORING_WEIGHTS = {
+    "outcome_score": 0.50,
+    "initiative_score": 0.30,
+    "evidence_score": 0.20,
+}
+
+# Legacy 2-dimension weights (deprecated, kept for score history compatibility)
+SCORING_WEIGHTS_V2 = {
     "manifesto_compliance": 0.70,
     "public_accountability": 0.30,
 }
