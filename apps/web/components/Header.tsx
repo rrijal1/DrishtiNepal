@@ -13,6 +13,7 @@ interface HeaderProps {
     scores: string;
     articles: string;
     submit: string;
+    search: string;
   };
 }
 
@@ -59,8 +60,25 @@ export function Header({ locale, navLabels: t }: HeaderProps) {
           ))}
         </nav>
 
-        {/* Language toggle + mobile menu button */}
-        <div className="flex items-center gap-3">
+        {/* Language toggle + search + mobile menu button */}
+        <div className="flex items-center gap-2">
+          <a
+            href="/search"
+            aria-label="Search"
+            className="rounded-md p-2 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900"
+          >
+            <svg
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+          </a>
           <LanguageToggle currentLocale={locale} />
           <button
             className="rounded-md p-2 text-neutral-600 transition hover:bg-neutral-100 md:hidden"
@@ -106,6 +124,24 @@ export function Header({ locale, navLabels: t }: HeaderProps) {
               {label}
             </a>
           ))}
+          <a
+            href="/search"
+            className="mt-1 flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-neutral-600 transition hover:bg-neutral-50 hover:text-neutral-900"
+            onClick={() => setMenuOpen(false)}
+          >
+            <svg
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            {t.search}
+          </a>
         </nav>
       )}
     </header>

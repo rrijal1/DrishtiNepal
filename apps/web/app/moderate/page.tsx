@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Moderator Dashboard — Drishti Nepal",
@@ -25,60 +26,90 @@ type ReviewItem = {
   reviewed_at: string | null;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function safeQuery<T = any>(fn: () => PromiseLike<{ data: T | null; count?: number | null; error: any }>): Promise<{ data: T | null; count: number }> {
+  try {
+    const res = await fn();
+    if (res.error) return { data: null, count: 0 };
+    return { data: res.data, count: res.count ?? 0 };
+  } catch {
+    return { data: null, count: 0 };
+  }
+}
+
 export default async function ModeratePage() {
-  // Fetch review queue items grouped by status
-  const { data: pending } = await supabase
-    .from("content_review_queue")
-    .select("*")
-    .in("status", ["pending", "in_review"])
-    .order("priority", { ascending: true })
-    .order("created_at", { ascending: true })
-    .limit(50);
-
-  const { data: recent } = await supabase
-    .from("content_review_queue")
-    .select("*")
-    .in("status", ["approved", "rejected", "needs_revision"])
-    .order("reviewed_at", { ascending: false })
-    .limit(20);
-
-  // Fetch stats
-  const { count: pendingCount } = await supabase
-    .from("content_review_queue")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "pending");
-
-  const { count: reviewCount } = await supabase
-    .from("content_review_queue")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "in_review");
-
-  const { count: todayApproved } = await supabase
-    .from("content_review_queue")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "approved")
-    .gte("reviewed_at", new Date(Date.now() - 86400000).toISOString());
-
-  // Fetch counts by content type
-  const { data: gazetteItems } = await supabase
-    .from("gazette_entries")
-    .select("id", { count: "exact", head: true })
-    .eq("review_status", "needs_review");
-
-  const { data: parliamentItems } = await supabase
-    .from("parliament_records")
-    .select("id", { count: "exact", head: true })
-    .eq("review_status", "needs_review");
-
-  const { data: evidenceItems } = await supabase
-    .from("initiative_evidence")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "draft");
-
-  const { data: submissions } = await supabase
-    .from("public_submissions")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "pending");
+  const [
+    { data: pending },
+    { data: recent },
+    { count: pendingCount },
+    { count: reviewCount },
+    { count: todayApproved },
+    { count: gazetteCount },
+    { count: parliamentCount },
+    { count: evidenceCount },
+    { count: submissionCount },
+  ] = await Promise.all([
+    safeQuery(() =>
+      supabase
+        .from("content_review_queue")
+        .select("*")
+        .in("status", ["pending", "in_review"])
+        .order("priority", { ascending: true })
+        .order("created_at", { ascending: true })
+        .limit(50)
+    ),
+    safeQuery(() =>
+      supabase
+        .from("content_review_queue")
+        .select("*")
+        .in("status", ["approved", "rejected", "needs_revision"])
+        .order("reviewed_at", { ascending: false })
+        .limit(20)
+    ),
+    safeQuery(() =>
+      supabase
+        .from("content_review_queue")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending")
+    ),
+    safeQuery(() =>
+      supabase
+        .from("content_review_queue")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "in_review")
+    ),
+    safeQuery(() =>
+      supabase
+        .from("content_review_queue")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "approved")
+        .gte("reviewed_at", new Date(Date.now() - 86400000).toISOString())
+    ),
+    safeQuery(() =>
+      supabase
+        .from("gazette_entries")
+        .select("*", { count: "exact", head: true })
+        .eq("review_status", "needs_review")
+    ),
+    safeQuery(() =>
+      supabase
+        .from("parliament_records")
+        .select("*", { count: "exact", head: true })
+        .eq("review_status", "needs_review")
+    ),
+    safeQuery(() =>
+      supabase
+        .from("initiative_evidence")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "draft")
+    ),
+    safeQuery(() =>
+      supabase
+        .from("public_submissions")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending")
+    ),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -106,15 +137,15 @@ export default async function ModeratePage() {
           value={todayApproved ?? 0}
           color="emerald"
         />
-        <StatCard label="Public Submissions" value={0} color="violet" />
+        <StatCard label="Public Submissions" value={submissionCount} color="violet" />
       </div>
 
       {/* Content Type Breakdown */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <SourceCard type="Gazette Entries" icon="📜" status="needs_review" />
-        <SourceCard type="Parliament Records" icon="🏛" status="needs_review" />
-        <SourceCard type="Evidence Assessments" icon="🔬" status="draft" />
-        <SourceCard type="Public Submissions" icon="📩" status="pending" />
+        <SourceCard type="Gazette Entries" icon="📜" count={gazetteCount} />
+        <SourceCard type="Parliament Records" icon="🏛" count={parliamentCount} />
+        <SourceCard type="Evidence Assessments" icon="🔬" count={evidenceCount} />
+        <SourceCard type="Public Submissions" icon="📩" count={submissionCount} />
       </div>
 
       {/* Two-column layout: Queue + Recent */}
@@ -218,17 +249,17 @@ function StatCard({
 function SourceCard({
   type,
   icon,
-  status,
+  count,
 }: {
   type: string;
   icon: string;
-  status: string;
+  count: number;
 }) {
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-4">
       <span className="text-2xl">{icon}</span>
       <p className="mt-2 text-sm font-semibold text-neutral-700">{type}</p>
-      <p className="text-xs text-neutral-400">Status: {status}</p>
+      <p className="text-xs text-neutral-400">{count} pending</p>
     </div>
   );
 }
@@ -340,7 +371,7 @@ function StatusChip({ status }: { status: string }) {
   };
   return (
     <span
-      className={`flex-shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[status] ?? "bg-neutral-100 text-neutral-500"}`}
+      className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${styles[status] ?? "bg-neutral-100 text-neutral-500"}`}
     >
       {labels[status] ?? status}
     </span>

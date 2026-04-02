@@ -12,11 +12,13 @@ export const translations = {
       scores: "Scores",
       articles: "Articles",
       submit: "Submit Evidence",
+      search: "Search",
     },
     home: {
       heroTitle: "Tracking Every Promise.",
       heroSubtitle: "Every Decision.",
-      heroDescription: "Drishti Nepal monitors cabinet ministers 24/7 — matching their actions against their election manifestos so citizens can see who delivers and who doesn't.",
+      heroDescription:
+        "Drishti Nepal monitors cabinet ministers 24/7 — matching their actions against their election manifestos so citizens can see who delivers and who doesn't.",
       viewMinisters: "View Ministers →",
       scoreDashboard: "Score Dashboard",
       ministersTracked: "Ministers Tracked",
@@ -32,11 +34,13 @@ export const translations = {
       scores: "स्कोरहरू",
       articles: "लेखहरू",
       submit: "प्रमाण पेश गर्नुहोस्",
+      search: "खोज्नुहोस्",
     },
     home: {
       heroTitle: "हरेक वाचाको ट्र्याकिङ।",
       heroSubtitle: "हरेक निर्णयको लेखाजोखा।",
-      heroDescription: "दृष्टि नेपालले क्याबिनेट मन्त्रीहरूलाई २४/७ निगरानी गर्दछ - उनीहरूको कार्यहरूलाई उनीहरूको चुनावी घोषणापत्रसँग मिलाउँछ ताकि नागरिकहरूले कसले डेलिभर गर्छ र कसले गर्दैन भनेर हेर्न सकून।",
+      heroDescription:
+        "दृष्टि नेपालले क्याबिनेट मन्त्रीहरूलाई २४/७ निगरानी गर्दछ - उनीहरूको कार्यहरूलाई उनीहरूको चुनावी घोषणापत्रसँग मिलाउँछ ताकि नागरिकहरूले कसले डेलिभर गर्छ र कसले गर्दैन भनेर हेर्न सकून।",
       viewMinisters: "मन्त्रीहरू हेर्नुहोस् →",
       scoreDashboard: "स्कोर ड्यासबोर्ड",
       ministersTracked: "अनुगमन गरिएका मन्त्रीहरू",

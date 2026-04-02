@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ScoreBadge } from "./ScoreBadge";
 
 interface Minister {
@@ -23,7 +24,7 @@ export function MinisterCard({ minister, locale = "en" }: { minister: Minister; 
     >
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full bg-neutral-100">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-neutral-100">
           {m.photo_url ? (
             <img
               src={m.photo_url}
@@ -66,6 +67,4 @@ export function MinisterCard({ minister, locale = "en" }: { minister: Minister; 
     </a>
   );
 }
-
-import clsx from "clsx";
 

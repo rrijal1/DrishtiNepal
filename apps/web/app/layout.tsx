@@ -4,7 +4,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Drishti Nepal | दृष्टि नेपाल — Cabinet Accountability Portal",
+  title: {
+    default: "Drishti Nepal | दृष्टि नेपाल — Cabinet Accountability Portal",
+    template: "%s | Drishti Nepal",
+  },
   description:
     "Tracking Nepal's cabinet ministers against their election manifesto commitments. AI-powered, transparent, unbiased political accountability.",
   keywords: [
@@ -15,7 +18,13 @@ export const metadata: Metadata = {
     "manifesto",
     "दृष्टि नेपाल",
     "मन्त्रिपरिषद्",
+    "Nepal government tracker",
+    "RSP manifesto",
+    "Balendra Shah",
   ],
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL ?? "https://drishtinepal.com",
+  ),
   openGraph: {
     title: "Drishti Nepal | दृष्टि नेपाल",
     description:
@@ -24,10 +33,22 @@ export const metadata: Metadata = {
     locale: "ne_NP",
     alternateLocale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-default.png",
+        width: 1200,
+        height: 630,
+        alt: "Drishti Nepal",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@DrishtiNepalHQ",
+    images: ["/og-default.png"],
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 
@@ -52,6 +73,17 @@ export default async function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        {/* Umami analytics — privacy-friendly, GDPR compliant, no cookies */}
+        {process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID && (
+          <script
+            defer
+            src={
+              process.env.NEXT_PUBLIC_UMAMI_SRC ??
+              "https://cloud.umami.is/script.js"
+            }
+            data-website-id={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+          />
+        )}
       </head>
       <body className="min-h-screen bg-neutral-50 text-neutral-800 antialiased">
         <Header locale={locale} navLabels={t} />

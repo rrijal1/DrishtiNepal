@@ -19,7 +19,7 @@ export function ScoreBadge({
   return (
     <div
       className={clsx(
-        "flex flex-shrink-0 items-center justify-center rounded-full font-bold",
+        "flex shrink-0 items-center justify-center rounded-full font-bold",
         sizeClasses[size],
         color,
       )}
@@ -56,7 +56,7 @@ function getScoreColor(score: number): string {
   return "bg-red-100 text-red-700";
 }
 
-function getBarColor(score: number): string {
+export function getBarColor(score: number): string {
   if (score >= 80) return "bg-emerald-500";
   if (score >= 60) return "bg-blue-500";
   if (score >= 40) return "bg-amber-500";

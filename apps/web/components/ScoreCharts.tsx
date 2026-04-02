@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import { getBarColor } from "./ScoreBadge";
 
 interface TierRadarProps {
   outcome: number;
@@ -82,10 +83,4 @@ export function OutcomeAreaBars({ areas }: OutcomeAreaBarProps) {
   );
 }
 
-function getBarColor(score: number): string {
-  if (score >= 80) return "bg-emerald-500";
-  if (score >= 60) return "bg-blue-500";
-  if (score >= 40) return "bg-amber-500";
-  if (score >= 20) return "bg-orange-500";
-  return "bg-red-500";
-}
+
