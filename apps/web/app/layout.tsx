@@ -85,7 +85,7 @@ export default async function RootLayout({
           />
         )}
       </head>
-      <body className="min-h-screen bg-neutral-50 text-neutral-800 antialiased">
+      <body className="min-h-screen overflow-x-hidden bg-neutral-50 text-neutral-800 antialiased">
         <Header locale={locale} navLabels={t} />
         <main>{children}</main>
         <Footer />

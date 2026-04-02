@@ -1,5 +1,5 @@
 import { ScoreBadge } from "@/components/ScoreBadge";
-import { OutcomeAreaBars, TierRadar } from "@/components/ScoreCharts";
+import { OutcomeAreaBars } from "@/components/ScoreCharts";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 300;
@@ -7,7 +7,7 @@ export const revalidate = 300;
 export const metadata = {
   title: "Score Dashboard — Drishti Nepal",
   description:
-    "Three-tier accountability scores: Outcomes, Initiatives, and Evidence for every cabinet minister.",
+    "Outcome-based accountability scores for every cabinet minister — tracking real-world progress against Ra Swa Pa's manifesto targets.",
 };
 
 const AREA_LABELS: Record<string, { label: string; weight: string }> = {
@@ -58,26 +58,12 @@ export default async function ScoresPage() {
         )
       : 0;
 
-  // Compute national tier averages from latest scores
+  // Compute national outcome average from latest scores
   const scoreValues = Array.from(latestScores.values());
   const avgOutcome =
     scoreValues.length > 0
       ? Math.round(
           scoreValues.reduce((s, v) => s + (v.outcome_score ?? 0), 0) /
-            scoreValues.length,
-        )
-      : 0;
-  const avgInitiative =
-    scoreValues.length > 0
-      ? Math.round(
-          scoreValues.reduce((s, v) => s + (v.initiative_score ?? 0), 0) /
-            scoreValues.length,
-        )
-      : 0;
-  const avgEvidence =
-    scoreValues.length > 0
-      ? Math.round(
-          scoreValues.reduce((s, v) => s + (v.evidence_score ?? 0), 0) /
             scoreValues.length,
         )
       : 0;
@@ -126,8 +112,8 @@ export default async function ScoresPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-neutral-800">Score Dashboard</h1>
         <p className="mt-2 text-neutral-500">
-          Three-tier accountability model: Outcomes (50%), Initiatives (30%),
-          Evidence (20%).{" "}
+          Outcome-only model (v1) — every score tracks real-world progress
+          toward manifesto targets.{" "}
           <a href="/methodology" className="text-[#1e3a5f] underline">
             Read our methodology
           </a>
@@ -136,60 +122,18 @@ export default async function ScoresPage() {
       </div>
 
       {/* National Overview */}
-      <div className="mb-10 grid gap-6 lg:grid-cols-3">
-        {/* Tier Summary Cards */}
+      <div className="mb-10 grid gap-6 lg:grid-cols-2">
+        {/* Outcome Score + Area Bars */}
         <div className="rounded-xl border border-neutral-200 bg-white p-6">
           <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-500">
-            National Score Overview
+            National Outcome Score
           </h2>
-          <div className="mb-4 flex items-center justify-center">
+          <div className="mb-6 flex items-center justify-center">
             <div className="text-center">
               <p className="text-5xl font-bold text-[#1e3a5f]">{avgScore}</p>
               <p className="mt-1 text-sm text-neutral-500">Overall Average</p>
             </div>
           </div>
-          <TierRadar
-            outcome={avgOutcome}
-            initiative={avgInitiative}
-            evidence={avgEvidence}
-          />
-        </div>
-
-        {/* Tier Breakdown */}
-        <div className="rounded-xl border border-neutral-200 bg-white p-6">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-500">
-            Three Tiers
-          </h2>
-          <div className="space-y-5">
-            <TierCard
-              label="Tier 1 — Outcomes"
-              sublabel="Are real-world indicators improving?"
-              score={avgOutcome}
-              weight="50%"
-              color="emerald"
-            />
-            <TierCard
-              label="Tier 2 — Initiatives"
-              sublabel="How many commitments are being acted on?"
-              score={avgInitiative}
-              weight="30%"
-              color="blue"
-            />
-            <TierCard
-              label="Tier 3 — Evidence"
-              sublabel="Will these initiatives produce results?"
-              score={avgEvidence}
-              weight="20%"
-              color="violet"
-            />
-          </div>
-        </div>
-
-        {/* Outcome Progress by Area */}
-        <div className="rounded-xl border border-neutral-200 bg-white p-6">
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-500">
-            Outcome Progress by Karar Patra Area
-          </h2>
           <OutcomeAreaBars areas={outcomeAreas} />
           <div className="mt-4 border-t border-neutral-100 pt-3">
             <p className="text-xs text-neutral-400">
@@ -198,35 +142,60 @@ export default async function ScoresPage() {
             </p>
           </div>
         </div>
-      </div>
 
-      {/* Initiative Status Summary */}
-      <div className="mb-10 grid gap-4 sm:grid-cols-5">
-        <StatusCard
-          label="Fulfilled"
-          count={statusCounts["fulfilled"] ?? 0}
-          color="bg-emerald-100 text-emerald-700"
-        />
-        <StatusCard
-          label="In Progress"
-          count={statusCounts["in_progress"] ?? 0}
-          color="bg-blue-100 text-blue-700"
-        />
-        <StatusCard
-          label="Partially Fulfilled"
-          count={statusCounts["partially_fulfilled"] ?? 0}
-          color="bg-amber-100 text-amber-700"
-        />
-        <StatusCard
-          label="Not Started"
-          count={statusCounts["not_started"] ?? 0}
-          color="bg-neutral-100 text-neutral-600"
-        />
-        <StatusCard
-          label="Broken"
-          count={statusCounts["broken"] ?? 0}
-          color="bg-red-100 text-red-700"
-        />
+        {/* Activity Tracker */}
+        <div className="rounded-xl border border-neutral-200 bg-white p-6">
+          <h2 className="mb-1 text-sm font-semibold uppercase tracking-wider text-neutral-500">
+            Activity Tracker
+          </h2>
+          <p className="mb-5 text-xs text-neutral-400">
+            Initiative status counts — displayed for context, not included in
+            the score.
+          </p>
+          <div className="space-y-3">
+            <ActivityRow
+              label="Fulfilled"
+              count={statusCounts["fulfilled"] ?? 0}
+              total={manifestoItems?.length ?? 0}
+              color="bg-emerald-500"
+              textColor="text-emerald-700"
+            />
+            <ActivityRow
+              label="In Progress"
+              count={statusCounts["in_progress"] ?? 0}
+              total={manifestoItems?.length ?? 0}
+              color="bg-blue-500"
+              textColor="text-blue-700"
+            />
+            <ActivityRow
+              label="Partially Fulfilled"
+              count={statusCounts["partially_fulfilled"] ?? 0}
+              total={manifestoItems?.length ?? 0}
+              color="bg-amber-500"
+              textColor="text-amber-700"
+            />
+            <ActivityRow
+              label="Not Started"
+              count={statusCounts["not_started"] ?? 0}
+              total={manifestoItems?.length ?? 0}
+              color="bg-neutral-300"
+              textColor="text-neutral-600"
+            />
+            <ActivityRow
+              label="Broken"
+              count={statusCounts["broken"] ?? 0}
+              total={manifestoItems?.length ?? 0}
+              color="bg-red-500"
+              textColor="text-red-700"
+            />
+          </div>
+          <p className="mt-5 border-t border-neutral-100 pt-3 text-xs text-neutral-400">
+            {manifestoItems?.length ?? 0} total manifesto commitments tracked.{" "}
+            <a href="/manifesto" className="text-[#1e3a5f] underline">
+              View all →
+            </a>
+          </p>
+        </div>
       </div>
 
       {/* Minister Ranking Table */}
@@ -243,85 +212,58 @@ export default async function ScoresPage() {
               <th className="hidden px-3 py-3 text-left text-xs font-semibold uppercase text-neutral-500 md:table-cell">
                 Portfolio
               </th>
-              <th className="hidden px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 lg:table-cell">
-                <span className="text-emerald-600">Outcomes</span>
-                <span className="text-neutral-400"> (50%)</span>
-              </th>
-              <th className="hidden px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 lg:table-cell">
-                <span className="text-blue-600">Initiatives</span>
-                <span className="text-neutral-400"> (30%)</span>
-              </th>
-              <th className="hidden px-3 py-3 text-center text-xs font-semibold uppercase text-neutral-500 lg:table-cell">
-                <span className="text-violet-600">Evidence</span>
-                <span className="text-neutral-400"> (20%)</span>
-              </th>
               <th className="px-3 py-3 pr-6 text-center text-xs font-semibold uppercase text-neutral-500">
-                Overall
+                <span className="text-emerald-600">Outcome Score</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {ministers?.map((m, i) => {
-              const s = latestScores.get(m.id);
-              return (
-                <tr
-                  key={m.id}
-                  className="border-b border-neutral-50 transition hover:bg-neutral-50"
-                >
-                  <td className="py-4 pl-6 pr-3 text-sm font-medium text-neutral-400">
-                    {i + 1}
-                  </td>
-                  <td className="px-3 py-4">
-                    <a
-                      href={`/ministers/${m.id}`}
-                      className="group flex items-center gap-3"
-                    >
-                      <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-neutral-100">
-                        {m.photo_url ? (
-                          <img
-                            src={m.photo_url}
-                            alt=""
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center text-xs font-bold text-neutral-300">
-                            {m.name_en.charAt(0)}
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
-                          {m.name_en}
-                        </p>
-                        <p className="font-nepali text-xs text-neutral-400">
-                          {m.name_np}
-                        </p>
-                      </div>
-                    </a>
-                  </td>
-                  <td className="hidden px-3 py-4 text-sm text-neutral-600 md:table-cell">
-                    {m.portfolio_en}
-                  </td>
-                  <DimensionCell
-                    value={s?.outcome_score}
-                    colorClass="text-emerald-600"
-                  />
-                  <DimensionCell
-                    value={s?.initiative_score}
-                    colorClass="text-blue-600"
-                  />
-                  <DimensionCell
-                    value={s?.evidence_score}
-                    colorClass="text-violet-600"
-                  />
-                  <td className="px-3 py-4 pr-6 text-center">
-                    <ScoreBadge score={m.overall_score ?? 0} size="sm" />
-                  </td>
-                </tr>
-              );
-            }) ?? (
+            {ministers?.map((m, i) => (
+              <tr
+                key={m.id}
+                className="border-b border-neutral-50 transition hover:bg-neutral-50"
+              >
+                <td className="py-4 pl-6 pr-3 text-sm font-medium text-neutral-400">
+                  {i + 1}
+                </td>
+                <td className="px-3 py-4">
+                  <a
+                    href={`/ministers/${m.id}`}
+                    className="group flex items-center gap-3"
+                  >
+                    <div className="h-9 w-9 flex-shrink-0 overflow-hidden rounded-full bg-neutral-100">
+                      {m.photo_url ? (
+                        <img
+                          src={m.photo_url}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs font-bold text-neutral-300">
+                          {m.name_en.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
+                        {m.name_en}
+                      </p>
+                      <p className="font-nepali text-xs text-neutral-400">
+                        {m.name_np}
+                      </p>
+                    </div>
+                  </a>
+                </td>
+                <td className="hidden px-3 py-4 text-sm text-neutral-600 md:table-cell">
+                  {m.portfolio_en}
+                </td>
+                <td className="px-3 py-4 pr-6 text-center">
+                  <ScoreBadge score={m.overall_score ?? 0} size="sm" />
+                </td>
+              </tr>
+            )) ?? (
               <tr>
-                <td colSpan={7} className="py-16 text-center text-neutral-400">
+                <td colSpan={4} className="py-16 text-center text-neutral-400">
                   No score data available yet. Scoring agents run daily.
                 </td>
               </tr>
@@ -331,7 +273,7 @@ export default async function ScoresPage() {
       </div>
 
       <div className="mt-6 text-center text-xs text-neutral-400">
-        Scores are recalculated daily at midnight NPT. Methodology v3 is fully{" "}
+        Scores are recalculated daily at midnight NPT. Methodology v1 is fully{" "}
         <a href="/methodology" className="underline">
           documented and open source
         </a>
@@ -341,71 +283,33 @@ export default async function ScoresPage() {
   );
 }
 
-function DimensionCell({
-  value,
-  colorClass,
-}: {
-  value?: number;
-  colorClass?: string;
-}) {
-  if (value == null)
-    return (
-      <td className="hidden px-3 py-4 text-center text-xs text-neutral-300 lg:table-cell">
-        —
-      </td>
-    );
-  const color =
-    colorClass ??
-    (value >= 80
-      ? "text-emerald-600"
-      : value >= 60
-        ? "text-blue-600"
-        : value >= 40
-          ? "text-amber-600"
-          : "text-red-600");
-  return (
-    <td
-      className={`hidden px-3 py-4 text-center text-sm font-medium lg:table-cell ${color}`}
-    >
-      {value}
-    </td>
-  );
-}
-
-function TierCard({
+function ActivityRow({
   label,
-  sublabel,
-  score,
-  weight,
+  count,
+  total,
   color,
+  textColor,
 }: {
   label: string;
-  sublabel: string;
-  score: number;
-  weight: string;
-  color: "emerald" | "blue" | "violet";
+  count: number;
+  total: number;
+  color: string;
+  textColor: string;
 }) {
-  const colorMap = {
-    emerald: "border-emerald-200 bg-emerald-50",
-    blue: "border-blue-200 bg-blue-50",
-    violet: "border-violet-200 bg-violet-50",
-  };
-  const textMap = {
-    emerald: "text-emerald-700",
-    blue: "text-blue-700",
-    violet: "text-violet-700",
-  };
+  const pct = total > 0 ? Math.round((count / total) * 100) : 0;
   return (
-    <div className={`rounded-lg border p-4 ${colorMap[color]}`}>
-      <div className="flex items-center justify-between">
-        <div>
-          <p className={`text-sm font-semibold ${textMap[color]}`}>{label}</p>
-          <p className="text-xs text-neutral-500">{sublabel}</p>
-        </div>
-        <div className="text-right">
-          <p className={`text-2xl font-bold ${textMap[color]}`}>{score}</p>
-          <p className="text-xs text-neutral-400">{weight}</p>
-        </div>
+    <div>
+      <div className="mb-1 flex items-center justify-between text-xs">
+        <span className={`font-medium ${textColor}`}>{label}</span>
+        <span className="text-neutral-600">
+          {count} <span className="text-neutral-400">({pct}%)</span>
+        </span>
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
+        <div
+          className={`h-full rounded-full ${color}`}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </div>
   );

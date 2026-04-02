@@ -2,7 +2,6 @@
 
 import {
   CartesianGrid,
-  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -15,8 +14,6 @@ interface ScoreHistoryEntry {
   date: string;
   overall: number;
   outcome_score: number | null;
-  initiative_score: number | null;
-  evidence_score: number | null;
 }
 
 interface ScoreHistoryChartProps {
@@ -33,8 +30,6 @@ export function ScoreHistoryChart({ scores }: ScoreHistoryChartProps) {
     }),
     Overall: s.overall,
     Outcomes: s.outcome_score ?? undefined,
-    Initiatives: s.initiative_score ?? undefined,
-    Evidence: s.evidence_score ?? undefined,
   }));
 
   return (
@@ -62,11 +57,6 @@ export function ScoreHistoryChart({ scores }: ScoreHistoryChartProps) {
             border: "1px solid #e5e5e5",
           }}
         />
-        <Legend
-          wrapperStyle={{ fontSize: 11 }}
-          iconType="circle"
-          iconSize={8}
-        />
         <Line
           type="monotone"
           dataKey="Overall"
@@ -74,6 +64,7 @@ export function ScoreHistoryChart({ scores }: ScoreHistoryChartProps) {
           strokeWidth={2.5}
           dot={{ r: 3 }}
           activeDot={{ r: 5 }}
+          name="Overall"
         />
         <Line
           type="monotone"
@@ -82,22 +73,7 @@ export function ScoreHistoryChart({ scores }: ScoreHistoryChartProps) {
           strokeWidth={1.5}
           strokeDasharray="4 2"
           dot={false}
-        />
-        <Line
-          type="monotone"
-          dataKey="Initiatives"
-          stroke="#3b82f6"
-          strokeWidth={1.5}
-          strokeDasharray="4 2"
-          dot={false}
-        />
-        <Line
-          type="monotone"
-          dataKey="Evidence"
-          stroke="#8b5cf6"
-          strokeWidth={1.5}
-          strokeDasharray="4 2"
-          dot={false}
+          name="Outcome Score"
         />
       </LineChart>
     </ResponsiveContainer>

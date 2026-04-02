@@ -2,6 +2,7 @@ import { ScoreBadge, ScoreBar } from "@/components/ScoreBadge";
 import { ScoreHistoryChart } from "@/components/ScoreHistoryChart";
 import { getLocale } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
+import clsx from "clsx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -69,9 +70,7 @@ export default async function MinisterDetailPage({
 
   const { data: scoreHistory } = await supabase
     .from("scores")
-    .select(
-      "scored_at, overall, outcome_score, initiative_score, evidence_score",
-    )
+    .select("scored_at, overall, outcome_score")
     .eq("minister_id", id)
     .order("scored_at", { ascending: true })
     .limit(90);
@@ -94,9 +93,7 @@ export default async function MinisterDetailPage({
   const t = {
     back: locale === "en" ? "← Back to Ministers" : "← मन्त्रीहरूमा फर्कनुहोस्",
     scoreTitle: locale === "en" ? "Score Breakdown" : "स्कोरको विस्तृत विवरण",
-    outcomeLabel: locale === "en" ? "Outcomes (50%)" : "परिणाम (५०%)",
-    initiativeLabel: locale === "en" ? "Initiatives (30%)" : "पहलकदमी (३०%)",
-    evidenceLabel: locale === "en" ? "Evidence (20%)" : "प्रमाण (२०%)",
+    outcomeLabel: locale === "en" ? "Outcome Score" : "परिणाम स्कोर",
     overallLabel: locale === "en" ? "Overall" : "समग्र स्कोर",
     scoreHistory: locale === "en" ? "Score History" : "स्कोर इतिहास",
     noScore:
@@ -215,44 +212,16 @@ export default async function MinisterDetailPage({
             </h2>
             {latestScore ? (
               <div className="space-y-4 rounded-xl border border-neutral-200 bg-white p-6">
-                {latestScore.outcome_score != null ||
-                latestScore.initiative_score != null ||
-                latestScore.evidence_score != null ? (
-                  <>
-                    <ScoreBar
-                      label={t.outcomeLabel}
-                      score={latestScore.outcome_score ?? 0}
-                    />
-                    <ScoreBar
-                      label={t.initiativeLabel}
-                      score={latestScore.initiative_score ?? 0}
-                    />
-                    <ScoreBar
-                      label={t.evidenceLabel}
-                      score={latestScore.evidence_score ?? 0}
-                    />
-                    <div className="border-t border-neutral-100 pt-4">
-                      <ScoreBar
-                        label={t.overallLabel}
-                        score={latestScore.overall}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="border-t border-neutral-100 pt-4">
-                      <ScoreBar
-                        label={t.overallLabel}
-                        score={latestScore.overall}
-                      />
-                    </div>
-                    <p className="mt-2 text-xs text-neutral-400">
-                      {locale === "en"
-                        ? "Three-tier breakdown will be available after the next scoring run."
-                        : "अर्को स्कोरिङ पछि तीन-स्तरीय विवरण उपलब्ध हुनेछ।"}
-                    </p>
-                  </>
-                )}
+                <ScoreBar
+                  label={t.outcomeLabel}
+                  score={latestScore.outcome_score ?? latestScore.overall ?? 0}
+                />
+                <div className="border-t border-neutral-100 pt-4">
+                  <ScoreBar
+                    label={t.overallLabel}
+                    score={latestScore.overall}
+                  />
+                </div>
               </div>
             ) : (
               <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-8 text-center text-neutral-400">
@@ -272,8 +241,6 @@ export default async function MinisterDetailPage({
                       date: s.scored_at,
                       overall: s.overall,
                       outcome_score: s.outcome_score,
-                      initiative_score: s.initiative_score,
-                      evidence_score: s.evidence_score,
                     }))}
                   />
                 </div>
@@ -421,5 +388,3 @@ function StatusChip({ status, locale }: { status: string; locale: string }) {
     </span>
   );
 }
-
-import clsx from "clsx";

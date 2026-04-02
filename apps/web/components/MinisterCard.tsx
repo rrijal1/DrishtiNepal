@@ -12,11 +12,18 @@ interface Minister {
   overall_score: number;
 }
 
-export function MinisterCard({ minister, locale = "en" }: { minister: Minister; locale?: string }) {
+export function MinisterCard({
+  minister,
+  locale = "en",
+}: {
+  minister: Minister;
+  locale?: string;
+}) {
   const m = minister;
-  const name = locale === "en" ? m.name_en : (m.name_np || m.name_en);
-  const portfolio = locale === "en" ? m.portfolio_en : (m.portfolio_np || m.portfolio_en);
-  
+  const name = locale === "en" ? m.name_en : m.name_np || m.name_en;
+  const portfolio =
+    locale === "en" ? m.portfolio_en : m.portfolio_np || m.portfolio_en;
+
   return (
     <a
       href={`/ministers/${m.id}`}
@@ -47,7 +54,12 @@ export function MinisterCard({ minister, locale = "en" }: { minister: Minister; 
               {m.name_np}
             </p>
           )}
-          <p className={clsx("mt-1 truncate text-xs text-neutral-500", locale === "np" && "font-nepali")}>
+          <p
+            className={clsx(
+              "mt-1 truncate text-xs text-neutral-500",
+              locale === "np" && "font-nepali",
+            )}
+          >
             {portfolio}
           </p>
         </div>
@@ -67,4 +79,3 @@ export function MinisterCard({ minister, locale = "en" }: { minister: Minister; 
     </a>
   );
 }
-

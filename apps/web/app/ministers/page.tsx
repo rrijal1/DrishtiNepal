@@ -107,10 +107,7 @@ export default async function MinistersPage({ searchParams }: Props) {
 
         {/* Ministry dropdown — shown when "By Ministry" is active */}
         {activeFilter === "ministry" && (
-          <MinistrySelectInline
-            ministries={ministries}
-            selected={selectedMinistry}
-          />
+          <MinistrySelect ministries={ministries} selected={selectedMinistry} />
         )}
       </div>
 
@@ -127,14 +124,4 @@ export default async function MinistersPage({ searchParams }: Props) {
       )}
     </div>
   );
-}
-
-function MinistrySelectInline({
-  ministries,
-  selected,
-}: {
-  ministries: string[];
-  selected: string;
-}) {
-  return <MinistrySelect ministries={ministries} selected={selected} />;
 }

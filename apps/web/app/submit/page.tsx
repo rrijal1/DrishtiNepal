@@ -78,10 +78,14 @@ export default function SubmitPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Type */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+            <label
+              htmlFor="submit-type"
+              className="mb-1.5 block text-sm font-medium text-neutral-700"
+            >
               Submission Type
             </label>
             <select
+              id="submit-type"
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
               className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f] focus:outline-none"
@@ -95,10 +99,14 @@ export default function SubmitPage() {
 
           {/* Minister */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+            <label
+              htmlFor="submit-minister"
+              className="mb-1.5 block text-sm font-medium text-neutral-700"
+            >
               Related Minister (optional)
             </label>
             <input
+              id="submit-minister"
               type="text"
               value={form.minister_name}
               onChange={(e) =>
@@ -111,10 +119,14 @@ export default function SubmitPage() {
 
           {/* Title */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+            <label
+              htmlFor="submit-title"
+              className="mb-1.5 block text-sm font-medium text-neutral-700"
+            >
               Title *
             </label>
             <input
+              id="submit-title"
               type="text"
               required
               value={form.title}
@@ -126,10 +138,14 @@ export default function SubmitPage() {
 
           {/* Description */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+            <label
+              htmlFor="submit-description"
+              className="mb-1.5 block text-sm font-medium text-neutral-700"
+            >
               Description *
             </label>
             <textarea
+              id="submit-description"
               required
               rows={6}
               value={form.description}
@@ -143,10 +159,14 @@ export default function SubmitPage() {
 
           {/* Source URL */}
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+            <label
+              htmlFor="submit-source-url"
+              className="mb-1.5 block text-sm font-medium text-neutral-700"
+            >
               Source URL
             </label>
             <input
+              id="submit-source-url"
               type="url"
               value={form.source_url}
               onChange={(e) => setForm({ ...form, source_url: e.target.value })}
@@ -162,10 +182,14 @@ export default function SubmitPage() {
           {/* Contact info */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+              <label
+                htmlFor="submit-name"
+                className="mb-1.5 block text-sm font-medium text-neutral-700"
+              >
                 Your Name (optional)
               </label>
               <input
+                id="submit-name"
                 type="text"
                 value={form.submitter_name}
                 onChange={(e) =>
@@ -176,10 +200,14 @@ export default function SubmitPage() {
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+              <label
+                htmlFor="submit-email"
+                className="mb-1.5 block text-sm font-medium text-neutral-700"
+              >
                 Email (optional)
               </label>
               <input
+                id="submit-email"
                 type="email"
                 value={form.submitter_email}
                 onChange={(e) =>

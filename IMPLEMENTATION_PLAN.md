@@ -74,15 +74,27 @@ This is an **open-source project**. "Human review" means community contributors 
 
 ---
 
-## 3. The Scoring Engine (Three Tiers)
+## 3. The Scoring Engine (v1)
 
 This is the intellectual core of the project. Every score is grounded in verifiable, observable data.
 
-### Tier 1 — Outcome Score (The Real Verdict)
+**Methodology version: v1** — The score is 100% outcome-based. Initiatives and evidence are tracked and displayed, but do not affect the score. वाचा पालन — keeping promises — means results, not activity.
 
-Measures whether Nepal is actually moving toward the manifesto's stated goals. This is the primary score.
+### The Outcome Score (The Only Score)
 
-Indicator areas are **derived directly from the Karar Patra's 5 priority areas**, which collectively cover all 100 Bachha Patra items. Nothing is hardcoded — if the manifesto changes, the indicators change.
+Measures whether Nepal is actually moving toward the manifesto's stated goals.
+
+```
+minister_score = Σ(weight_i × progress_i) / Σ(weight_i) × 100
+
+# higher_is_better:  progress_i = (current - baseline) / (target - baseline)
+# lower_is_better:   progress_i = (baseline - current) / (baseline - target)
+# clamped to [0.0, 1.0]
+```
+
+Each indicator has a **weight (1–100)** reflecting its centrality in the manifesto. Core numeric targets (GDP per capita $3,000, 500,000 jobs, 15,000 MW) carry weight 10. Supporting or binary metrics carry weight 3–5. Weights are community-reviewed and versioned.
+
+Indicator areas are **derived directly from the Karar Patra's 5 priority areas**, which collectively cover all 100 Bachha Patra items.
 
 | Karar Patra Area                        | Key Targets (from manifesto)                                                                                                                                              | Bachha Patra Items                                                                                   | Sources                                  |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------- |
@@ -92,55 +104,46 @@ Indicator areas are **derived directly from the Karar Patra's 5 priority areas**
 | **pp-004: Connectivity**                | 15,000 MW installed; 30,000 km national highways; High-speed internet to all settlements; Reliable energy grid; 10 signature projects completed                           | bp-081 → bp-095 (15 items: infrastructure, environment, health, social justice)                      | NEA, DoR, NTA, NPC, CBS                  |
 | **pp-005: Diaspora**                    | Online voting for Nepalis abroad; Citizenship continuity for descendants; Sovereign Diaspora Fund; Safe investment & dignified return; Decent foreign employment          | bp-096 → bp-100 (5 items: foreign policy, diaspora, governance)                                      | NRB, DoFE, Election Commission, MoFA     |
 
-The Bachha Patra's **8 goals for 2087 BS** (5-year targets) provide time-bound benchmarks within these areas — e.g., 5,000 MW domestic consumption, IT exports > Rs 50B/year, 50% air pollution reduction.
+Each indicator is tagged to a **primary ministry** (and optionally shared ministries). A minister's score is the weighted average of all indicators tagged to their portfolio.
 
 **How it works:**
 
-1. Each manifesto target is base-lined at the time of government formation (March 2026)
-2. Current values are pulled from authoritative sources (see Sources column)
-3. The outcome score = weighted distance toward each target, grouped by priority area
-4. Updated as new data becomes available (quarterly for most macro indicators)
-5. Weights reflect the manifesto's own structure — pp-002 covers 42% of all items, pp-005 covers 5%
+1. Each manifesto target is base-lined at the time of government formation (March 27, 2026)
+2. Current values are pulled from authoritative sources (quarterly for most macro indicators)
+3. Progress = weighted distance toward target, clamped to [0, 1] per indicator
+4. Minister score = weighted average across their tagged indicators × 100
+5. National score = weighted average across all 29 indicators × 100
 
-**Key principle:** Results matter, not activity. If all initiatives are "done" but outcomes worsen, the outcome score reflects reality. The indicator areas are not our opinion — they are the party's own commitments.
+**Key principle:** Results matter, not activity. If all initiatives are "done" but outcomes worsen, the outcome score reflects reality. The indicators are not our opinion — they are the party's own commitments.
 
-### Tier 2 — Initiative Score (Observable Activity)
+### Activity Tracker (Not Scored)
 
-A factual count of government activity. Not a quality judgment — just what's moving.
+A factual count of government activity displayed on each manifesto item page. Not a quality judgment — just what's moving.
 
-- Track all 100 bachha patra items + karar patra commitments + any additional government initiatives
+- Track all 100 bachha patra items + karar patra commitments
 - Status: completed / in_progress / not_started / stalled / cancelled
 - Displayed as: "67 completed · 18 in progress · 15 not started"
-- Each initiative links to the manifesto goal(s) it's meant to advance
-- Source: gazette notifications, cabinet decisions, parliamentary records, news
-- put a start and end time, we also need to check againat promsised timeline.
+- Each initiative links to gazette, cabinet decisions, parliamentary records
+- Start/end dates tracked; checked against promised timeline
 
-### Tier 3 — Evidence Probability (Will These Initiatives Work?)
+### Editorial Context (Not Scored)
 
-For each initiative, does international and local evidence suggest it will actually produce the intended outcome?
+For each initiative, scholarly articles and evidence assessments provide context — not a probability or a score.
 
-**This is not a yes/no verdict.** It's a probability with citations.
-
-- Based on: peer-reviewed research, World Bank project evaluations, OECD evidence library, comparable country experiences, Nepal-specific studies
-- AI agent drafts the assessment; community editors + domain experts review and approve
-- **Revisited over time:** as actual results arrive, the initial probability assessment is compared against reality. Did our evidence-based prediction prove correct? This creates a feedback loop that improves future assessments.
-
-Example:
-
-> **Initiative:** "Build 500km of new highway in first year"
-> **Evidence probability:** 0.35 (Low-Moderate)
-> **Citations:** World Bank Transport Sector Review (2024) shows Nepal's average highway construction pace at 80km/year. India took 5 years to scale from similar baseline. Budget allocation of NRs 40B is 60% of estimated requirement.
-> **Reassessment (6 months later):** 45km completed. Revised probability: 0.15. Initial assessment was generous — procurement delays were the primary blocker, consistent with ADB findings on Nepal infrastructure projects.
+- Based on: peer-reviewed research, World Bank project evaluations, comparable country experiences
+- AI agent drafts; community editors + domain experts review and approve
+- Displayed as long-form articles on manifesto item pages (one per initiative)
 
 ### Scoring Governance
 
-| Decision                           | Who Decides                                            |
-| ---------------------------------- | ------------------------------------------------------ |
-| Outcome data entry (Tier 1)        | AI auto-publishes from verified sources                |
-| Initiative status updates (Tier 2) | AI extracts from gazette/news; moderators verify       |
-| Evidence assessments (Tier 3)      | AI drafts; community editors + domain experts approve  |
-| Methodology changes                | Public discussion → editor consensus                   |
-| Reassessment triggers              | AI flags when new data arrives; humans make final call |
+| Decision                    | Who Decides                                                |
+| --------------------------- | ---------------------------------------------------------- |
+| Outcome data updates        | AI auto-publishes from verified sources; moderators verify |
+| Initiative status updates   | AI extracts from gazette/news; moderators verify           |
+| Editorial articles          | AI drafts; community editors + domain experts approve      |
+| Indicator weight changes    | Public discussion → editor consensus → versioned           |
+| Methodology version changes | Public discussion → editor consensus                       |
+| Reassessment triggers       | AI flags when new data arrives; humans make final call     |
 
 ---
 
@@ -166,8 +169,8 @@ Lightweight Python agents running via GitHub Actions cron (free for public repos
 | -------------------- | ------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `gazette_monitor`    | Every 6 hrs        | rajpatra.dop.gov.np + manual entry dashboard       | Track official government decisions, gazette notifications                                                |
 | `parliament_tracker` | Every 2 hrs        | hr.parliament.gov.np, na.parliament.gov.np         | Track bills, committees, Q&A sessions                                                                     |
-| `outcome_tracker`    | Weekly             | NRB API, CBS, World Bank Open Data, IMF            | Pull and store economic/social indicators for Tier 1 scoring                                              |
-| `evidence_assessor`  | On new initiatives | Research databases, World Bank evaluations         | Draft Tier 3 evidence probability assessments                                                             |
+| `outcome_tracker`    | Weekly             | NRB API, CBS, World Bank Open Data, IMF            | Pull and store economic/social indicators for outcome scoring                                             |
+| `evidence_assessor`  | On new initiatives | Research databases, World Bank evaluations         | Draft editorial context articles per initiative                                                           |
 | `scholarly_curator`  | Weekly             | Academic sources + AI                              | Generate long-form political analysis                                                                     |
 | `open_data_monitor`  | Daily              | opennepal.net + National Data Exchange (when live) | Pull structured government datasets (economy, health, education, infrastructure) as they become available |
 
@@ -185,13 +188,13 @@ News RSS ──▶ news_scraper ──▶ action_extractor ──▶ manifesto_m
                                      ▼
                               FB / X / Instagram
 
-Gazette ──▶ gazette_monitor ──▶ initiative status updates ──▶ Tier 2
+Gazette ──▶ gazette_monitor ──▶ initiative status updates ──▶ Activity Tracker
 
-NRB/CBS/WB ──▶ outcome_tracker ──▶ outcome_indicators ──▶ Tier 1
+NRB/CBS/WB ──▶ outcome_tracker ──▶ outcome_indicators ──▶ Outcome Score (scored)
 
-Open Data Nepal ──▶ open_data_monitor ──▶ structured indicators ──▶ Tier 1 + Tier 2
+Open Data Nepal ──▶ open_data_monitor ──▶ structured indicators ──▶ Outcome Score + Activity Tracker
 
-New initiative ──▶ evidence_assessor ──▶ draft assessment ──▶ Editor review ──▶ Tier 3
+New initiative ──▶ evidence_assessor ──▶ draft article ──▶ Editor review ──▶ Editorial Context (not scored)
 ```
 
 ### Content Review Tiers
@@ -339,15 +342,18 @@ actions
 ```
 outcome_indicators
 ├── id (uuid, PK)
-├── indicator_name (e.g. "gdp_per_capita", "poverty_headcount")
+├── indicator_name (e.g. "gdp_per_capita", "poverty_headcount") — UNIQUE
 ├── category (economy | health | education | infrastructure | governance)
 ├── manifesto_item_id (FK → manifesto_items, nullable)
-├── baseline_value (numeric — value at government formation)
+├── baseline_value (numeric — value at government formation, March 27 2026)
 ├── baseline_date (date)
 ├── target_value (numeric — manifesto target)
 ├── target_date (date)
 ├── current_value (numeric)
 ├── current_date (date)
+├── direction ("higher_is_better" | "lower_is_better")
+├── weight (numeric 1–100 — reflects centrality in manifesto)
+├── ministry (text — primary responsible ministry for attribution)
 ├── source (text — "World Bank", "NRB", "CBS", etc.)
 ├── source_url (text)
 ├── unit (text — "USD", "%", "km", etc.)
@@ -371,10 +377,10 @@ scores
 ├── id (uuid, PK)
 ├── minister_id (FK → ministers)
 ├── period_start, period_end
-├── outcome_score (numeric — Tier 1)
-├── initiative_score (numeric — Tier 2)
-├── evidence_score (numeric — Tier 3)
-├── overall (numeric — weighted composite)
+├── outcome_score (numeric — the score; 100% outcome-based)
+├── initiative_score (numeric — reserved, NULL in v1)
+├── evidence_score (numeric — reserved, NULL in v1)
+├── overall (numeric — equals outcome_score in v1)
 ├── breakdown (jsonb — detailed per-indicator scores)
 ├── methodology_version (text)
 └── scored_at (timestamptz)
@@ -437,7 +443,7 @@ The GitHub repository is the source of record for everything: manifesto data, me
 | --------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
 | **Public**      | Anyone — no account needed on portal    | Read everything, submit evidence, flag content, propose manifesto edits via the web form |
 | **Contributor** | Open a GitHub account and submit a PR   | Fix data, add sources, write content, propose new data sources, open issues for anything |
-| **Moderator**   | Trusted contributor, invited by editors | Approve manifesto text edits, review Tier 3 assessments, merge contributor PRs           |
+| **Moderator**   | Trusted contributor, invited by editors | Approve manifesto text edits, review editorial articles, merge contributor PRs           |
 | **Editor**      | Core team member                        | Final publish/reject on all content, manage review queue, approve methodology changes    |
 
 ### How to Contribute — GitHub Workflows
@@ -514,7 +520,7 @@ We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. 
 
 | Gap                               | Why it matters                                                            | Potential sources                                          |
 | --------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Nepal Gazette (Rajpatra)          | Official govt decisions — primary source for Tier 2                       | rajpatra.dop.gov.np (PDF scraping needed)                  |
+| Nepal Gazette (Rajpatra)          | Official govt decisions — primary source for initiative tracking          | rajpatra.dop.gov.np (PDF scraping needed)                  |
 | Parliament records                | Bills, votes, committee reports                                           | hr.parliament.gov.np, na.parliament.gov.np                 |
 | DoFE (Dept of Foreign Employment) | Migration data — covers 500k jobs promise + diaspora                      | dfe.gov.np reports (semi-annual)                           |
 | NEA reports                       | Energy production — covers 15,000 MW target                               | nea.org.np annual reports                                  |
@@ -523,10 +529,10 @@ We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. 
 | Transparency International CPI    | Corruption perception — covers governance targets                         | transparency.org (annual)                                  |
 | OAG (Auditor General) reports     | Budget execution, financial compliance                                    | oagnepal.gov.np (annual)                                   |
 | CIAA (anti-corruption body)       | Corruption cases — covers accountability promises                         | ciaa.gov.np                                                |
-| Academic / NGO studies on Nepal   | Evidence for Tier 3 probability assessments                               | Tribhuvan University, Martin Chautari, IDS Nepal           |
+| Academic / NGO studies on Nepal   | Evidence articles for editorial context on manifesto items                | Tribhuvan University, Martin Chautari, IDS Nepal           |
 | Open Data Nepal Portal            | Aggregated govt datasets (economy, health, education, infrastructure)     | opennepal.net (varies by dataset)                          |
 | National Data Exchange Platform   | Real-time official data (when launched under RSP digital governance push) | TBD — monitor for launch within 100 days of govt formation |
-| CBS Statistical Pocket Book       | Comprehensive national statistics for Tier 1 baselines                    | cbs.gov.np (annual)                                        |
+| CBS Statistical Pocket Book       | Comprehensive national statistics for outcome indicator baselines         | cbs.gov.np (annual)                                        |
 
 ### Transparency Guarantees
 
@@ -552,15 +558,15 @@ We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. 
 - [ ] Deploy frontend to Vercel
 - [ ] Verify agents run successfully via GitHub Actions
 
-### Phase 1 — Tiered Scoring Foundation (Weeks 1–2)
+### Phase 1 — Outcome Scoring Foundation (Weeks 1–2)
 
-- [ ] Create `outcome_indicators` table
-- [ ] Create `initiative_evidence` table
-- [ ] Seed baseline indicators from NRB/CBS/World Bank
-- [ ] Build `outcome_tracker` agent (pull latest indicators)
-- [ ] Rewrite `scoring_agent` for 3-tier model
-- [ ] Redesign `/scores` page to show all three tiers (add Recharts for score visualizations)
-- [ ] Update `/methodology` page to explain tiered scoring
+- [x] Create `outcome_indicators` table (migration 001 + 009 for weight/ministry columns)
+- [x] Create `initiative_evidence` table
+- [x] Seed 29 baseline indicators from NRB/CBS/World Bank (March 27 2026 baseline; April 2 2026 first measurement)
+- [ ] Build `outcome_tracker` agent (pull latest indicators from NRB/CBS/World Bank APIs)
+- [x] Rewrite `scoring_agent` for outcome-only v1 model
+- [ ] Redesign `/scores` page to show outcome score + activity count (add Recharts for score history)
+- [x] Update `/methodology` page to explain v1 outcome-only scoring
 
 ### Phase 2 — Coverage Completeness (Weeks 3–5)
 
@@ -568,7 +574,7 @@ We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. 
 - [ ] Build `parliament_tracker` agent
 - [ ] Build `open_data_monitor` agent (opennepal.net + National Data Exchange when live)
 - [ ] Build moderator dashboard for content review queue
-- [ ] Build `evidence_assessor` agent (drafts Tier 3 assessments)
+- [ ] Build `evidence_assessor` agent (drafts editorial context articles per initiative)
 - [ ] Community review workflow (AI flags → editor approves)
 - [ ] Score history charts on minister profiles
 
@@ -618,16 +624,16 @@ We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. 
 
 ## 11. Risk Mitigation
 
-| Risk                                  | Mitigation                                                                                                                                                    |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Outcome data unavailable or delayed   | CBS/NRB publish quarterly; World Bank annually. Use most recent available + clearly show data date. For lagging indicators, Tier 2 and 3 scores fill the gap. |
-| AI generates inaccurate content       | Tiered review: auto-publish only facts; analysis requires human approval. AI confidence thresholds.                                                           |
-| Scoring methodology contested         | Fully public methodology. Open GitHub issues for methodology debates. Version the methodology.                                                                |
-| Legal threats from politicians        | Stick to verifiable facts from named sources. Legal counsel on retainer.                                                                                      |
-| Scraper blocked by news sites         | RSS first. Multiple source redundancy. Rotate user agents.                                                                                                    |
-| Embedding model changes               | Dimension-agnostic vector columns. One-click re-embed via GitHub Action.                                                                                      |
-| Community capture / bad-faith editors | Tiered permissions. Editors have final say. Public audit trail on all changes.                                                                                |
-| Agent downtime                        | GitHub Actions cron with retry. Agent logs table for monitoring. Manual trigger fallback.                                                                     |
+| Risk                                  | Mitigation                                                                                                                                                      |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Outcome data unavailable or delayed   | CBS/NRB publish quarterly; World Bank annually. Use most recent available + clearly show data date. Show indicator count and last-updated date alongside score. |
+| AI generates inaccurate content       | Tiered review: auto-publish only facts; analysis requires human approval. AI confidence thresholds.                                                             |
+| Scoring methodology contested         | Fully public methodology. Open GitHub issues for methodology debates. Version the methodology.                                                                  |
+| Legal threats from politicians        | Stick to verifiable facts from named sources. Legal counsel on retainer.                                                                                        |
+| Scraper blocked by news sites         | RSS first. Multiple source redundancy. Rotate user agents.                                                                                                      |
+| Embedding model changes               | Dimension-agnostic vector columns. One-click re-embed via GitHub Action.                                                                                        |
+| Community capture / bad-faith editors | Tiered permissions. Editors have final say. Public audit trail on all changes.                                                                                  |
+| Agent downtime                        | GitHub Actions cron with retry. Agent logs table for monitoring. Manual trigger fallback.                                                                       |
 
 ---
 
@@ -639,7 +645,7 @@ We currently track outcomes from NRB, CBS, World Bank, IMF, and news RSS feeds. 
 - Manifesto item status changes correlated with our reporting
 - Public submissions per month
 - Citation by journalists and researchers
-- Accuracy rate of Tier 3 predictions vs. actual outcomes
+- Accuracy rate of editorial predictions vs. actual outcomes
 
 ### Operational Metrics
 

@@ -1,57 +1,6 @@
 "use client";
 
-import {
-  PolarAngleAxis,
-  PolarGrid,
-  PolarRadiusAxis,
-  Radar,
-  RadarChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
 import { getBarColor } from "./ScoreBadge";
-
-interface TierRadarProps {
-  outcome: number;
-  initiative: number;
-  evidence: number;
-}
-
-export function TierRadar({ outcome, initiative, evidence }: TierRadarProps) {
-  const data = [
-    { tier: "Outcomes", value: outcome, fullMark: 100 },
-    { tier: "Initiatives", value: initiative, fullMark: 100 },
-    { tier: "Evidence", value: evidence, fullMark: 100 },
-  ];
-
-  return (
-    <ResponsiveContainer width="100%" height={220}>
-      <RadarChart data={data} cx="50%" cy="50%" outerRadius="70%">
-        <PolarGrid stroke="#e5e5e5" />
-        <PolarAngleAxis
-          dataKey="tier"
-          tick={{ fontSize: 12, fill: "#737373" }}
-        />
-        <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
-        <Radar
-          dataKey="value"
-          stroke="#1e3a5f"
-          fill="#1e3a5f"
-          fillOpacity={0.15}
-          strokeWidth={2}
-        />
-        <Tooltip
-          formatter={(value) => [`${value}/100`, "Score"]}
-          contentStyle={{
-            fontSize: 12,
-            borderRadius: 8,
-            border: "1px solid #e5e5e5",
-          }}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
-  );
-}
 
 interface OutcomeAreaBarProps {
   areas: { label: string; score: number; weight: string }[];
@@ -82,5 +31,3 @@ export function OutcomeAreaBars({ areas }: OutcomeAreaBarProps) {
     </div>
   );
 }
-
-

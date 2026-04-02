@@ -27,7 +27,9 @@ type ReviewItem = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function safeQuery<T = any>(fn: () => PromiseLike<{ data: T | null; count?: number | null; error: any }>): Promise<{ data: T | null; count: number }> {
+async function safeQuery<T = any>(
+  fn: () => PromiseLike<{ data: T | null; count?: number | null; error: any }>,
+): Promise<{ data: T | null; count: number }> {
   try {
     const res = await fn();
     if (res.error) return { data: null, count: 0 };
@@ -41,8 +43,6 @@ export default async function ModeratePage() {
   const [
     { data: pending },
     { data: recent },
-    { count: pendingCount },
-    { count: reviewCount },
     { count: todayApproved },
     { count: gazetteCount },
     { count: parliamentCount },
@@ -56,7 +56,7 @@ export default async function ModeratePage() {
         .in("status", ["pending", "in_review"])
         .order("priority", { ascending: true })
         .order("created_at", { ascending: true })
-        .limit(50)
+        .limit(50),
     ),
     safeQuery(() =>
       supabase
@@ -64,52 +64,47 @@ export default async function ModeratePage() {
         .select("*")
         .in("status", ["approved", "rejected", "needs_revision"])
         .order("reviewed_at", { ascending: false })
-        .limit(20)
-    ),
-    safeQuery(() =>
-      supabase
-        .from("content_review_queue")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "pending")
-    ),
-    safeQuery(() =>
-      supabase
-        .from("content_review_queue")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "in_review")
+        .limit(20),
     ),
     safeQuery(() =>
       supabase
         .from("content_review_queue")
         .select("*", { count: "exact", head: true })
         .eq("status", "approved")
-        .gte("reviewed_at", new Date(Date.now() - 86400000).toISOString())
+        .gte("reviewed_at", new Date(Date.now() - 86400000).toISOString()),
     ),
     safeQuery(() =>
       supabase
         .from("gazette_entries")
         .select("*", { count: "exact", head: true })
-        .eq("review_status", "needs_review")
+        .eq("review_status", "needs_review"),
     ),
     safeQuery(() =>
       supabase
         .from("parliament_records")
         .select("*", { count: "exact", head: true })
-        .eq("review_status", "needs_review")
+        .eq("review_status", "needs_review"),
     ),
     safeQuery(() =>
       supabase
         .from("initiative_evidence")
         .select("*", { count: "exact", head: true })
-        .eq("status", "draft")
+        .eq("status", "draft"),
     ),
     safeQuery(() =>
       supabase
         .from("public_submissions")
         .select("*", { count: "exact", head: true })
-        .eq("status", "pending")
+        .eq("status", "pending"),
     ),
   ]);
+
+  // Derive counts from already-fetched data instead of extra queries
+  const pendingItems = pending as ReviewItem[] | null;
+  const pendingCount =
+    pendingItems?.filter((i) => i.status === "pending").length ?? 0;
+  const reviewCount =
+    pendingItems?.filter((i) => i.status === "in_review").length ?? 0;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -126,26 +121,38 @@ export default async function ModeratePage() {
 
       {/* Stats Row */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard
-          label="Pending Review"
-          value={pendingCount ?? 0}
-          color="amber"
-        />
-        <StatCard label="In Review" value={reviewCount ?? 0} color="blue" />
+        <StatCard label="Pending Review" value={pendingCount} color="amber" />
+        <StatCard label="In Review" value={reviewCount} color="blue" />
         <StatCard
           label="Approved Today"
           value={todayApproved ?? 0}
           color="emerald"
         />
-        <StatCard label="Public Submissions" value={submissionCount} color="violet" />
+        <StatCard
+          label="Public Submissions"
+          value={submissionCount}
+          color="violet"
+        />
       </div>
 
       {/* Content Type Breakdown */}
       <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <SourceCard type="Gazette Entries" icon="📜" count={gazetteCount} />
-        <SourceCard type="Parliament Records" icon="🏛" count={parliamentCount} />
-        <SourceCard type="Evidence Assessments" icon="🔬" count={evidenceCount} />
-        <SourceCard type="Public Submissions" icon="📩" count={submissionCount} />
+        <SourceCard
+          type="Parliament Records"
+          icon="🏛"
+          count={parliamentCount}
+        />
+        <SourceCard
+          type="Evidence Assessments"
+          icon="🔬"
+          count={evidenceCount}
+        />
+        <SourceCard
+          type="Public Submissions"
+          icon="📩"
+          count={submissionCount}
+        />
       </div>
 
       {/* Two-column layout: Queue + Recent */}

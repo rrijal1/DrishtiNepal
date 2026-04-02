@@ -104,18 +104,21 @@ NEWS_SOURCES_ENGLISH = [
 # Combined list for the scraper agent
 NEWS_SOURCES = NEWS_SOURCES_NEPALI + NEWS_SOURCES_ENGLISH
 
-# Scoring weights — 3-tier model (v3)
-# Tier 1 (Outcome) is the real verdict — weighted highest.
-# Tier 2 (Initiative) tracks activity — factual but not sufficient alone.
-# Tier 3 (Evidence) is the forward-looking probability — weighted lowest until data matures.
-SCORING_WEIGHTS = {
+# Methodology version — bump whenever scoring logic changes
+METHODOLOGY_VERSION = "v1"
+
+# v1 (April 2026): Score = 100% outcome-based.
+# minister_score = Σ(weight_i × progress_i) / Σ(weight_i) × 100
+# Indicator weights (1–100 scale) are stored per-row in outcome_indicators.weight.
+# Initiatives and evidence are displayed but do NOT contribute to the score.
+
+# Deprecated composite weights — kept for score history compatibility only
+_SCORING_WEIGHTS_V3_DEPRECATED = {
     "outcome_score": 0.50,
     "initiative_score": 0.30,
     "evidence_score": 0.20,
 }
-
-# Legacy 2-dimension weights (deprecated, kept for score history compatibility)
-SCORING_WEIGHTS_V2 = {
+_SCORING_WEIGHTS_V2_DEPRECATED = {
     "manifesto_compliance": 0.70,
     "public_accountability": 0.30,
 }
