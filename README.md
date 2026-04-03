@@ -2,8 +2,6 @@
 
 **Nepal's open accountability platform. Every cabinet minister. Every manifesto promise. Tracked publicly, scored transparently, powered by citizens and AI.**
 
-🌐 [drishtinepal.com](https://drishtinepal.com) &nbsp;·&nbsp; 📘 [Facebook](https://facebook.com/DrishtiNepalHQ) &nbsp;·&nbsp; 🐦 [X / Twitter](https://x.com/DrishtiNepalHQ) &nbsp;·&nbsp; 📷 [Instagram](https://www.instagram.com/drishtinepal_hq/)
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -12,7 +10,7 @@
 
 ### 1 — Submit a news article we missed
 
-Found an article about a minister's action, a corruption arrest, a broken promise — something our AI scrapers didn't pick up? Add it in one line:
+Found an article about a minister's action, a corruption arrest, a broken promise — something our search didn't pick up? Add it in one line:
 
 **Edit [`data/manual_links.md`](data/manual_links.md)** — add your URL under `## Links`:
 
@@ -20,11 +18,7 @@ Found an article about a minister's action, a corruption arrest, a broken promis
 https://ekantipur.com/news/your-article.html | brief hint about what it covers
 ```
 
-Open a pull request. An editor reviews and merges it. The moment it merges, our pipeline automatically:
-- Reads and understands the article (Nepali or English)
-- Maps it to the relevant manifesto commitments (bp-001 … bp-100)
-- Publishes a bilingual analysis on the site
-- Files it under the correct manifesto item pages
+Open a pull request. An editor reviews and merges it.
 
 > **No GitHub account?** Submit directly at [drishtinepal.com/submit](https://drishtinepal.com/submit).
 
@@ -48,6 +42,7 @@ Click **"+ Propose an indicator"** or **"Report a government action"**, or [subm
 ### 3 — Correct our data
 
 Found a scoring error, a wrong date, a missing minister link? Click **"+ Propose a correction"** on any manifesto item page, or open a [GitHub issue](https://github.com/rrijal1/DrishtiNepal/issues) with:
+
 - The exact URL on the site
 - What's wrong
 - A source link to what it should be
@@ -65,6 +60,7 @@ See [`docs/contributing.md`](docs/contributing.md) for technical contribution gu
 Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a non-partisan civic tech platform that holds the RSP-led cabinet accountable to their own published promises.
 
 **What we track:**
+
 - Every minister from Day 1 of their appointment
 - 100 Bachha Patra foundations (bp-001 to bp-100) — RSP's policy commitments
 - 5 Karar Patra priority areas — GDP growth, governance, jobs, infrastructure, diaspora
@@ -72,11 +68,11 @@ Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a non
 
 **How scoring works:**
 
-| Component | Weight | Measures |
-|---|---|---|
-| Outcome Score | 50% | Real-world indicators — GDP, jobs created, laws passed |
-| Initiative Score | 30% | Status of each commitment: fulfilled / in progress / broken |
-| Evidence Score | 20% | Community and AI-verified evidence quality |
+| Component        | Weight | Measures                                                    |
+| ---------------- | ------ | ----------------------------------------------------------- |
+| Outcome Score    | 50%    | Real-world indicators — GDP, jobs created, laws passed      |
+| Initiative Score | 30%    | Status of each commitment: fulfilled / in progress / broken |
+| Evidence Score   | 20%    | Community and AI-verified evidence quality                  |
 
 No credit for speeches. No credit for promises. Only verified delivery counts.
 
@@ -118,4 +114,3 @@ Drishti Nepal is a non-partisan civic project, not affiliated with any political
 ---
 
 Built with ❤️ for Nepal's democracy. &nbsp; 📘 [Facebook](https://facebook.com/DrishtiNepalHQ) &nbsp;·&nbsp; 🐦 [@DrishtiNepalHQ](https://x.com/DrishtiNepalHQ) &nbsp;·&nbsp; 📷 [@drishtinepal_hq](https://www.instagram.com/drishtinepal_hq/)
-

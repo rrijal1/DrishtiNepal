@@ -10,7 +10,6 @@ Run:
     python -m agents.manual_ingester.ingester   # directly
 """
 
-import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -220,7 +219,9 @@ def _normalize_analysis(analysis: dict, scraped: dict) -> Optional[dict]:
     # Last resort fallbacks from scraped data
     if not analysis.get("title_en"):
         analysis["title_en"] = scraped.get("title", "Untitled")
-        logger.warning("AI did not return title_en — using scraped page title as fallback")
+        logger.warning(
+            "AI did not return title_en — using scraped page title as fallback"
+        )
     if not analysis.get("body_en"):
         logger.error("AI returned no body_en — skipping this item")
         return None
