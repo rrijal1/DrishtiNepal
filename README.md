@@ -66,18 +66,6 @@ Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a non
 - 5 Karar Patra priority areas — GDP growth, governance, jobs, infrastructure, diaspora
 - Cabinet decisions, gazette entries, parliamentary records
 
-**How scoring works:**
-
-| Component        | Weight | Measures                                                    |
-| ---------------- | ------ | ----------------------------------------------------------- |
-| Outcome Score    | 50%    | Real-world indicators — GDP, jobs created, laws passed      |
-| Initiative Score | 30%    | Status of each commitment: fulfilled / in progress / broken |
-| Evidence Score   | 20%    | Community and AI-verified evidence quality                  |
-
-No credit for speeches. No credit for promises. Only verified delivery counts.
-
-Full methodology: [drishtinepal.com/methodology](https://drishtinepal.com/methodology)
-
 ---
 
 ## What We Will Never Do
