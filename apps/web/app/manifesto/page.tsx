@@ -9,7 +9,15 @@ export const metadata = {
     "Track progress on every vacha patra commitment. Bachha patra and karar patra.",
 };
 
-const KARAR_PATRA_AREAS = [
+const KARAR_PATRA_AREAS: Array<{
+  id: string;
+  title_en: string;
+  title_np: string;
+  description_en: string;
+  bpRange: [number, number];
+  color: string;
+  colorLight: string;
+}> = [
   {
     id: "pp-001",
     title_en: "Integrity & Good Governance",
