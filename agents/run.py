@@ -24,6 +24,7 @@ AGENTS = {
     "parliament": ("agents.parliament_tracker.tracker", "Parliament Tracker"),
     "opendata": ("agents.open_data_monitor.monitor", "Open Data Monitor"),
     "evidence": ("agents.evidence_assessor.assessor", "Evidence Assessor"),
+    "manual": ("agents.manual_ingester.ingester", "Manual Link Ingester"),
 }
 
 

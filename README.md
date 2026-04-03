@@ -1,143 +1,121 @@
-# Drishti Nepal (दृष्टि नेपाल)
+# 🇳🇵 Drishti Nepal — दृष्टि नेपाल
 
-**Holding Nepal's government accountable through transparent, AI-powered tracking of every cabinet decision and manifesto commitment.**
+**Nepal's open accountability platform. Every cabinet minister. Every manifesto promise. Tracked publicly, scored transparently, powered by citizens and AI.**
 
-[![Deploy](https://img.shields.io/badge/deploy-vercel-black)](https://drishtinepal.com)
+🌐 [drishtinepal.com](https://drishtinepal.com) &nbsp;·&nbsp; 📘 [Facebook](https://facebook.com/DrishtiNepalHQ) &nbsp;·&nbsp; 🐦 [X / Twitter](https://x.com/DrishtiNepalHQ) &nbsp;·&nbsp; 📷 [Instagram](https://www.instagram.com/drishtinepal_hq/)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-## What is Drishti Nepal?
-
-Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a public accountability portal that:
-
-- 📊 **Tracks every cabinet minister** from the day they're appointed
-- ✅ **Scores performance** against Ra Swa Pa's bachha patra (100 policy foundations) and karar patra (citizen's agreement)
-- 🤖 **Autonomous AI agents** monitor news 24/7, classify actions, and generate reports
-- 📰 **Scholarly analysis** of political decisions and their impact
-- 🗳️ **Public contributions** — citizens can submit evidence to support or challenge claims
-- 📱 **Social distribution** — all content auto-published to Facebook and X
-
-### Language
-
-Content is published in **natural mixed Nepali-English** — the way Nepalis actually discuss politics. Website is avilable both in Nepali as well as English version.
-
-### What We Will Never Do
-
-- Accept money from political parties or politicians
-- Run paid political ads or sponsored political content
-- Sell user data
-- Suppress or alter content based on financial pressure
-- Hide our funding sources
-
-## Scoring Methodology
-
-Each minister receives a transparent 0–100 score across two dimensions:
-
-| Dimension             | Weight | What It Measures                                                                                                                                          |
-| --------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Manifesto Compliance  | 70%    | Actions matching bachha patra & karar patra commitments (GDP targets, remittance, industry, education, infrastructure, and every other stated commitment) |
-| Public Accountability | 30%    | What the manifesto can't capture: media sentiment, ministerial transparency (press conferences, RTI responses), and parliamentary engagement              |
-
-Full methodology: [/methodology](https://drishtinepal.com/methodology) on the portal.
-
-### AI Transparency
-
-- All AI-generated content is **clearly labeled** as such
-- AI handles: news extraction, classification, scoring, draft generation
-- Humans handle: editorial review, fact-checking, sensitivity decisions
-- We use Claude (Anthropic) — Haiku for routine tasks, Sonnet for deep analysis
-- AI confidence scores determine whether content auto-publishes or goes to human review
 
 ---
 
-## Getting Started
+## 👇 How to Contribute (No Coding Required)
 
-### Prerequisites
+### 1 — Submit a news article we missed
 
-- Node.js 20+
-- Python 3.12+
-- Supabase account (free tier)
-- Anthropic API key
+Found an article about a minister's action, a corruption arrest, a broken promise — something our AI scrapers didn't pick up? Add it in one line:
 
-### Setup
+**Edit [`data/manual_links.md`](data/manual_links.md)** — add your URL under `## Links`:
 
-```bash
-# Clone
-git clone git@github.com:rrijal1/DrishtiNepal.git
-cd DrishtiNepal
-
-# Environment
-cp .env.example .env
-# Fill in API keys
-
-# Web portal
-cd apps/web
-npm install
-npm run dev
-
-# Agents (separate terminal)
-cd agents
-python -m venv venv
-source venv/activate
-pip install -r requirements.txt
-
-# Run a single agent
-python -m agents.news_scraper.scraper
-
-# Run all agents on schedule
-python -m agents.scheduler
+```
+https://ekantipur.com/news/your-article.html | brief hint about what it covers
 ```
 
-### Database Setup
+Open a pull request. An editor reviews and merges it. The moment it merges, our pipeline automatically:
+- Reads and understands the article (Nepali or English)
+- Maps it to the relevant manifesto commitments (bp-001 … bp-100)
+- Publishes a bilingual analysis on the site
+- Files it under the correct manifesto item pages
 
-```bash
-# Using Supabase CLI
-npx supabase init
-npx supabase db push
+> **No GitHub account?** Submit directly at [drishtinepal.com/submit](https://drishtinepal.com/submit).
+
+---
+
+### 2 — Submit evidence for a specific commitment
+
+Is a government action progressing (or violating) a specific bachha patra promise? Go to the commitment's page on the site:
+
+```
+drishtinepal.com/manifesto/bp-001   ← Integrity & Governance
+drishtinepal.com/manifesto/bp-023   ← Education reform
+drishtinepal.com/manifesto/bp-061   ← Jobs & employment
+... (bp-001 to bp-100)
 ```
 
-Or manually run `supabase/migrations/001_initial_schema.sql` against your Supabase database.
+Click **"+ Propose an indicator"** or **"Report a government action"**, or [submit here](https://drishtinepal.com/submit).
 
-## Project Structure
+---
+
+### 3 — Correct our data
+
+Found a scoring error, a wrong date, a missing minister link? Click **"+ Propose a correction"** on any manifesto item page, or open a [GitHub issue](https://github.com/rrijal1/DrishtiNepal/issues) with:
+- The exact URL on the site
+- What's wrong
+- A source link to what it should be
+
+---
+
+### 4 — Contribute code or data
+
+See [`docs/contributing.md`](docs/contributing.md) for technical contribution guidelines. The codebase is fully open — web portal (Next.js), AI agents (Python), database schema (Supabase/Postgres).
+
+---
+
+## What is Drishti Nepal?
+
+Drishti Nepal (दृष्टि नेपाल — "Nepal's Vision") is a non-partisan civic tech platform that holds the RSP-led cabinet accountable to their own published promises.
+
+**What we track:**
+- Every minister from Day 1 of their appointment
+- 100 Bachha Patra foundations (bp-001 to bp-100) — RSP's policy commitments
+- 5 Karar Patra priority areas — GDP growth, governance, jobs, infrastructure, diaspora
+- Cabinet decisions, gazette entries, parliamentary records
+
+**How scoring works:**
+
+| Component | Weight | Measures |
+|---|---|---|
+| Outcome Score | 50% | Real-world indicators — GDP, jobs created, laws passed |
+| Initiative Score | 30% | Status of each commitment: fulfilled / in progress / broken |
+| Evidence Score | 20% | Community and AI-verified evidence quality |
+
+No credit for speeches. No credit for promises. Only verified delivery counts.
+
+Full methodology: [drishtinepal.com/methodology](https://drishtinepal.com/methodology)
+
+---
+
+## What We Will Never Do
+
+- Accept money from any political party or politician
+- Run paid political ads or sponsored political content
+- Alter or suppress content based on financial pressure
+- Hide our funding sources
+
+AI-generated content is always labeled. Human editors review sensitive material before publication.
+
+---
+
+## Project Structure (for developers)
 
 ```
 NW/
 ├── apps/web/          # Next.js portal (TypeScript)
-├── agents/            # Python autonomous agents
-├── data/              # Manifesto data, minister profiles
-├── supabase/          # Database migrations
-├── infra/             # Docker, systemd, cron configs
-├── docs/              # Editorial guidelines, contributing guide
-└── .github/           # CI/CD workflows
+├── agents/            # Python AI agents (scraper, generator, matcher, scorer…)
+├── data/
+│   ├── manual_links.md        ← Submit missed articles here
+│   ├── manifesto/             # Bachha patra + karar patra JSON
+│   └── ministers/             # Cabinet member profiles
+├── supabase/migrations/       # Database schema
+└── .github/workflows/         # Automated pipelines
 ```
-
-## Contributing
-
-We welcome contributions! See [docs/contributing.md](docs/contributing.md) for:
-
-- How to submit evidence as a citizen
-- How to contribute code as a developer
-- Editorial guidelines and review process
-
-## Social Media
-
-- **Facebook**: [facebook.com/DrishtiNepalHQ](https://facebook.com/DrishtiNepalHQ)
-- **X (Twitter)**: [@DrishtiNepalHQ](https://x.com/DrishtiNepalHQ)
-- **Instagram**: [@drishtinepal_hq](https://www.instagram.com/drishtinepal_hq/)
-
-All accounts are monetized (or will be once eligibility is met). See [Transparency & Monetization](#transparency--monetization) above.
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
-## Disclaimer
-
-Drishti Nepal is a **non-partisan** civic technology project. We are not affiliated with any political party, government office, or political organization. We track government performance based on publicly available information from whitelisted Nepali news outlets and official government websites. Our scoring methodology is fully public and open to peer review.
-
-AI-generated content is always labeled. Human editors review sensitive content. We operate transparently and publish our costs, revenue, and methodology openly.
-
-If you find errors in our data or analysis, please [submit a correction](https://drishtinepal.com/submit) or open a [GitHub issue](https://github.com/rrijal1/DrishtiNepal/issues).
 
 ---
 
-Built with ❤️ for Nepal's democracy.
+## Disclaimer
+
+Drishti Nepal is a non-partisan civic project, not affiliated with any political party or government body. We track all parties equally against their own stated commitments, using publicly available information. Methodology is fully public and open to peer review.
+
+---
+
+Built with ❤️ for Nepal's democracy. &nbsp; 📘 [Facebook](https://facebook.com/DrishtiNepalHQ) &nbsp;·&nbsp; 🐦 [@DrishtiNepalHQ](https://x.com/DrishtiNepalHQ) &nbsp;·&nbsp; 📷 [@drishtinepal_hq](https://www.instagram.com/drishtinepal_hq/)
+
