@@ -10,7 +10,6 @@ Other sources will be added incrementally as their APIs/reports become available
 Manual updates can be done via the Supabase dashboard or seed script.
 """
 
-import re
 from datetime import datetime, timezone
 
 import httpx

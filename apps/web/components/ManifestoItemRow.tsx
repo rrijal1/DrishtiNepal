@@ -1,5 +1,13 @@
 "use client";
 
+import {
+  GOVT_FORMATION,
+  type OutcomeIndicator,
+  buildMonthlyData,
+  calcProgress,
+  formatValue,
+  mandateElapsedPct,
+} from "@/lib/manifesto-utils";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -12,9 +20,6 @@ import {
   YAxis,
 } from "recharts";
 import { StatusIndicator } from "./StatusIndicator";
-
-// Government formation date — used as the baseline reference
-const GOVT_FORMATION = new Date("2026-03-27");
 
 function MandateTimeline({
   startDate,
@@ -30,16 +35,10 @@ function MandateTimeline({
       year: "numeric",
     });
 
-  const start = startDate ? new Date(startDate) : GOVT_FORMATION;
+  const start = startDate ? new Date(startDate) : new Date(GOVT_FORMATION);
   const end = endDate ? new Date(endDate) : null;
   const now = new Date();
-
-  const totalMs = end ? end.getTime() - start.getTime() : null;
-  const elapsedMs = now.getTime() - start.getTime();
-  const elapsedPct =
-    totalMs && totalMs > 0
-      ? Math.min(100, Math.max(0, Math.round((elapsedMs / totalMs) * 100)))
-      : null;
+  const elapsedPct = mandateElapsedPct(startDate ?? null, endDate ?? null);
 
   return (
     <div className="mb-6">
@@ -47,7 +46,6 @@ function MandateTimeline({
         Mandate Timeline
       </h4>
       <div className="relative">
-        {/* Track */}
         <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
           {elapsedPct != null && (
             <div
@@ -56,7 +54,6 @@ function MandateTimeline({
             />
           )}
         </div>
-        {/* Today marker */}
         {elapsedPct != null && (
           <div
             className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -66,7 +63,6 @@ function MandateTimeline({
           </div>
         )}
       </div>
-      {/* Date labels */}
       <div className="mt-2 flex items-start justify-between gap-2 text-[10px] text-neutral-400">
         <div>
           <span className="block font-medium text-neutral-600">
@@ -93,52 +89,6 @@ function MandateTimeline({
       </div>
     </div>
   );
-}
-
-interface OutcomeIndicator {
-  id: string;
-  indicator_name: string;
-  indicator_label?: string | null;
-  unit: string | null;
-  baseline_value: number | null;
-  baseline_date: string | null;
-  current_value: number | null;
-  target_value: number | null;
-  target_deadline: string | null;
-  direction: string | null;
-  source: string | null;
-  measured_date: string | null;
-}
-
-function buildMonthlyData(
-  ind: OutcomeIndicator,
-): { label: string; value: number; isCurrent: boolean }[] {
-  const start = new Date(ind.baseline_date ?? "2026-03-27");
-  const now = new Date();
-  const months: { label: string; value: number; isCurrent: boolean }[] = [];
-  let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
-  const endMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  while (cursor <= endMonth) {
-    const isBaseline =
-      cursor.getFullYear() === start.getFullYear() &&
-      cursor.getMonth() === start.getMonth();
-    const isCurrent =
-      cursor.getFullYear() === now.getFullYear() &&
-      cursor.getMonth() === now.getMonth();
-    let value = 0;
-    if (isBaseline) value = ind.baseline_value ?? 0;
-    else if (isCurrent && ind.current_value != null) value = ind.current_value;
-    months.push({
-      label: cursor.toLocaleDateString("en-US", {
-        month: "short",
-        year: "2-digit",
-      }),
-      value,
-      isCurrent,
-    });
-    cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
-  }
-  return months;
 }
 
 interface ManifestoItemProps {
@@ -170,39 +120,6 @@ const PRIORITY_MAP: Record<string, { dot: string; label: string }> = {
   medium: { dot: "bg-yellow-400", label: "Medium" },
   low: { dot: "bg-neutral-300", label: "Low" },
 };
-
-function calcProgress(ind: OutcomeIndicator): number | null {
-  if (
-    ind.baseline_value == null ||
-    ind.target_value == null ||
-    ind.current_value == null
-  )
-    return null;
-  const range = ind.target_value - ind.baseline_value;
-  if (range === 0) return ind.current_value >= ind.target_value ? 100 : 0;
-  if (ind.direction === "lower_is_better") {
-    const prog =
-      ((ind.baseline_value - ind.current_value) /
-        (ind.baseline_value - ind.target_value)) *
-      100;
-    return Math.min(100, Math.max(0, prog));
-  }
-  const prog = ((ind.current_value - ind.baseline_value) / range) * 100;
-  return Math.min(100, Math.max(0, prog));
-}
-
-function formatValue(value: number | null, unit: string | null): string {
-  if (value == null) return "—";
-  const formatted =
-    value >= 1_000_000
-      ? `${(value / 1_000_000).toFixed(1)}M`
-      : value >= 1_000
-        ? `${(value / 1_000).toFixed(1)}K`
-        : value % 1 === 0
-          ? String(value)
-          : value.toFixed(2);
-  return unit ? `${formatted} ${unit}` : formatted;
-}
 
 export function ManifestoItemRow({
   item,

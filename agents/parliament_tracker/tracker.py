@@ -11,7 +11,6 @@ Bills and votes are flagged for moderator review.
 """
 
 import re
-import json
 from datetime import datetime, timezone
 
 import httpx
@@ -19,7 +18,15 @@ from bs4 import BeautifulSoup
 
 from agents.common.db import db
 from agents.common.ai import cheap_completion
-from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
+from agents.common.utils import (
+    setup_logger,
+    log_agent_run,
+    complete_agent_run,
+    parse_ai_json,
+    link_to_manifesto,
+    queue_for_review,
+    get_minister_map,
+)
 
 logger = setup_logger("parliament_tracker")
 
@@ -132,8 +139,14 @@ Respond ONLY with the JSON object, no markdown."""
             prompt,
             system="You are a Nepal parliament analyst. Classify records accurately.",
         )
-        cleaned = re.sub(r"```json?\s*|\s*```", "", response).strip()
-        return json.loads(cleaned)
+        fallback = {
+            "title_en": title[:200],
+            "summary_en": "",
+            "status": "recorded",
+            "significance": "medium",
+            "related_manifesto_areas": [],
+        }
+        return parse_ai_json(response, fallback) or fallback
     except Exception as e:
         logger.warning(f"AI classification failed: {e}")
         return {
@@ -159,31 +172,6 @@ def is_duplicate(title_np: str, record_date: str, chamber: str) -> bool:
     return len(result.data) > 0
 
 
-def link_to_manifesto(areas: list[str]) -> str | None:
-    """Look up the manifesto_item_id for a priority area."""
-    if not areas:
-        return None
-    for area in areas:
-        result = (
-            db.table("manifesto_items")
-            .select("id")
-            .eq("source_id", area)
-            .limit(1)
-            .execute()
-        )
-        if result.data:
-            return result.data[0]["id"]
-    return None
-
-
-def get_minister_map() -> dict[str, str]:
-    """Get active ministers name → id map."""
-    result = (
-        db.table("ministers").select("id, name_en").eq("status", "active").execute()
-    )
-    return {m["name_en"].lower(): m["id"] for m in result.data}
-
-
 def find_related_minister(title: str, minister_map: dict[str, str]) -> str | None:
     """Check if any minister is mentioned in the record title."""
     title_lower = title.lower()
@@ -193,31 +181,6 @@ def find_related_minister(title: str, minister_map: dict[str, str]) -> str | Non
         if any(part.lower() in title_lower for part in parts if len(part) > 3):
             return mid
     return None
-
-
-def queue_for_review(record_id: str, title: str, record_type: str, significance: str):
-    """Add significant records to review queue."""
-    needs_review = record_type in ("bill", "vote", "resolution") or significance in (
-        "critical",
-        "high",
-    )
-    if not needs_review:
-        return
-
-    priority = (
-        "high"
-        if significance in ("critical", "high") or record_type == "bill"
-        else "normal"
-    )
-    db.table("content_review_queue").insert(
-        {
-            "content_type": "parliament_record",
-            "content_id": record_id,
-            "priority": priority,
-            "status": "pending",
-            "title": title[:500],
-        }
-    ).execute()
 
 
 def store_record(raw: dict, classification: dict, minister_map: dict) -> str | None:
@@ -255,10 +218,11 @@ def store_record(raw: dict, classification: dict, minister_map: dict) -> str | N
     record_id = result.data[0]["id"]
 
     queue_for_review(
-        record_id,
-        classification.get("title_en", raw.get("title_np", "")),
-        raw["record_type"],
-        significance,
+        content_type="parliament_record",
+        content_id=record_id,
+        title=classification.get("title_en", raw.get("title_np", "")),
+        significance=significance,
+        record_type=raw["record_type"],
     )
 
     return record_id
@@ -271,7 +235,7 @@ def run():
     items_created = 0
 
     try:
-        minister_map = get_minister_map()
+        minister_map = get_minister_map(lowercase_keys=True)
 
         for source in PARLIAMENT_SOURCES:
             chamber = source["chamber"]

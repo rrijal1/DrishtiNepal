@@ -97,7 +97,11 @@ def _is_indicator_for_minister(ind: dict, portfolio_en: str) -> bool:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def calculate_minister_score(minister_id: str, all_indicators: list[dict]) -> dict:
+def calculate_minister_score(
+    minister_id: str,
+    all_indicators: list[dict],
+    portfolio_en: str = "",
+) -> dict:
     """
     Outcome-only score for a single minister.
 
@@ -109,23 +113,6 @@ def calculate_minister_score(minister_id: str, all_indicators: list[dict]) -> di
             "reason": str,
         }
     """
-    # Look up minister's portfolio
-    m_result = (
-        db.table("ministers")
-        .select("portfolio_en, name_en")
-        .eq("id", minister_id)
-        .execute()
-    )
-    if not m_result.data:
-        return {
-            "score": None,
-            "indicator_count": 0,
-            "indicators": [],
-            "reason": "minister_not_found",
-        }
-
-    portfolio_en = m_result.data[0].get("portfolio_en") or ""
-
     # Filter indicators to this minister's portfolio
     relevant = [
         ind for ind in all_indicators if _is_indicator_for_minister(ind, portfolio_en)
@@ -302,7 +289,7 @@ def run() -> None:
             name = minister["name_en"]
             portfolio = minister.get("portfolio_en", "")
 
-            result = calculate_minister_score(mid, all_indicators)
+            result = calculate_minister_score(mid, all_indicators, portfolio)
 
             if result["score"] is None:
                 logger.warning(f"  SKIP {name} ({portfolio}): {result['reason']}")

@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  GOVT_FORMATION,
+  type OutcomeIndicator,
+  buildMonthlyData,
+  calcProgress,
+  formatDate as fmtDate,
+  formatValue as fmtVal,
+  mandateElapsedPct as mandatePct,
+} from "@/lib/manifesto-utils";
 import Link from "next/link";
 import {
   Area,
@@ -14,22 +23,7 @@ import {
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-interface Indicator {
-  id: string;
-  indicator_name: string;
-  indicator_label: string | null;
-  unit: string | null;
-  baseline_value: number | null;
-  baseline_date: string | null;
-  current_value: number | null;
-  measured_date: string | null;
-  target_value: number | null;
-  target_deadline: string | null;
-  direction: string | null;
-  source: string | null;
-  source_url: string | null;
-  weight?: number | null;
-}
+type Indicator = OutcomeIndicator;
 
 interface ActionLink {
   link_type: string;
@@ -114,8 +108,6 @@ export interface ManifestoItemDetailProps {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-const GOVT_FORMATION = "2026-03-27";
-
 const STATUS_MAP: Record<
   string,
   { bg: string; text: string; border: string; dot: string; label: string }
@@ -192,63 +184,7 @@ const LINK_TYPE_MAP: Record<string, { accent: string; label: string }> = {
 };
 
 const GITHUB_REPO = "https://github.com/rrijal1/DrishtiNepal";
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function calcProgress(ind: Indicator): number | null {
-  if (
-    ind.baseline_value == null ||
-    ind.target_value == null ||
-    ind.current_value == null
-  )
-    return null;
-  const range = ind.target_value - ind.baseline_value;
-  if (range === 0) return ind.current_value >= ind.target_value ? 100 : 0;
-  if (ind.direction === "lower_is_better") {
-    return Math.min(
-      100,
-      Math.max(
-        0,
-        ((ind.baseline_value - ind.current_value) /
-          (ind.baseline_value - ind.target_value)) *
-          100,
-      ),
-    );
-  }
-  return Math.min(
-    100,
-    Math.max(0, ((ind.current_value - ind.baseline_value) / range) * 100),
-  );
-}
-
-function fmtVal(v: number | null, unit: string | null): string {
-  if (v == null) return "—";
-  const s =
-    Math.abs(v) >= 1_000_000
-      ? `${(v / 1_000_000).toFixed(1)}M`
-      : Math.abs(v) >= 1_000
-        ? `${(v / 1_000).toFixed(1)}K`
-        : v % 1 === 0
-          ? String(v)
-          : v.toFixed(2);
-  return unit ? `${s} ${unit}` : s;
-}
-
-function fmtDate(d: string | null, opts?: Intl.DateTimeFormatOptions): string {
-  if (!d) return "—";
-  return new Date(d).toLocaleDateString(
-    "en-US",
-    opts ?? { month: "short", day: "numeric", year: "numeric" },
-  );
-}
-
-function mandatePct(start: string | null, end: string | null): number | null {
-  const s = new Date(start ?? GOVT_FORMATION).getTime();
-  const e = end ? new Date(end).getTime() : null;
-  if (!e) return null;
-  const now = Date.now();
-  return Math.min(100, Math.max(0, Math.round(((now - s) / (e - s)) * 100)));
-}
+const CIRCUMFERENCE = 2 * Math.PI * 38;
 
 // ── Sub-components ───────────────────────────────────────────────────────────
 
@@ -277,42 +213,6 @@ function Card({
       {children}
     </div>
   );
-}
-
-// Build month-by-month data from baseline to current month.
-// Months with no recorded data default to 0 per design spec.
-function buildMonthlyData(
-  ind: Indicator,
-): { label: string; value: number; isCurrent: boolean }[] {
-  const start = new Date(ind.baseline_date ?? GOVT_FORMATION);
-  const now = new Date();
-  const months: { label: string; value: number; isCurrent: boolean }[] = [];
-  let cursor = new Date(start.getFullYear(), start.getMonth(), 1);
-  const endMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  while (cursor <= endMonth) {
-    const isBaseline =
-      cursor.getFullYear() === start.getFullYear() &&
-      cursor.getMonth() === start.getMonth();
-    const isCurrent =
-      cursor.getFullYear() === now.getFullYear() &&
-      cursor.getMonth() === now.getMonth();
-    let value = 0;
-    if (isBaseline) {
-      value = ind.baseline_value ?? 0;
-    } else if (isCurrent && ind.current_value != null) {
-      value = ind.current_value;
-    }
-    months.push({
-      label: cursor.toLocaleDateString("en-US", {
-        month: "short",
-        year: "2-digit",
-      }),
-      value,
-      isCurrent,
-    });
-    cursor = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1);
-  }
-  return months;
 }
 
 function IndicatorChart({ ind, color }: { ind: Indicator; color: string }) {
@@ -614,7 +514,6 @@ export function ManifestoItemDetail({
   const ministers = item.minister_manifesto_assignments ?? [];
   const hasActions = actionLinks.length > 0;
   const hasDecisions = decisionLinks.length > 0;
-  const circumference = 2 * Math.PI * 38;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -1037,7 +936,7 @@ export function ManifestoItemDetail({
                       stroke={color}
                       strokeWidth="8"
                       strokeLinecap="round"
-                      strokeDasharray={`${aggregateScore != null ? (circumference * aggregateScore) / 100 : 0} ${circumference}`}
+                      strokeDasharray={`${aggregateScore != null ? (CIRCUMFERENCE * aggregateScore) / 100 : 0} ${CIRCUMFERENCE}`}
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">

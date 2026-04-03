@@ -10,13 +10,17 @@ assessments with citations. These go into the review queue for community editors
 and domain experts to approve before affecting scores.
 """
 
-import re
 import json
 from datetime import datetime, timezone
 
 from agents.common.db import db
 from agents.common.ai import quality_completion
-from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
+from agents.common.utils import (
+    setup_logger,
+    log_agent_run,
+    complete_agent_run,
+    parse_ai_json,
+)
 
 logger = setup_logger("evidence_assessor")
 
@@ -205,8 +209,9 @@ Respond ONLY with the JSON object. No markdown fences."""
 
     try:
         response = quality_completion(prompt, system=system, max_tokens=2000)
-        cleaned = re.sub(r"```json?\s*|\s*```", "", response).strip()
-        result = json.loads(cleaned)
+        result = parse_ai_json(response)
+        if not result:
+            raise ValueError("Failed to parse AI response as JSON")
 
         # Validate probability
         prob = result.get("probability", 0.5)
@@ -285,7 +290,7 @@ def run():
             assessment = draft_assessment(item, actions, gazette, indicators)
 
             # Store
-            evidence_id = store_assessment(item["id"], assessment)
+            store_assessment(item["id"], assessment)
             items_created += 1
 
             logger.info(

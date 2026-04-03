@@ -18,7 +18,14 @@ from bs4 import BeautifulSoup
 
 from agents.common.db import db
 from agents.common.ai import cheap_completion
-from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
+from agents.common.utils import (
+    setup_logger,
+    log_agent_run,
+    complete_agent_run,
+    parse_ai_json,
+    link_to_manifesto,
+    queue_for_review,
+)
 
 logger = setup_logger("gazette_monitor")
 
@@ -128,12 +135,14 @@ Respond ONLY with the JSON object, no markdown."""
             prompt,
             system="You are a Nepal governance analyst. Classify gazette entries accurately.",
         )
-        # Parse JSON from response
-        import json
-
-        # Strip markdown code fences if present
-        cleaned = re.sub(r"```json?\s*|\s*```", "", response).strip()
-        return json.loads(cleaned)
+        fallback = {
+            "title_en": title[:200],
+            "summary_en": "",
+            "category": "general",
+            "significance": "medium",
+            "related_manifesto_areas": [],
+        }
+        return parse_ai_json(response, fallback) or fallback
     except Exception as e:
         logger.warning(f"AI classification failed: {e}")
         return {
@@ -156,41 +165,6 @@ def is_duplicate(title_np: str, published_date: str) -> bool:
         .execute()
     )
     return len(result.data) > 0
-
-
-def link_to_manifesto(areas: list[str]) -> str | None:
-    """Look up the manifesto_item_id for a priority area."""
-    if not areas:
-        return None
-    # Use the first matching area
-    for area in areas:
-        result = (
-            db.table("manifesto_items")
-            .select("id")
-            .eq("source_id", area)
-            .limit(1)
-            .execute()
-        )
-        if result.data:
-            return result.data[0]["id"]
-    return None
-
-
-def queue_for_review(
-    gazette_id: str, title: str, significance: str, ai_confidence: float = None
-):
-    """Add high-significance entries to the content review queue."""
-    priority = "high" if significance in ("critical", "high") else "normal"
-    db.table("content_review_queue").insert(
-        {
-            "content_type": "gazette_entry",
-            "content_id": gazette_id,
-            "priority": priority,
-            "status": "pending",
-            "title": title[:500],
-            "ai_confidence": ai_confidence,
-        }
-    ).execute()
 
 
 def store_entry(entry: dict, classification: dict) -> str | None:
@@ -224,9 +198,10 @@ def store_entry(entry: dict, classification: dict) -> str | None:
     # Queue critical/high items for moderator review
     if review_status == "needs_review":
         queue_for_review(
-            entry_id,
-            classification.get("title_en", entry.get("title_np", "")),
-            significance,
+            content_type="gazette_entry",
+            content_id=entry_id,
+            title=classification.get("title_en", entry.get("title_np", "")),
+            significance=significance,
         )
         logger.info(f"  Queued for review: {classification.get('title_en', '')[:80]}")
 

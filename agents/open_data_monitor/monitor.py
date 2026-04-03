@@ -9,8 +9,6 @@ Updates outcome_indicators table with fresh data and creates gazette-style recor
 for significant data releases.
 """
 
-import re
-import json
 from datetime import datetime, timezone
 
 import httpx
@@ -158,7 +156,8 @@ def _parse_json_data(data: any, indicator_name: str) -> tuple[float | None, str 
                 if val is not None:
                     try:
                         return float(val), latest.get(
-                            "year", latest.get("date", str(datetime.now().year))
+                            "year",
+                            latest.get("date", str(datetime.now(timezone.utc).year)),
                         )
                     except (ValueError, TypeError):
                         continue
@@ -167,7 +166,9 @@ def _parse_json_data(data: any, indicator_name: str) -> tuple[float | None, str 
         for key in ("value", "latest", "current"):
             if key in data:
                 try:
-                    return float(data[key]), data.get("year", str(datetime.now().year))
+                    return float(data[key]), data.get(
+                        "year", str(datetime.now(timezone.utc).year)
+                    )
                 except (ValueError, TypeError):
                     continue
     return None, None
@@ -195,7 +196,10 @@ def _parse_csv_data(
         try:
             num = float(val.replace(",", ""))
             year = latest.get(
-                "year", latest.get("Year", latest.get("date", str(datetime.now().year)))
+                "year",
+                latest.get(
+                    "Year", latest.get("date", str(datetime.now(timezone.utc).year))
+                ),
             )
             return num, str(year)
         except ValueError:

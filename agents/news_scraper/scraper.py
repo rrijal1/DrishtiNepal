@@ -8,7 +8,6 @@ in batches, and stores new items for later processing by other agents.
 import asyncio
 import itertools
 import re
-import unicodedata
 from typing import List, Dict
 
 import feedparser

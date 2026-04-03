@@ -1,23 +1,15 @@
-import json
-from datetime import datetime, timezone
-from typing import List, Dict
+from datetime import datetime, timedelta, timezone
 
+from agents.common.ai import get_embedding
 from agents.common.db import db
-from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
+from agents.common.utils import (
+    setup_logger,
+    log_agent_run,
+    complete_agent_run,
+    get_minister_map,
+)
 
 logger = setup_logger("action_extractor")
-
-
-def get_minister_map() -> Dict[str, str]:
-    """Fetch active ministers and create name -> id map."""
-    ministers = (
-        db.table("ministers")
-        .select("id, name_en")
-        .eq("status", "active")
-        .execute()
-        .data
-    )
-    return {m["name_en"]: m["id"] for m in ministers}
 
 
 def run():
@@ -30,8 +22,6 @@ def run():
 
         # Get processed news items that are cabinet-related
         # Only fetch items from the last 7 days to avoid growing scan
-        from datetime import timedelta
-
         cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
 
         news_items = (
@@ -42,8 +32,10 @@ def run():
             .execute()
         ).data
 
-        # Batch-fetch existing action raw_news_ids to avoid per-item DB queries
-        existing_actions = (db.table("actions").select("metadata").execute()).data
+        # Batch-fetch existing action raw_news_ids — scoped to recent cutoff
+        existing_actions = (
+            db.table("actions").select("metadata").gte("action_date", cutoff).execute()
+        ).data
         existing_raw_news_ids = set()
         for a in existing_actions:
             meta = a.get("metadata") or {}
@@ -93,8 +85,6 @@ def run():
 
                 # Generate embedding
                 try:
-                    from agents.common.ai import get_embedding
-
                     emb_text = (
                         f"{action_data['title_en']}: {action_data['description_en']}"
                     )

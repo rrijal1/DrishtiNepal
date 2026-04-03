@@ -12,7 +12,12 @@ from typing import List, Dict, Optional
 
 from agents.common.db import db
 from agents.common.ai import cheap_completion
-from agents.common.utils import setup_logger, log_agent_run, complete_agent_run
+from agents.common.utils import (
+    setup_logger,
+    log_agent_run,
+    complete_agent_run,
+    parse_ai_json,
+)
 
 logger = setup_logger("content_generator")
 
@@ -49,13 +54,8 @@ Return ONLY valid JSON, no other text."""
 
     try:
         response = cheap_completion(prompt, max_tokens=768)
-        response = response.strip()
-        if response.startswith("```"):
-            response = response.split("```")[1]
-            if response.startswith("json"):
-                response = response[4:]
-        return json.loads(response)
-    except (json.JSONDecodeError, Exception) as e:
+        return parse_ai_json(response)
+    except Exception as e:
         logger.error(f"AI extraction failed for title '{title[:50]}...': {e}")
         return None
 
@@ -202,12 +202,7 @@ Return ONLY valid JSON."""
 
     try:
         response = cheap_completion(prompt, max_tokens=2048)
-        response = response.strip()
-        if response.startswith("```"):
-            response = response.split("```")[1]
-            if response.startswith("json"):
-                response = response[4:]
-        return json.loads(response)
+        return parse_ai_json(response)
     except Exception as e:
         logger.error(f"Content generation failed: {e}")
         return None

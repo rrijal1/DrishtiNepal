@@ -6,6 +6,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN playwright install chromium --with-deps
 
 COPY agents/ agents/
-COPY .env .env
 
+# Pass secrets via env vars at runtime — never bake .env into the image
 CMD ["python", "-m", "agents.scheduler"]

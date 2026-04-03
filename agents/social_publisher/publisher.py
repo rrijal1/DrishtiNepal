@@ -7,7 +7,6 @@ import os
 import random
 import requests
 import time
-import urllib.parse
 from typing import Optional, Dict, List
 
 try:
@@ -261,13 +260,8 @@ def publish_to_ig(text: str, image_url: str, article_url: str) -> Optional[str]:
 
 
 def publish_to_x(text: str, article_url: str) -> Optional[str]:
-    # ... (existing publish_to_x function remains unchanged)
-    # Using OAuth 1.0a for posting
-    import hmac, hashlib, base64, uuid
-
-    api_key = os.environ.get(
-        "X_API_KEY", ""
-    )  # full implementation ommitted for brevity
+    # Stub — full OAuth 1.0a implementation pending
+    api_key = os.environ.get("X_API_KEY", "")
     if not api_key:
         return None
     return "dummy_x_id"

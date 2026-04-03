@@ -7,12 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Minister name list for keyword filtering (update when cabinet changes)
-MINISTER_KEYWORDS = [
-    # Add minister names in both English and Nepali transliteration
-    # Example entries - replace with actual cabinet members
-]
-
 # Party keywords
 PARTY_KEYWORDS = [
     "rastriya swatantra party",
@@ -111,17 +105,6 @@ METHODOLOGY_VERSION = "v1"
 # minister_score = Σ(weight_i × progress_i) / Σ(weight_i) × 100
 # Indicator weights (1–100 scale) are stored per-row in outcome_indicators.weight.
 # Initiatives and evidence are displayed but do NOT contribute to the score.
-
-# Deprecated composite weights — kept for score history compatibility only
-_SCORING_WEIGHTS_V3_DEPRECATED = {
-    "outcome_score": 0.50,
-    "initiative_score": 0.30,
-    "evidence_score": 0.20,
-}
-_SCORING_WEIGHTS_V2_DEPRECATED = {
-    "manifesto_compliance": 0.70,
-    "public_accountability": 0.30,
-}
 
 # Social media posting config
 SOCIAL_CONFIG = {

@@ -3,8 +3,10 @@ Drishti Nepal - Common Utilities
 """
 
 import hashlib
+import json
 import logging
 import os
+import re
 from datetime import datetime, timezone
 
 from .db import db
@@ -73,3 +75,72 @@ def get_minister_names() -> list[dict]:
         .execute()
     )
     return result.data
+
+
+def get_minister_map(lowercase_keys: bool = False) -> dict[str, str]:
+    """Fetch active ministers and return {name_en: id} mapping."""
+    ministers = (
+        db.table("ministers")
+        .select("id, name_en")
+        .eq("status", "active")
+        .execute()
+        .data
+    )
+    if lowercase_keys:
+        return {m["name_en"].lower(): m["id"] for m in ministers}
+    return {m["name_en"]: m["id"] for m in ministers}
+
+
+def parse_ai_json(response: str, fallback: dict | None = None) -> dict | None:
+    """Strip markdown code fences from AI response and parse JSON."""
+    text = response.strip()
+    cleaned = re.sub(r"```json?\s*|\s*```", "", text).strip()
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        return fallback
+
+
+def link_to_manifesto(areas: list[str]) -> str | None:
+    """Look up the manifesto_item_id for a priority area."""
+    if not areas:
+        return None
+    for area in areas:
+        result = (
+            db.table("manifesto_items")
+            .select("id")
+            .eq("source_id", area)
+            .limit(1)
+            .execute()
+        )
+        if result.data:
+            return result.data[0]["id"]
+    return None
+
+
+def queue_for_review(
+    content_type: str,
+    content_id: str,
+    title: str,
+    significance: str = "medium",
+    record_type: str | None = None,
+    ai_confidence: float | None = None,
+):
+    """Add significant content to the review queue."""
+    needs_review = significance in ("critical", "high")
+    if record_type:
+        needs_review = needs_review or record_type in ("bill", "vote", "resolution")
+    if not needs_review:
+        return
+
+    priority = "high" if significance in ("critical", "high") else "normal"
+    row = {
+        "content_type": content_type,
+        "content_id": content_id,
+        "priority": priority,
+        "status": "pending",
+        "title": title[:500],
+    }
+    if ai_confidence is not None:
+        row["ai_confidence"] = ai_confidence
+    db.table("content_review_queue").insert(row).execute()
