@@ -180,6 +180,7 @@ Generate a JSON response with:
 - "excerpt_np": Same hook in natural Nepali.
 - "social_hook": A single punchy line (under 100 chars) for social media — a question, a stat, or a challenge. E.g., "500,000 jobs promised. How many so far?" or "के यो वचन पूरा हुन्छ?"
 - "tags": list of relevant tags (e.g., ["economy", "cabinet-decision", "minister-name"])
+- "bp_items": list of Bachha Patra IDs this article directly relates to (e.g., ["bp-001", "bp-023"]). Use only IDs you are confident about from the news content. Empty list is fine.
 - "type": one of "news_update", "analysis", "cabinet_decision"
 - "auto_publishable": boolean - true only if purely factual with high confidence
 
@@ -223,6 +224,12 @@ def store_post(content: Dict, source_item: Dict):
     auto_publish = content.get("auto_publishable", False)
     status = "published" if auto_publish else "review"
 
+    # Merge bp_items (manifesto item IDs) into tags so manifesto pages can query them
+    tags = list(content.get("tags", []))
+    bp_items = content.get("bp_items", [])
+    if bp_items:
+        tags = list(set(tags) | set(bp_items))
+
     post_data = {
         "category": content.get("type", "news_update"),
         "slug": create_slug(content["title_en"]),
@@ -233,7 +240,7 @@ def store_post(content: Dict, source_item: Dict):
         "excerpt_en": content.get("excerpt_en", ""),
         "excerpt_np": content.get("excerpt_np", ""),
         "ai_generated": True,
-        "tags": content.get("tags", []),
+        "tags": tags,
         "author_type": "agent",
         "author_name": "Drishti Nepal AI",
         "status": status,

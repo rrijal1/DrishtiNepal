@@ -53,7 +53,7 @@ export default async function HomePage() {
     .select("id, title_en, title_np, slug, published_at, category")
     .eq("status", "published")
     .order("published_at", { ascending: false })
-    .limit(6);
+    .limit(3);
 
   const { data: recentDecisions } = await supabase
     .from("cabinet_decisions")
@@ -301,108 +301,89 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── Recent Decisions ─── */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <SectionHeading
-            title={
-              locale === "en"
-                ? "Latest Cabinet Decisions"
-                : "पछिल्ला क्याबिनेट निर्णयहरू"
-            }
-            subtitle={
-              locale === "en"
-                ? "Major government decisions and their impact on manifesto commitments."
-                : "प्रमुख सरकारी निर्णयहरू र वाचा पत्रका प्रतिबद्धताहरूमा उनीहरूको प्रभाव।"
-            }
-            href="/decisions"
-          />
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {recentDecisions?.map((d) => (
-              <div
-                key={d.id}
-                className="rounded-xl border border-neutral-200 p-5 transition hover:shadow-md"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-semibold text-neutral-800">
-                      {locale === "en" ? d.title_en : d.title_np || d.title_en}
-                    </h3>
-                    {locale === "en" && d.title_np && (
-                      <p className="mt-0.5 text-sm text-neutral-400 font-nepali">
-                        {d.title_np}
-                      </p>
-                    )}
-                  </div>
+      {/* ─── Cabinet Decisions · compact strip ─── */}
+      <section className="border-y border-neutral-100 bg-neutral-50">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 overflow-x-auto pb-1">
+            <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+              {locale === "en" ? "Cabinet" : "क्याबिनेट"}
+            </span>
+            {recentDecisions?.length ? (
+              recentDecisions.map((d) => (
+                <a
+                  key={d.id}
+                  href="/decisions"
+                  className="group flex shrink-0 items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 transition hover:border-[#1e3a5f]/40 hover:text-[#1e3a5f]"
+                >
                   <SignificanceBadge level={d.significance} locale={locale} />
-                </div>
-                <p className="mt-2 text-xs text-neutral-400">
-                  {new Date(d.decision_date).toLocaleDateString(
-                    locale === "en" ? "en-US" : "ne-NP",
-                    {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    },
-                  )}
-                </p>
-              </div>
-            )) ?? (
-              <p className="col-span-full text-center text-neutral-400">
-                No decisions tracked yet.
-              </p>
+                  <span className="max-w-[20rem] truncate group-hover:text-[#1e3a5f]">
+                    {locale === "en" ? d.title_en : d.title_np || d.title_en}
+                  </span>
+                  <span className="shrink-0 text-[11px] text-neutral-400">
+                    {new Date(d.decision_date).toLocaleDateString(
+                      locale === "en" ? "en-US" : "ne-NP",
+                      { month: "short", day: "numeric" },
+                    )}
+                  </span>
+                </a>
+              ))
+            ) : (
+              <span className="text-sm text-neutral-400">
+                {locale === "en" ? "No decisions yet." : "कुनै निर्णय छैन।"}
+              </span>
             )}
+            <a
+              href="/decisions"
+              className="ml-auto shrink-0 text-xs font-medium text-[#1e3a5f] transition hover:underline"
+            >
+              {locale === "en" ? "View all →" : "सबै →"}
+            </a>
           </div>
         </div>
       </section>
 
-      {/* ─── Recent Posts ─── */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <SectionHeading
-          title={locale === "en" ? "Recent Analysis" : "हालैका विश्लेषणहरू"}
-          subtitle={
-            locale === "en"
-              ? "AI-generated and human-reviewed accountability reports."
-              : "AI द्वारा उत्पन्न र मानव-समीक्षा गरिएका जवाफदेहिता रिपोर्टहरू।"
-          }
-          href="/articles"
-        />
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {recentPosts?.map((p) => (
-            <a
-              key={p.id}
-              href={`/articles/${p.slug}`}
-              className="group rounded-xl border border-neutral-200 p-5 transition hover:border-[#1e3a5f]/30 hover:shadow-md"
-            >
-              <span className="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-[#1e3a5f]">
-                {p.category}
+      {/* ─── Recent Analysis · compact row ─── */}
+      {recentPosts && recentPosts.length > 0 && (
+        <section className="border-b border-neutral-100 bg-white py-4">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                {locale === "en" ? "Latest Analysis" : "ताजा विश्लेषण"}
               </span>
-              <h3 className="mt-3 font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
-                {locale === "en" ? p.title_en : p.title_np || p.title_en}
-              </h3>
-              {locale === "en" && p.title_np && (
-                <p className="mt-1 text-sm text-neutral-400 font-nepali">
-                  {p.title_np}
-                </p>
-              )}
-              <p className="mt-3 text-xs text-neutral-400">
-                {new Date(p.published_at).toLocaleDateString(
-                  locale === "en" ? "en-US" : "ne-NP",
-                  {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  },
-                )}
-              </p>
-            </a>
-          )) ?? (
-            <p className="col-span-full text-center text-neutral-400">
-              No articles published yet. Agents are initializing…
-            </p>
-          )}
-        </div>
-      </section>
+              <a
+                href="/articles"
+                className="text-xs font-medium text-[#1e3a5f] transition hover:underline"
+              >
+                {locale === "en" ? "View all →" : "सबै →"}
+              </a>
+            </div>
+            <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-3">
+              {recentPosts.map((p) => (
+                <a
+                  key={p.id}
+                  href={`/articles/${p.slug}`}
+                  className="group flex items-start gap-2.5"
+                >
+                  <span className="mt-0.5 shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-[#1e3a5f]">
+                    {p.category}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="line-clamp-2 text-sm font-medium text-neutral-700 group-hover:text-[#1e3a5f]">
+                      {locale === "en" ? p.title_en : p.title_np || p.title_en}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-neutral-400">
+                      {new Date(p.published_at).toLocaleDateString(
+                        locale === "en" ? "en-US" : "ne-NP",
+                        { month: "short", day: "numeric" },
+                      )}
+                    </p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ─── How it works ─── */}
       <section className="bg-gradient-to-b from-neutral-50 to-white">

@@ -121,6 +121,7 @@ export default async function ManifestoItemPage({
     { data: decisionLinks },
     { data: evidenceItems },
     { data: relatedPosts },
+    taggedPostsResult,
   ] = await Promise.all([
     supabase
       .from("outcome_indicators")
@@ -161,7 +162,32 @@ export default async function ManifestoItemPage({
       )
       .order("created_at", { ascending: false })
       .limit(6),
+    supabase
+      .from("posts")
+      .select("id, title_en, slug, published_at, category, image_url")
+      .eq("status", "published")
+      .contains("tags", [slug])
+      .order("published_at", { ascending: false })
+      .limit(6),
   ]);
+
+  // Merge minister-linked posts and tag-linked posts, deduplicate by slug
+  const ministerPosts = (relatedPosts ?? [])
+    .map((pm: any) => pm.posts)
+    .filter(Boolean);
+  const taggedPosts = (taggedPostsResult.data ?? []) as any[];
+  const seenSlugs = new Set<string>();
+  const mergedPosts: any[] = [];
+  for (const p of [...taggedPosts, ...ministerPosts]) {
+    if (p && p.slug && !seenSlugs.has(p.slug)) {
+      seenSlugs.add(p.slug);
+      mergedPosts.push(p);
+    }
+  }
+  mergedPosts.sort(
+    (a, b) =>
+      new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
+  );
 
   const allIndicators = indicators ?? [];
   let aggregateScore: number | null = null;
@@ -186,7 +212,7 @@ export default async function ManifestoItemPage({
       actionLinks={(actionLinks ?? []) as any[]}
       decisionLinks={(decisionLinks ?? []) as any[]}
       evidenceItems={(evidenceItems ?? []) as any[]}
-      relatedPosts={(relatedPosts ?? []) as any[]}
+      relatedPosts={mergedPosts as any[]}
       aggregateScore={aggregateScore}
       kararArea={getKararArea(item.source_id)}
       locale={locale}
