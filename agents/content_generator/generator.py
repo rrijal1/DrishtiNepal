@@ -247,9 +247,9 @@ def store_post(content: Dict, source_item: Dict):
         ),
         # Pass through source info
         "source_url": source_item.get("source_url"),
-        "source_name": source_item.get("source_name"),
         "metadata": {
             "social_hook": content.get("social_hook", ""),
+            "source_name": source_item.get("source_name"),
         },
     }
 

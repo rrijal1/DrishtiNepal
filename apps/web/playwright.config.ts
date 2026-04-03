@@ -28,9 +28,9 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      "cd /Users/rrijal/Desktop/Create/NW/apps/web && node_modules/.bin/next dev -p 3001",
+      "cd /Users/rrijal/Desktop/Create/NW/apps/web && node_modules/.bin/next build && node_modules/.bin/next start -p 3001",
     port: 3001,
     reuseExistingServer: true,
-    timeout: 30_000,
+    timeout: 120_000,
   },
 });

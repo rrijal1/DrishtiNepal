@@ -7,12 +7,9 @@ import { LanguageToggle } from "./LanguageToggle";
 interface HeaderProps {
   locale: Locale;
   navLabels: {
-    ministers: string;
-    decisions: string;
     manifesto: string;
-    scores: string;
-    articles: string;
-    submit: string;
+    ministers: string;
+    research: string;
     search: string;
   };
 }
@@ -21,12 +18,9 @@ export function Header({ locale, navLabels: t }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "/ministers", label: t.ministers },
-    { href: "/decisions", label: t.decisions },
     { href: "/manifesto", label: t.manifesto },
-    { href: "/scores", label: t.scores },
-    { href: "/articles", label: t.articles },
-    { href: "/submit", label: t.submit },
+    { href: "/ministers", label: t.ministers },
+    { href: "/articles", label: t.research },
   ];
 
   return (

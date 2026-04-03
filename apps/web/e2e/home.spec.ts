@@ -6,8 +6,8 @@ test.describe("Home Page", () => {
     // Hero title should be visible
     await expect(page.locator("h1")).toBeVisible();
     // CTA buttons (may be stacked on mobile but still present in DOM)
+    await expect(page.locator('a[href="/manifesto"]').first()).toBeAttached();
     await expect(page.locator('a[href="/ministers"]').first()).toBeAttached();
-    await expect(page.locator('a[href="/scores"]').first()).toBeAttached();
   });
 
   test("displays stat pills", async ({ page }) => {
@@ -17,6 +17,16 @@ test.describe("Home Page", () => {
       .locator("text=Ministers Tracked")
       .or(page.locator("text=मन्त्री ट्र्याक गरिएको"));
     await expect(stats.first()).toBeVisible();
+  });
+
+  test("renders manifesto progress section", async ({ page }) => {
+    await page.goto("/");
+    const heading = page
+      .getByText("Manifesto Progress")
+      .or(page.getByText("वाचा पत्र प्रगति"));
+    await expect(heading.first()).toBeVisible();
+    // Ring chart SVG should be present
+    await expect(page.locator("svg circle").first()).toBeVisible();
   });
 
   test("renders minister grid section", async ({ page }) => {

@@ -23,14 +23,7 @@ test.describe("Header & Navigation", () => {
     const nav = page.locator("header nav");
     await expect(nav.first()).toBeVisible();
 
-    const links = [
-      "/ministers",
-      "/decisions",
-      "/manifesto",
-      "/scores",
-      "/articles",
-      "/submit",
-    ];
+    const links = ["/manifesto", "/ministers", "/articles"];
     for (const href of links) {
       await expect(page.locator(`header nav a[href="${href}"]`)).toBeVisible();
     }
@@ -70,12 +63,9 @@ test.describe("Header & Navigation", () => {
     await page.goto("/");
 
     const routes = [
+      { href: "/manifesto", text: /Vacha Patra|Manifesto|वाचा/ },
       { href: "/ministers", text: /Ministers|मन्त्रिपरिषद्/ },
-      { href: "/decisions", text: /Decisions|निर्णय/ },
-      { href: "/manifesto", text: /Manifesto|वाचा/ },
-      { href: "/scores", text: /Scores|स्कोर/ },
-      { href: "/articles", text: /Articles|लेख/ },
-      { href: "/submit", text: /Submit|पेश/ },
+      { href: "/articles", text: /Research|लेख/ },
     ];
 
     for (const route of routes) {
