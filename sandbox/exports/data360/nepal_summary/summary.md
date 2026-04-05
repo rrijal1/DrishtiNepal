@@ -1,0 +1,301 @@
+# Data360 — Nepal indicators with 2025/2026 data
+
+- **BS_BTI** / `BS_BTI_16_RECON` — Bertelsmann Transformation Index: Reconciliation — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_G` — Bertelsmann Transformation Index: Governance Index — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_GII` — Bertelsmann Transformation Index: Governance Performance — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_OVERALL_RANK` — Bertelsmann Transformation Index: Overall Rank — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_OVERALL_SCORE` — Bertelsmann Transformation Index: Overall Score — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q1` — Bertelsmann Transformation Index: Stateness — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q10` — Bertelsmann Transformation Index: Welfare Regime — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q10_1` — Bertelsmann Transformation Index: Social safety nets — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q10_2` — Bertelsmann Transformation Index: Equal opportunity — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q11` — Bertelsmann Transformation Index: Economic Performance — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q11_1` — Bertelsmann Transformation Index: Output strength — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q12` — Bertelsmann Transformation Index: Sustainability — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q12_1` — Bertelsmann Transformation Index: Environmental policy — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q12_2` — Bertelsmann Transformation Index: Education / R&D policy — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13` — Bertelsmann Transformation Index: Level of Difficulty — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13_1` — Bertelsmann Transformation Index: Structural constraints — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13_2` — Bertelsmann Transformation Index: Civil society traditions — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13_3` — Bertelsmann Transformation Index: Conflict intensity — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13_4` — Bertelsmann Transformation Index: GNI p.c. Atlas method rescaled — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13_5` — Bertelsmann Transformation Index: UN Educ. Index rescaled — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q13_6` — Bertelsmann Transformation Index: BTI Stateness & Rule of Law — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q14` — Bertelsmann Transformation Index: Steering Capability — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q14_1` — Bertelsmann Transformation Index: Prioritization — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q14_2` — Bertelsmann Transformation Index: Implementation — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q14_3` — Bertelsmann Transformation Index: Policy learning — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q15` — Bertelsmann Transformation Index: Resource Efficiency — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q15_1` — Bertelsmann Transformation Index: Efficient use of assets — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q15_2` — Bertelsmann Transformation Index: Policy coordination — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q15_3` — Bertelsmann Transformation Index: Anti-corruption policy — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q16` — Bertelsmann Transformation Index: Consensus-Building — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q16_1` — Bertelsmann Transformation Index: Consensus on goals — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q16_2` — Bertelsmann Transformation Index: Anti-democratic actors — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q16_3` — Bertelsmann Transformation Index: Cleavage / conflict management — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q17` — Bertelsmann Transformation Index: International Cooperation — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q17_2` — Bertelsmann Transformation Index: Credibility — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q17_3` — Bertelsmann Transformation Index: Regional cooperation — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q1_1` — Bertelsmann Transformation Index: Monopoly on the use of force — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q1_3` — Bertelsmann Transformation Index: No interference of religious dogmas — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q1_4` — Bertelsmann Transformation Index: Basic administration — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q2` — Bertelsmann Transformation Index: Political Participation — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q2_1` — Bertelsmann Transformation Index: Free and fair elections — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q2_2` — Bertelsmann Transformation Index: Effective power to govern — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q2_4` — Bertelsmann Transformation Index: Freedom of expression — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q3` — Bertelsmann Transformation Index: Rule of Law — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q3_1` — Bertelsmann Transformation Index: Separation of powers — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q3_2` — Bertelsmann Transformation Index: Independent judiciary — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q3_3` — Bertelsmann Transformation Index: Prosecution of office abuse — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q4` — Bertelsmann Transformation Index: Stability of Democratic Institutions — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q4_1` — Bertelsmann Transformation Index: Performance of democratic institutions — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q4_2` — Bertelsmann Transformation Index: Commitment to democratic institutions — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q5` — Bertelsmann Transformation Index: Political and Social Integration — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q5_1` — Bertelsmann Transformation Index: Party system — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q5_2` — Bertelsmann Transformation Index: Interest groups — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q5_3` — Bertelsmann Transformation Index: Approval of democracy — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q6` — Bertelsmann Transformation Index: Level of Socioeconomic Development — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q6_1` — Bertelsmann Transformation Index: Socioeconomic barriers — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q7` — Bertelsmann Transformation Index: Organization of the Market and Competition — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q7_1` — Bertelsmann Transformation Index: Market organization — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q7_2` — Bertelsmann Transformation Index: Competition policy — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q7_3` — Bertelsmann Transformation Index: Liberalization of foreign trade — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q7_4` — Bertelsmann Transformation Index: Banking system — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q8` — Bertelsmann Transformation Index: Monetary and Fiscal Stability — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q8_1` — Bertelsmann Transformation Index: Monetary stability — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q8_2` — Bertelsmann Transformation Index: Fiscal stability — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q9` — Bertelsmann Transformation Index: Private Property — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q9_1` — Bertelsmann Transformation Index: Property rights — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_Q9_2` — Bertelsmann Transformation Index: Private enterprise — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_SI` — Bertelsmann Transformation Index: Democracy Status — 2025:False 2026:True
+- **BS_BTI** / `BS_BTI_SII` — Bertelsmann Transformation Index: Economy Status — 2025:False 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTC` — Fossil Fuel Subsidies - Total Implicit and Explicit - Coal — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTEC` — Explicit Fossil Fuel Subsidies - Coal — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTEN` — Explicit Fossil Fuel Subsidies - Natural Gas — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTEP` — Explicit Fossil Fuel Subsidies - Petroleum — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTET` — Explicit Fossil Fuel Subsidies - Electricity — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTI` — Implicit Fossil Fuel Subsidies - Total — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIA` — Implicit Fossil Fuel Subsidies - Accidents — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIC` — Implicit Fossil Fuel Subsidies - Coal — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIF` — Implicit Fossil Fuel Subsidies - Foregone VAT — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIL` — Implicit Fossil Fuel Subsidies - Local Air Pollution — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIP` — Implicit Fossil Fuel Subsidies - Petroleum — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIR` — Implicit Fossil Fuel Subsidies - Road damage — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIT` — Implicit Fossil Fuel Subsidies - Electricity — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTIW` — Implicit Fossil Fuel Subsidies - Global Warming — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTN` — Fossil Fuel Subsidies - Total Implicit and Explicit -  Natural Gas — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTP` — Fossil Fuel Subsidies - Total Implicit and Explicit - Petroleum — 2025:True 2026:True
+- **IMF_FFS** / `IMF_FFS_ECGFTT` — Fossil Fuel Subsidies - Total Implicit and Explicit - Electricity — 2025:True 2026:True
+- **IMF_FM** / `IMF_FM_GGR_G01_GDP_PT` — Revenue (% of GDP) — 2025:True 2026:True
+- **IMF_FM** / `IMF_FM_GGXCNL_G01_GDP_PT` — Net lending/borrowing (also referred as overall balance) (% of GDP) — 2025:True 2026:True
+- **IMF_FM** / `IMF_FM_GGXONLB_G01_GDP_PT` — Primary net lending/borrowing (also referred as primary balance) (% of GDP) — 2025:True 2026:True
+- **IMF_FM** / `IMF_FM_G_XWDG_G01_GDP_PT` — Gross debt (% of GDP) — 2025:True 2026:True
+- **IMF_FM** / `IMF_FM_G_X_G01_GDP_PT` — Expenditure (% of GDP) — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_BCA` — Current account balance, U.S. dollars, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_BCA_NGDPD` — Current account balance, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGR` — General government revenue, National currency, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGR_NGDP` — General government revenue, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGX` — General government total expenditure, National currency, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGXCNL` — General government net lending/borrowing, National currency, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGXCNL_NGDP` — General government net lending/borrowing, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGXONLB_NGDP` — General government primary net lending/borrowing, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_GGX_NGDP` — General government total expenditure, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_LP` — Population, Persons, Millions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDP` — Gross domestic product, current prices, National currency, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDPD` — Gross domestic product, current prices, U.S. dollars, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDPDPC` — Gross domestic product per capita, current prices, U.S. dollars, Units — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDPPC` — Gross domestic product per capita, current prices, National currency, Units — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDPRPC` — Gross domestic product per capita, constant prices, National currency, Units — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDPRPPPPC` — Gross domestic product per capita, constant prices, Purchasing power parity; 2017 international dollar, Units — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDP_D` — Gross domestic product, deflator, Index — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDP_FY` — Gross domestic product corresponding to fiscal year, current prices, National currency, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDP_R` — Gross domestic product, constant prices, National currency, Billions — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGDP_RPCH` — Gross domestic product, constant prices, Percent change — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NGSD_NGDP` — Gross national savings, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_NID_NGDP` — Total investment, Percent of GDP — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_PCPI` — Inflation, average consumer prices, Index — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_PCPIE` — Inflation, end of period consumer prices, Index — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_PCPIEPCH` — Inflation, end of period consumer prices, Percent change — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_PCPIPCH` — Inflation, average consumer prices, Percent change — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_PPPPC` — Gross domestic product per capita, current prices, Purchasing power parity; international dollars, Units — 2025:True 2026:True
+- **IMF_WEO** / `IMF_WEO_PPPSH` — Gross domestic product based on purchasing-power-parity (PPP) share of world total, Percent — 2025:True 2026:True
+- **ITU_DH** / `PRI_DO_MOB` — Price of data-only mobile broadband bundle (ITU) — 2025:True 2026:False
+- **ITU_DH** / `PRI_FIX_BB_5G` — Price of a fixed broadband basket 5GB (ITU) — 2025:True 2026:False
+- **ITU_DH** / `PRI_HU_VD` — Price of a high usage voice and data bundle (ITU) — 2025:True 2026:False
+- **ITU_DH** / `PRI_LU_VD` — Price of a low usage voice and data bundle (ITU) — 2025:True 2026:False
+- **OECD_AI** / `OECD_AI_PUBS_TOT` — Number of AI publications — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_ECONOMIC_CONTEXT` — Press Freedom Index: Economic context — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_LEGAL_CONTEXT` — Press Freedom Index: Legal framework — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_POLITICAL_CONTEXT` — Press Freedom Index: Political context — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_RANK` — Press Freedom Index Rank — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_RANK_ECO` — Press Freedom Index: Economic context rank — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_RANK_LEG` — Press Freedom Index: Legal framework rank — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_RANK_SAF` — Press Freedom Index: Safety rank — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_RANK_SOC` — Press Freedom Index: Sociocultural context rank — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_SAFETY` — Press Freedom Index: Safety — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_SCORE` — Press Freedom Index Score — 2025:True 2026:False
+- **RWB_PFI** / `RWB_PFI_SOCIAL_CONTEXT` — Press Freedom Index: Sociocultural context — 2025:True 2026:False
+- **T500_TL** / `T500_TL_SPR_CMPS` — Number of Top 500 supercomputers — 2025:True 2026:False
+- **UN_SDG** / `UN_SDG_ER_RSK_LBREDS` — 2.5.2 Proportion of local breeds classified as being at risk of extinction — 2025:True 2026:False
+- **WB_CLEAR** / `WB_CLEAR_INFORM_CU5` — Vulnerability of children under five — 2025:True 2026:False
+- **WB_CLEAR** / `WB_CLEAR_INFORM_DRGHT` — Physical exposure to droughts — 2025:True 2026:False
+- **WB_CLEAR** / `WB_CLEAR_INFORM_DRR` — Disaster risk management capacity — 2025:True 2026:False
+- **WB_CLEAR** / `WB_CLEAR_INFORM_FS` — Vulnerability to food insecurity — 2025:True 2026:False
+- **WB_CLEAR** / `WB_CLEAR_INFORM_GOV` — Governance index — 2025:True 2026:False
+- **WB_CLEAR** / `WB_CLEAR_INFORM_PINF` — Physical infrastructure for disasters — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_ACCS_TRANS_INFRA_SERV` — Number of people that benefit from improved access to sustainable transport infrastructure and services — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_EDU_SUPP` — Students supported with better education — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_ELC_ACCS` — Number of people provided with access to electricity — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_FIN_SERV_WOM` — Number of people and businesses using financial services, including number of women — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_FOOD_NUTR_SECU` — Number of people with strengthened food and nutrition security — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_GEN_EQU_BENE` — Number of people benefitting from actions to advance gender equality, and number benefitting from actions that expand and enable economic opportunities — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_GHG_EMS_YEAR` — Net GHG Emissions — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_REN_ENER_ENAB` — Gigawatts of renewable energy capacity enabled — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_RESI_CLIM_RISK` — Number of beneficiaries with enhanced resilience to climate risks — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_SOC_SAF_PROG` — Beneficiaries of social safety net programs — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_TER_AQU_HECT` — Hectares of terrestrial and aquatic areas under enhanced conservation / management — 2025:True 2026:False
+- **WB_CSC** / `WB_CSC_RES_WAT_SAN_HYG_TOT` — Number of people provided with water, sanitation, and/or hygiene, and the number provided with safely managed services — 2025:True 2026:False
+- **WB_GEP** / `WB_GEP_NYGDPMKTPKDZ` — GDP growth, constant (average 2010-19 prices and market exchange rates) — 2025:True 2026:True
+- **WB_HCIP** / `HD_HCIP_AMRT` — Survival Rate from Age 15-60 — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_EDUC` — Human Capital Index Plus (HCI+): Education Pillar Score — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_EYRS` — Expected Years of School — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_EYSP` — Expected Years Pre-primary — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_HLOS` — Harmonized Test Scores — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_HLTH` — Human Capital Index Plus (HCI+): Health Pillar Score — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_LAYS` — Learning-Adjusted Years of School — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_OTJL` — Human Capital Index Plus (HCI+): On-the-job Learning Pillar Score — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_OVRL` — Human Capital Index Plus (HCI+) — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_TERT` — Tertiary Completion Rate — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_WEMP` — Adult Employment Rate: Fraction not Unemployed Between 25 and 64 Years Old — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_WLFP` — Adult Labor Force Participation Rate Between 25 and 64 Years Old — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_WWGE` — Adult Share in Wage Employment for Those Employed Between 25 and 64 Years Old — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_YLFP` — Youth Labor Force Participation Rate — 2025:True 2026:False
+- **WB_HCIP** / `HD_HCIP_YWGE` — Youth Share in Wage Employment for those Employed — 2025:True 2026:False
+- **WB_IDS** / `WB_IDS_DT_AMT` — Principal repayments on external debt — 2025:True 2026:True
+- **WB_IDS** / `WB_IDS_DT_AMT_DIMF` — IMF repurchases — 2025:True 2026:True
+- **WB_IDS** / `WB_IDS_DT_GG` — General Government creditors — 2025:False 2026:True
+- **WB_IDS** / `WB_IDS_DT_INT` — Interest payments on external debt — 2025:True 2026:True
+- **WB_IDS** / `WB_IDS_DT_INT_DIMF` — IMF charges — 2025:True 2026:True
+- **WB_IDS** / `WB_IDS_DT_PS` — Public sector creditors — 2025:True 2026:False
+- **WB_IDS** / `WB_IDS_DT_TDS` — Debt service on external debt — 2025:True 2026:True
+- **WB_IDS** / `WB_IDS_DT_TDS_DIMF` — IMF repurchases and charges — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_BFCAFFFDICD` — Net Foreign Direct Investment Outflow, Value, Millions USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_BFCAFFFDICD_` — Net Foreign Direct Investment Outflow, USD, % of GDP — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_BNCABFUNDCD` — Current Account Balance, Value, Millions USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_BNCABFUNDCD_` — Current Account Balance, USD, % of GDP — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_ENENRGHGEKT` — Emissions: Energy, fuel combustion activities (ktCO2e) — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_ENENRGHGEKTZ` — Emissions: Energy, fuel combustion activities (ktCO2e), % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_ENENRGHGEKT_` — Emissions: Energy, fuel combustion activities, % of Total GHG emissions — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_ENTOTGHGEKT` — Emissions: Total GHG emissions (ktCO2e) — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_ENTOTGHGEKTZ` — Emissions: Total GHG emissions (ktCO2e), % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_FPCPITOTLXN` — Consumer Price Index, Implicit Deflator, LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_FPCPITOTLXNZ` — Inflation Rate (Consumer Price Index), Value, % change LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGBALOVRLCD` — Overall Fiscal Balance, Value, Millions USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGBALOVRLCN` — Overall Fiscal Balance, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGBALPRIMCD_` — Primary Fiscal Balance, USD, % of GDP — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGBALPRIMCN` — Primary Fiscal Balance, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGDBTTOTLCD` — General Government Debt Stock (Millions of Local Currency), Value, Millions USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGDBTTOTLCD_` — General Government Debt Stock (Millions of Current USD), % of GDP — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGDBTTOTLCN` — General Government Debt Stock (Millions of Local Currency), Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGEXPINTPCN` — Interest Payments, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_GGREVTOTLCD` — Total Revenue and Grants, Value, Millions USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONGOVTCN` — Government Consumption, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONGOVTCNZ` — Government Consumption, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONGOVTKD` — Government Consumption, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONGOVTKDZ` — Government Consumption, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONGOVTKN` — Government Consumption, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONGOVTKNZ` — Government Consumption, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTCN` — Private Consumption, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTKD` — Private Consumption, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTKDZ` — Private Consumption, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTKN` — Private Consumption, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTKNZ` — Private Consumption, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTPCKD` — Private Consumption per capita, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTPCKDZ` — Private Consumption per capita, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTPCKN` — Private Consumption per capita, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTPCKNZ` — Private Consumption per capita, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NECONPRVTXN` — Private Consumption, Implicit Deflator, LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEEXPGNFSCN` — GNFS Exports, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEEXPGNFSCNZ` — GNFS Exports, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEEXPGNFSKD` — GNFS Exports, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEEXPGNFSKDZ` — GNFS Exports, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEEXPGNFSKN` — GNFS Exports, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTCN` — Gross Fixed Investment, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTCNZ` — Gross Fixed Investment, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTKD` — Gross Fixed Investment, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTKDZ` — Gross Fixed Investment, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTKD_` — Gross Fixed Investment, USD, % of GDP — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTKNZ` — Gross Fixed Investment, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEGDIFTOTKN_` — Gross Fixed Investment, LCU, % of GDP — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEIMPGNFSCN` — GNFS Imports, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEIMPGNFSCNZ` — GNFS Imports, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEIMPGNFSKD` — GNFS Imports, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEIMPGNFSKDZ` — GNFS Imports, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEIMPGNFSKN` — GNFS Imports, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NEIMPGNFSKNZ` — GNFS Imports, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVAGRTOTLCN` — Agriculture, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVAGRTOTLCNZ` — Agriculture, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVAGRTOTLKD` — Agriculture, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVAGRTOTLKDZ` — Agriculture, Volume, Millions 2015 real USD, Millions % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVAGRTOTLKN` — Agriculture, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVAGRTOTLKNZ` — Agriculture, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVINDTOTLCN` — Industry, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVINDTOTLCNZ` — Industry, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVINDTOTLKD` — Industry, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVINDTOTLKDZ` — Industry, Volume, Millions 2015 real USD, Millions % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVINDTOTLKN` — Industry, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVINDTOTLKNZ` — Industry, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVSRVTOTLCN` — Services, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVSRVTOTLCNZ` — Services, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVSRVTOTLKN` — Services, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NVSRVTOTLKNZ` — Services, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPFCSTCN` — Gross Domestic Product at Factor Cost, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPFCSTKD` — Gross Domestic Product at Factor Cost, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPFCSTKDZ` — Gross Domestic Product at Factor Cost, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPFCSTKN` — Gross Domestic Product at Factor Cost, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPFCSTKNZ` — Gross Domestic Product at Factor Cost, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPCD` — Gross Domestic Product at Market Price, Value, Millions USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPCN` — Gross Domestic Product at Market Price, Value, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPCNZ` — Gross Domestic Product at Market Price, Value, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPKD` — Gross Domestic Product at Market Price, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPKDZ` — Gross Domestic Product at Market Price, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPKN` — Gross Domestic Product at Market Price, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPKNZ` — Gross Domestic Product at Market Price, Volume, Millions LCU, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPMKTPXN` — Gross Domestic Product at Market Price, Implicit Deflator, LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPPCKD` — GDP per capita at Market Price, Volume, Millions 2015 real USD — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPPCKDZ` — GDP per capita at Market Price, Volume, Millions 2015 real USD, % change — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_NYGDPPCKN` — GDP per capita at Market Price, Volume, Millions LCU — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_POV1` — International poverty rate ($2.15 in 2017 PPP) — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_POV2` — Lower middle-income poverty rate ($3.65 in 2017 PPP) — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_POV3` — Upper middle-income poverty rate ($6.85 in 2017 PPP) — 2025:True 2026:True
+- **WB_MPO** / `WB_MPO_SPPOPTOTL` — Population, Millions of People — 2025:True 2026:True
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_CY_LEVEL` — Hazard level for Cyclones — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_DG_LEVEL` — Hazard level for Water scarcity — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_EH_LEVEL` — Hazard level for Extreme Heat — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_EQ_LEVEL` — Hazard level for Earthquakes — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_FL_LEVEL` — Hazard level for Floods — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_LS_LEVEL` — Hazard level for Landslides — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_UF_LEVEL` — Hazard level for Urban Floods — 2025:True 2026:False
+- **WB_THINK_HAZARD** / `WB_THINK_HAZARD_WF_LEVEL` — Hazard level for WildFires — 2025:True 2026:False
+- **WB_WAW** / `WM_LEG_PLS` — Existence of national policy or legislation for plastic waste — 2025:False 2026:True
+- **WB_WAW** / `WM_SWM_INS` — Legal and Institutional Arrangements for Solid Waste Management (SWM) — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_AST` — Women, Business and the Law (WBL): Assets Topic — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_CHC` — Women, Business and the Law (WBL): Childcare Topic — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_ENT` — Women, Business and the Law (WBL): Entrepreneurship Topic — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_MAR` — Women, Business and the Law (WBL): Marriage Topic — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_MOB` — Women, Business and the Law (WBL): Mobility Topic — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_SAF` — Women, Business and the Law (WBL): Safety Topic — 2025:False 2026:True
+- **WB_WBL** / `GD_WBL_WRK` — Women, Business and the Law (WBL): Work Topic — 2025:False 2026:True
+- **WB_WDI** / `WB_WDI_HD_HCIP_HLTH_MA` — Human capital index plus (HCI+): health pillar score, male (scale 0–50) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_HD_HCIP_HLTH_TO` — Human capital index plus (HCI+): health pillar score, total (scale 0–50) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SE_PRM_TCAQ_ZS` — Trained teachers in primary education (% of total teachers) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SE_PRM_UNER_FE` — Children out of school, primary, female — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SE_SEC_TCAQ_UP_FE_ZS` — Trained teachers in upper secondary education, female (% of female teachers) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SE_SEC_TCAQ_ZS` — Trained teachers in secondary education (% of total teachers) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SE_SEC_TCHR_FE_ZS` — Secondary education, teachers (% female) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SL_AGR_EMPL_ZS` — Employment in agriculture (% of total employment) (modeled ILO estimate) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SL_EMP_1524_SP_FE_ZS` — Employment to population ratio, ages 15-24, female (%) (modeled ILO estimate) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SL_EMP_SELF_MA_ZS` — Self-employed, male (% of male employment) (modeled ILO estimate) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SL_TLF_ACTI_ZS` — Labor force participation rate, total (% of total population ages 15-64) (modeled ILO estimate) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SL_TLF_CACT_FM_ZS` — Ratio of female to male labor force participation rate (%) (modeled ILO estimate) — 2025:True 2026:False
+- **WB_WDI** / `WB_WDI_SL_UEM_1524_FE_ZS` — Unemployment, youth female (% of female labor force ages 15-24) (modeled ILO estimate) — 2025:True 2026:False

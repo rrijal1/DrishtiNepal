@@ -27,6 +27,10 @@ AI_CONCURRENCY = 5
 ANALYSIS_BATCH_LIMIT = 25
 # How far back to look for unprocessed news (rolling window, not beginning of time)
 LOOKBACK_DAYS = 3
+# Max news_update posts to create per run (3 runs/day = up to 15 news_updates/day)
+NEWS_UPDATE_LIMIT_PER_RUN = 5
+# Max analysis posts that can be in draft/published state on any given day
+ANALYSIS_DAILY_DRAFT_LIMIT = 2
 
 
 # This function is moved from the scraper agent
@@ -155,58 +159,108 @@ def fetch_analyzed_news(limit: int = 20) -> List[Dict]:
 
 
 def generate_post_content(news_items: List[Dict]) -> Optional[Dict]:
-    """Generate a publishable post from one or more analyzed news items."""
+    """
+    Two-step content generation:
+    1. Generate English content from source text, staying strictly factual
+    2. Translate verified English content into Nepali
+
+    This avoids factual errors that occur when both languages are generated
+    simultaneously from truncated source text.
+    """
     if not news_items:
         return None
 
+    # Step 1: Generate English content — pass FULL source text for factual accuracy
     context = "\n\n".join(
         [
-            f"Source: {item['source_name']}\nTitle: {item['title']}\nBody: {(item.get('body') or '')[:800]}\nAI Analysis: {json.dumps(item.get('processing_result') or {})}"
+            f"Source: {item['source_name']}\nURL: {item.get('source_url', 'N/A')}\nTitle: {item['title']}\nBody:\n{(item.get('body') or '')[:3000]}\nAI Analysis: {json.dumps(item.get('processing_result') or {})}"
             for item in news_items
         ]
     )
 
-    prompt = f"""You are writing for Drishti Nepal (दृष्टि नेपाल) — a citizen-led political accountability portal. Your readers are smart, skeptical Nepalis who distrust all political propaganda equally.
+    step1_prompt = f"""You are writing for Drishti Nepal (दृष्टि नेपाल) — a citizen-led political accountability portal.
 
 NEWS ITEMS:
 {context}
 
+CRITICAL ACCURACY RULES:
+- Use ONLY facts, names, numbers, dates, and quotes that appear in the source text above.
+- Do NOT infer, assume, or fabricate any details not explicitly stated.
+- If the source says "RSP has 182 seats", write exactly that. Do not change numbers.
+- Use the exact names from the source text. If the source says "Dol Prasad Aryal", do not write "Devraj Ghimire".
+- If you're uncertain about a fact, omit it rather than guess.
+
 Generate a JSON response with:
-- "title_en": Sharp, specific English headline. No clickbait, but make it compelling. Use active voice. Name the minister/actor when relevant.
-- "title_np": Same headline in natural Nepali (Devanagari). Not a robotic translation — write how a Nepali journalist would write it.
-- "body_en": 200-400 word article in English (Markdown). Structure: lead with the most important fact, then context, then what it means for accountability. If a manifesto promise is relevant, reference it. End with what to watch next.
-- "body_np": Same article in natural Nepali. Devanagari script, but technical/English-origin words (budget, GDP, infrastructure, policy) stay in English. Core political vocab in Nepali: मन्त्री, सरकार, प्रतिबद्धता, वचनपत्र.
-- "excerpt_en": 1-2 sentence hook. Write it like a tweet — make people want to click. Can be a question.
-- "excerpt_np": Same hook in natural Nepali.
-- "social_hook": A single punchy line (under 100 chars) for social media — a question, a stat, or a challenge. E.g., "500,000 jobs promised. How many so far?" or "के यो वचन पूरा हुन्छ?"
-- "tags": list of relevant tags (e.g., ["economy", "cabinet-decision", "minister-name"])
-- "bp_items": list of Bachha Patra IDs this article directly relates to (e.g., ["bp-001", "bp-023"]). Use only IDs you are confident about from the news content. Empty list is fine.
+- "title_en": Sharp, specific English headline. Use active voice. Name the minister/actor when relevant.
+- "body_en": 200-400 word article (Markdown). Lead with the most important fact, then context, then accountability angle. Reference manifesto promises if relevant.
+- "excerpt_en": 1-2 sentence hook. Make people want to click.
+- "social_hook": Punchy line under 100 chars for social media.
+- "tags": list of relevant tags (e.g., ["economy", "cabinet-decision"])
+- "bp_items": list of Bachha Patra IDs this directly relates to (e.g., ["bp-001"]). Empty list is fine.
 - "type": one of "news_update", "analysis", "cabinet_decision"
-- "auto_publishable": boolean - true only if purely factual with high confidence
 
 WRITING RULES:
-- Be factual and sourced, but NOT boring. Accountability journalism should engage citizens, not put them to sleep.
-- Attribute claims to sources.
-- When relevant, contrast what was promised vs. what happened.
-- Never editorialize or give opinions. Let the facts speak, but present them sharply.
-- Vary your style: some posts are short punches, others are detailed explainers.
-
-ANTI-AI WRITING (CRITICAL — if the output reads like AI, it fails):
-- NEVER use em dashes (—). Use commas, periods, or break into two sentences.
-- BANNED words/phrases: "Furthermore", "Moreover", "It's worth noting", "Notably", "Indeed", "In essence", "comprehensive", "robust", "pivotal", "crucial", "underscores", "landscape", "navigating", "multifaceted", "nuanced", "fostering", "It remains to be seen", "Only time will tell", "In a move that".
-- Use contractions naturally: "don't", "can't", "won't", "hasn't", "it's".
-- Don't over-polish. Real journalism has personality. Short paragraphs. Sentence fragments sometimes.
-- The excerpt and social_hook should sound like a human typed them in 5 seconds, not crafted them for an hour.
-- Nepali text should sound like how people actually talk/write on Nepali Twitter, not like a textbook.
+- Be factual, sourced, engaging. Attribute claims.
+- Contrast promises vs reality when relevant.
+- Never editorialize. Let facts speak.
+- BANNED: em dashes, "Furthermore", "Moreover", "It's worth noting", "Notably", "comprehensive", "robust", "pivotal", "crucial", "underscores", "landscape", "navigating", "multifaceted", "nuanced", "fostering", "It remains to be seen", "Only time will tell", "In a move that".
+- Use contractions naturally. Short paragraphs.
 
 Return ONLY valid JSON."""
 
     try:
-        response = cheap_completion(prompt, max_tokens=2048)
-        return parse_ai_json(response)
+        response_en = cheap_completion(step1_prompt, max_tokens=1536)
+        content_en = parse_ai_json(response_en)
+        if not content_en or "title_en" not in content_en or "body_en" not in content_en:
+            logger.error("Step 1 (English) produced invalid content")
+            return None
     except Exception as e:
-        logger.error(f"Content generation failed: {e}")
+        logger.error(f"Step 1 (English) generation failed: {e}")
         return None
+
+    # Step 2: Translate the verified English content into Nepali
+    step2_prompt = f"""Translate the following English content into natural Nepali (Devanagari script).
+
+RULES:
+- This is journalism, not a textbook. Write how Nepali journalists write on online news portals.
+- Technical/English-origin words stay in English: budget, GDP, infrastructure, policy, parliament, speaker, deputy speaker.
+- Core political vocabulary in Nepali: मन्त्री, सरकार, प्रतिबद्धता, वचनपत्र, सभामुख, उपसभामुख, सांसद.
+- Keep all facts, names, numbers, and dates exactly as in the English version. Do NOT change any factual content.
+- Proper nouns (person names, party names) should use their commonly known Nepali transliterations.
+
+ENGLISH TITLE: {content_en['title_en']}
+
+ENGLISH ARTICLE:
+{content_en['body_en']}
+
+ENGLISH EXCERPT: {content_en.get('excerpt_en', '')}
+
+Return a JSON with:
+- "title_np": Nepali headline
+- "body_np": Nepali article
+- "excerpt_np": Nepali excerpt hook
+
+Return ONLY valid JSON."""
+
+    try:
+        response_np = cheap_completion(step2_prompt, max_tokens=1536)
+        content_np = parse_ai_json(response_np)
+        if content_np:
+            content_en["title_np"] = content_np.get("title_np", "")
+            content_en["body_np"] = content_np.get("body_np", "")
+            content_en["excerpt_np"] = content_np.get("excerpt_np", "")
+        else:
+            logger.warning("Step 2 (Nepali) returned empty; English-only post")
+            content_en["title_np"] = ""
+            content_en["body_np"] = ""
+            content_en["excerpt_np"] = ""
+    except Exception as e:
+        logger.warning(f"Step 2 (Nepali translation) failed: {e}; English-only post")
+        content_en["title_np"] = ""
+        content_en["body_np"] = ""
+        content_en["excerpt_np"] = ""
+
+    return content_en
 
 
 def create_slug(title: str) -> str:
@@ -220,9 +274,19 @@ def create_slug(title: str) -> str:
 
 
 def store_post(content: Dict, source_item: Dict):
-    """Create a post entry in the database."""
-    auto_publish = content.get("auto_publishable", False)
-    status = "published" if auto_publish else "review"
+    """Create a post entry in the database.
+
+    Status logic:
+    - 'analysis' type: ALWAYS 'draft' — requires human review before publishing
+    - 'news_update'/'cabinet_decision': 'review' (human checks before publish)
+    """
+    post_type = content.get("type", "news_update")
+
+    # Analysis posts always require human review
+    if post_type == "analysis":
+        status = "draft"
+    else:
+        status = "review"
 
     # Merge bp_items (manifesto item IDs) into tags so manifesto pages can query them
     tags = list(content.get("tags", []))
@@ -244,9 +308,7 @@ def store_post(content: Dict, source_item: Dict):
         "author_type": "agent",
         "author_name": "Drishti Nepal AI",
         "status": status,
-        "published_at": (
-            datetime.now(timezone.utc).isoformat() if auto_publish else None
-        ),
+        "published_at": None,
         # Pass through source info
         "source_url": source_item.get("source_url"),
         "metadata": {
@@ -265,6 +327,21 @@ def store_post(content: Dict, source_item: Dict):
 
     logger.info(f"  Created post: {content['title_en'][:60]}... (status: {status})")
     return post_id
+
+
+def _count_todays_posts(category: str) -> int:
+    """Count how many posts of a given category were created today."""
+    today_start = datetime.now(timezone.utc).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ).isoformat()
+    result = (
+        db.table("posts")
+        .select("id", count="exact")
+        .eq("category", category)
+        .gte("created_at", today_start)
+        .execute()
+    )
+    return result.count or 0
 
 
 async def run_async():
@@ -288,11 +365,34 @@ async def run_async():
             complete_agent_run(run_id, "success", items_analyzed, posts_created)
             return
 
+        # Check daily limits
+        analysis_today = _count_todays_posts("analysis")
+        news_update_count = 0
+
         for item in analyzed_items:
+            if news_update_count >= NEWS_UPDATE_LIMIT_PER_RUN:
+                logger.info(f"Hit news_update limit for this run ({NEWS_UPDATE_LIMIT_PER_RUN})")
+                break
+
             content = generate_post_content([item])
-            if content:
-                store_post(content, item)
-                posts_created += 1
+            if not content:
+                continue
+
+            post_type = content.get("type", "news_update")
+
+            # Enforce daily analysis limit
+            if post_type == "analysis":
+                if analysis_today >= ANALYSIS_DAILY_DRAFT_LIMIT:
+                    logger.info(
+                        f"Skipping analysis — daily limit reached ({ANALYSIS_DAILY_DRAFT_LIMIT})"
+                    )
+                    continue
+                analysis_today += 1
+
+            store_post(content, item)
+            posts_created += 1
+            if post_type == "news_update":
+                news_update_count += 1
 
         complete_agent_run(run_id, "success", items_analyzed, posts_created)
         logger.info(

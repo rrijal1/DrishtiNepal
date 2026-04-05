@@ -8,6 +8,7 @@ in batches, and stores new items for later processing by other agents.
 import asyncio
 import itertools
 import re
+from datetime import datetime, timezone
 from typing import List, Dict
 
 import feedparser
@@ -70,17 +71,41 @@ async def fetch_and_parse_rss_feed(
     return []
 
 
+def _get_active_trending_keywords() -> List[str]:
+    """Fetch current relevant trending topics to boost scraper relevance."""
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        result = (
+            db.table("trending_topics")
+            .select("topic")
+            .gte("expires_at", now)
+            .gte("relevance_score", 0.3)
+            .order("relevance_score", desc=True)
+            .limit(30)
+            .execute()
+        )
+        return [r["topic"].lower() for r in (result.data or [])]
+    except Exception:
+        return []
+
+
 def is_relevant(title: str, body: str, minister_names: List[Dict]) -> bool:
     """Check if a news item is relevant to cabinet/ministers.
 
-    Tightened filter: must match a minister name, OR match at least 2 political keywords.
-    This avoids wasting AI calls on tangentially political news (cricket, stock market, etc.)
+    Tightened filter: must match a minister name, OR match at least 2 political keywords,
+    OR match a currently trending topic with relevance to our indicators.
     """
     text = (title + " " + (body or "")).lower()
 
     # Check minister names — instant relevance
     for minister in minister_names:
         if minister["name_en"].lower() in text or minister["name_np"] in text:
+            return True
+
+    # Check trending topics — if article matches a trending topic, it's relevant
+    trending_keywords = _get_active_trending_keywords()
+    for kw in trending_keywords:
+        if kw in text:
             return True
 
     # Require 2+ keyword matches (not just one generic word like सरकार)

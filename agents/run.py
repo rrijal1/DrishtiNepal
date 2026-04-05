@@ -25,6 +25,7 @@ AGENTS = {
     "opendata": ("agents.open_data_monitor.monitor", "Open Data Monitor"),
     "evidence": ("agents.evidence_assessor.assessor", "Evidence Assessor"),
     "manual": ("agents.manual_ingester.ingester", "Manual Link Ingester"),
+    "social": ("agents.social_monitor", "Social Monitor"),
 }
 
 

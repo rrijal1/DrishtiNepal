@@ -3,22 +3,11 @@
 import {
   GOVT_FORMATION,
   type OutcomeIndicator,
-  buildMonthlyData,
   calcProgress,
   formatValue,
   mandateElapsedPct,
-} from "@/lib/manifesto-utils";
-import Link from "next/link";
+} from "@/lib/manifesto-utils";import Link from "next/link";
 import { useState } from "react";
-import {
-  Area,
-  AreaChart,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { StatusIndicator } from "./StatusIndicator";
 
 function MandateTimeline({
@@ -232,14 +221,6 @@ export function ManifestoItemRow({
               </h4>
               <div className="space-y-5">
                 {indicators.map((ind) => {
-                  const chartData = buildMonthlyData(ind);
-                  const allVals = chartData.map((d) => d.value);
-                  const dataMax = Math.max(
-                    ...allVals,
-                    ind.target_value ?? 0,
-                    1,
-                  );
-                  const yMax = dataMax * 1.25;
                   const pct = calcProgress(ind);
                   return (
                     <div
@@ -313,118 +294,6 @@ export function ManifestoItemRow({
                               : "Mar 2031"}
                           </p>
                         </div>
-                      </div>
-
-                      <div className="h-36">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart
-                            data={chartData}
-                            margin={{ top: 8, right: 16, left: -28, bottom: 0 }}
-                          >
-                            <defs>
-                              <linearGradient
-                                id={`row-grad-${ind.id}`}
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1"
-                              >
-                                <stop
-                                  offset="5%"
-                                  stopColor="#1e3a5f"
-                                  stopOpacity={0.2}
-                                />
-                                <stop
-                                  offset="95%"
-                                  stopColor="#1e3a5f"
-                                  stopOpacity={0}
-                                />
-                              </linearGradient>
-                            </defs>
-                            <XAxis
-                              dataKey="label"
-                              tick={{ fontSize: 9, fill: "#a3a3a3" }}
-                              tickLine={false}
-                              axisLine={false}
-                            />
-                            <YAxis
-                              domain={[0, yMax]}
-                              tick={{ fontSize: 9, fill: "#a3a3a3" }}
-                              tickLine={false}
-                              axisLine={false}
-                            />
-                            <Tooltip
-                              contentStyle={{
-                                fontSize: 11,
-                                borderRadius: 8,
-                                border: "1px solid #e5e5e5",
-                                padding: "4px 10px",
-                              }}
-                              formatter={(v: unknown) => [
-                                formatValue(
-                                  v != null ? Number(v) : null,
-                                  ind.unit,
-                                ),
-                                "Value",
-                              ]}
-                            />
-                            {ind.target_value != null && (
-                              <ReferenceLine
-                                y={ind.target_value}
-                                stroke="#10b981"
-                                strokeDasharray="5 4"
-                                label={{
-                                  value: `Target: ${formatValue(ind.target_value, ind.unit)}`,
-                                  fill: "#10b981",
-                                  fontSize: 9,
-                                  position: "insideTopRight",
-                                }}
-                              />
-                            )}
-                            <Area
-                              type="monotone"
-                              dataKey="value"
-                              stroke="#1e3a5f"
-                              strokeWidth={2}
-                              fill={`url(#row-grad-${ind.id})`}
-                              dot={(props: any) => {
-                                const { cx, cy, payload, index } = props;
-                                if (payload?.isCurrent) {
-                                  return (
-                                    <g key={`dot-curr-${index}`}>
-                                      <circle
-                                        cx={cx}
-                                        cy={cy}
-                                        r={6}
-                                        fill="#1e3a5f"
-                                        fillOpacity={0.18}
-                                      />
-                                      <circle
-                                        cx={cx}
-                                        cy={cy}
-                                        r={3}
-                                        fill="#1e3a5f"
-                                        stroke="white"
-                                        strokeWidth={2}
-                                      />
-                                    </g>
-                                  );
-                                }
-                                return (
-                                  <circle
-                                    key={`dot-${index}`}
-                                    cx={cx}
-                                    cy={cy}
-                                    r={2.5}
-                                    fill="#1e3a5f"
-                                    fillOpacity={0.6}
-                                  />
-                                );
-                              }}
-                              activeDot={{ r: 5 }}
-                            />
-                          </AreaChart>
-                        </ResponsiveContainer>
                       </div>
 
                       {ind.source && (
