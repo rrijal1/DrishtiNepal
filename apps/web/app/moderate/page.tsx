@@ -1,6 +1,9 @@
+import { LogoutButton } from "@/components/LogoutButton";
+import { ModerationActions } from "@/components/ModerationActions";
 import { supabase } from "@/lib/supabase";
+import { headers } from "next/headers";
 
-export const revalidate = 60;
+export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -40,6 +43,9 @@ async function safeQuery<T = any>(
 }
 
 export default async function ModeratePage() {
+  const hdrs = await headers();
+  const reviewer = hdrs.get("x-admin-user") ?? "moderator";
+
   const [
     { data: pending },
     { data: recent },
@@ -109,14 +115,21 @@ export default async function ModeratePage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-800">
-          Moderator Dashboard
-        </h1>
-        <p className="mt-2 text-neutral-500">
-          Review AI-generated content, approve evidence assessments, and manage
-          flagged items.
-        </p>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-800">
+            Moderator Dashboard
+          </h1>
+          <p className="mt-2 text-neutral-500">
+            Review AI-generated content, approve evidence assessments, and
+            manage flagged items.
+          </p>
+          <p className="mt-1 text-xs text-neutral-400">
+            Signed in as{" "}
+            <span className="font-medium text-neutral-600">{reviewer}</span>
+          </p>
+        </div>
+        <LogoutButton />
       </div>
 
       {/* Stats Row */}
@@ -165,7 +178,7 @@ export default async function ModeratePage() {
           {pending && pending.length > 0 ? (
             <div className="space-y-3">
               {(pending as ReviewItem[]).map((item) => (
-                <ReviewCard key={item.id} item={item} />
+                <ReviewCard key={item.id} item={item} reviewer={reviewer} />
               ))}
             </div>
           ) : (
@@ -271,7 +284,13 @@ function SourceCard({
   );
 }
 
-function ReviewCard({ item }: { item: ReviewItem }) {
+function ReviewCard({
+  item,
+  reviewer,
+}: {
+  item: ReviewItem;
+  reviewer: string;
+}) {
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-5 transition hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
@@ -323,6 +342,11 @@ function ReviewCard({ item }: { item: ReviewItem }) {
         </div>
         <StatusChip status={item.status} />
       </div>
+      <ModerationActions
+        reviewItemId={item.id}
+        contentType={item.content_type}
+        reviewer={reviewer}
+      />
     </div>
   );
 }
