@@ -1,84 +1,13 @@
 "use client";
 
 import {
-  GOVT_FORMATION,
   type OutcomeIndicator,
   calcProgress,
   formatValue,
-  mandateElapsedPct,
-} from "@/lib/manifesto-utils";import Link from "next/link";
+} from "@/lib/manifesto-utils";
+import Link from "next/link";
 import { useState } from "react";
 import { StatusIndicator } from "./StatusIndicator";
-
-function MandateTimeline({
-  startDate,
-  endDate,
-}: {
-  startDate?: string | null;
-  endDate?: string | null;
-}) {
-  const fmt = (d: Date) =>
-    d.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-  const start = startDate ? new Date(startDate) : new Date(GOVT_FORMATION);
-  const end = endDate ? new Date(endDate) : null;
-  const now = new Date();
-  const elapsedPct = mandateElapsedPct(startDate ?? null, endDate ?? null);
-
-  return (
-    <div className="mb-6">
-      <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-400">
-        Mandate Timeline
-      </h4>
-      <div className="relative">
-        <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100">
-          {elapsedPct != null && (
-            <div
-              className="h-full rounded-full bg-[#1e3a5f]/30 transition-all"
-              style={{ width: `${elapsedPct}%` }}
-            />
-          )}
-        </div>
-        {elapsedPct != null && (
-          <div
-            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${elapsedPct}%` }}
-          >
-            <div className="h-4 w-1 rounded-full bg-[#1e3a5f]" />
-          </div>
-        )}
-      </div>
-      <div className="mt-2 flex items-start justify-between gap-2 text-[10px] text-neutral-400">
-        <div>
-          <span className="block font-medium text-neutral-600">
-            {fmt(start)}
-          </span>
-          <span>Start{startDate ? "" : " (govt. formation)"}</span>
-        </div>
-        {elapsedPct != null && (
-          <div className="text-center">
-            <span className="block font-semibold text-[#1e3a5f]">
-              {elapsedPct}% elapsed
-            </span>
-            <span>{fmt(now)} — Today</span>
-          </div>
-        )}
-        {end && (
-          <div className="text-right">
-            <span className="block font-medium text-neutral-600">
-              {fmt(end)}
-            </span>
-            <span>Target deadline</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 interface ManifestoItemProps {
   item: {

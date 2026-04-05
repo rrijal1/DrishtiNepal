@@ -39,6 +39,7 @@ TREND_EXPIRY_HOURS = 24
 
 # ── Google Trends ─────────────────────────────────────────────────────────────
 
+
 def fetch_google_trends_nepal() -> List[Dict]:
     """Fetch trending searches for Nepal using pytrends."""
     try:
@@ -56,12 +57,14 @@ def fetch_google_trends_nepal() -> List[Dict]:
         for _, row in trending.head(MAX_TRENDS).iterrows():
             topic = str(row.values[0]).strip()
             if topic:
-                topics.append({
-                    "source": "google_trends",
-                    "topic": topic,
-                    "region": "NP",
-                    "raw_data": {"method": "trending_searches"},
-                })
+                topics.append(
+                    {
+                        "source": "google_trends",
+                        "topic": topic,
+                        "region": "NP",
+                        "raw_data": {"method": "trending_searches"},
+                    }
+                )
 
         logger.info(f"Fetched {len(topics)} Google trending topics for Nepal")
         return topics
@@ -71,6 +74,7 @@ def fetch_google_trends_nepal() -> List[Dict]:
 
 
 # ── Whitelisted Handle Monitoring ─────────────────────────────────────────────
+
 
 def get_active_handles(platform: Optional[str] = None) -> List[Dict]:
     """Fetch active whitelisted handles from the database."""
@@ -83,6 +87,7 @@ def get_active_handles(platform: Optional[str] = None) -> List[Dict]:
 
 # ── Relevance Assessment ──────────────────────────────────────────────────────
 
+
 def assess_topic_relevance(topics: List[str]) -> List[Dict]:
     """Use AI to assess which trending topics are relevant to government accountability."""
     if not topics:
@@ -94,7 +99,8 @@ def assess_topic_relevance(topics: List[str]) -> List[Dict]:
         .select("source_id, title_en")
         .limit(105)
         .execute()
-        .data or []
+        .data
+        or []
     )
     manifesto_context = "\n".join(
         f"- {m['source_id']}: {m['title_en']}" for m in manifesto_items[:50]
@@ -133,6 +139,7 @@ Return ONLY valid JSON."""
 
 
 # ── Storage ───────────────────────────────────────────────────────────────────
+
 
 def store_trending_topics(topics: List[Dict], assessments: List[Dict]):
     """Store trending topics with their relevance assessments."""
@@ -183,6 +190,7 @@ def cleanup_expired_topics():
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
+
 async def run_async():
     """Main entry point for the social monitoring agent."""
     run_id = log_agent_run("social_monitor")
@@ -214,9 +222,7 @@ async def run_async():
         await asyncio.to_thread(cleanup_expired_topics)
 
         complete_agent_run(run_id, "success", topics_found, topics_stored)
-        logger.info(
-            f"Completed. Found: {topics_found}, Stored: {topics_stored}"
-        )
+        logger.info(f"Completed. Found: {topics_found}, Stored: {topics_stored}")
 
     except Exception as e:
         logger.error(f"Social monitor failed: {e}", exc_info=True)

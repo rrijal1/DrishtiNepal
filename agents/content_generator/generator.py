@@ -211,7 +211,11 @@ Return ONLY valid JSON."""
     try:
         response_en = cheap_completion(step1_prompt, max_tokens=1536)
         content_en = parse_ai_json(response_en)
-        if not content_en or "title_en" not in content_en or "body_en" not in content_en:
+        if (
+            not content_en
+            or "title_en" not in content_en
+            or "body_en" not in content_en
+        ):
             logger.error("Step 1 (English) produced invalid content")
             return None
     except Exception as e:
@@ -331,9 +335,11 @@ def store_post(content: Dict, source_item: Dict):
 
 def _count_todays_posts(category: str) -> int:
     """Count how many posts of a given category were created today."""
-    today_start = datetime.now(timezone.utc).replace(
-        hour=0, minute=0, second=0, microsecond=0
-    ).isoformat()
+    today_start = (
+        datetime.now(timezone.utc)
+        .replace(hour=0, minute=0, second=0, microsecond=0)
+        .isoformat()
+    )
     result = (
         db.table("posts")
         .select("id", count="exact")
@@ -371,7 +377,9 @@ async def run_async():
 
         for item in analyzed_items:
             if news_update_count >= NEWS_UPDATE_LIMIT_PER_RUN:
-                logger.info(f"Hit news_update limit for this run ({NEWS_UPDATE_LIMIT_PER_RUN})")
+                logger.info(
+                    f"Hit news_update limit for this run ({NEWS_UPDATE_LIMIT_PER_RUN})"
+                )
                 break
 
             content = generate_post_content([item])

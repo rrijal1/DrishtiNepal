@@ -18,10 +18,7 @@ export async function POST(req: NextRequest) {
     body as Record<string, string | null | undefined>;
 
   if (!post_id || typeof post_id !== "string") {
-    return NextResponse.json(
-      { error: "post_id required" },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "post_id required" }, { status: 400 });
   }
 
   const validActions = ["approve", "reject", "update"];

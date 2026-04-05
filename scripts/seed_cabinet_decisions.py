@@ -24,7 +24,9 @@ logger = setup_logger("seed_cabinet_decisions")
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 DECISION_DATE = "2026-03-27"
-SOURCE_URL = "https://kathmandupost.com/national/2026/03/28/government-releases-100-point-agenda"
+SOURCE_URL = (
+    "https://kathmandupost.com/national/2026/03/28/government-releases-100-point-agenda"
+)
 
 
 def load_agendas() -> list:
@@ -88,7 +90,9 @@ def seed(dry_run: bool = False):
 
         title_en = ag["title_en"]
         summary_en = ag.get("summary_en") or title_en
-        significance = SIGNIFICANCE_OVERRIDE.get(ag.get("significance", "medium"), "medium")
+        significance = SIGNIFICANCE_OVERRIDE.get(
+            ag.get("significance", "medium"), "medium"
+        )
         section = ag.get("section", "")
         category = ag.get("category", "governance")
 

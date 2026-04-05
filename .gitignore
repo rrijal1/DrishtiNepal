@@ -17,3 +17,7 @@ next-env.d.ts
 
 # Playwright test output
 test-results/
+
+# Sandbox — local exploration only, not for production
+sandbox/
+
