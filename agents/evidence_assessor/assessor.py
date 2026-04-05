@@ -82,7 +82,7 @@ def get_related_actions(manifesto_item_id: str) -> list[dict]:
     links = (
         db.table("action_manifesto_links")
         .select(
-            "action_id, link_type, confidence, actions(title_en, description_en, action_date, category)"
+            "action_id, link_type, ai_confidence, actions(title_en, description_en, action_date, category)"
         )
         .eq("manifesto_item_id", manifesto_item_id)
         .order("actions(action_date)", desc=True)

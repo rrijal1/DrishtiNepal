@@ -49,14 +49,12 @@ interface DecisionLink {
 }
 
 interface NewsPost {
-  posts: {
-    id: string;
-    title_en: string;
-    slug: string;
-    published_at: string | null;
-    category: string | null;
-    image_url: string | null;
-  } | null;
+  id: string;
+  title_en: string;
+  slug: string;
+  published_at: string | null;
+  category: string | null;
+  image_url: string | null;
 }
 
 interface EvidenceItem {
@@ -811,8 +809,7 @@ export function ManifestoItemDetail({
                     )}
                   </Card>
                 ))}
-                {relatedPosts.map((rp, i) => {
-                  const p = rp.posts;
+                {relatedPosts.map((p, i) => {
                   if (!p) return null;
                   return (
                     <Link
