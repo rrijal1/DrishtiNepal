@@ -15,6 +15,7 @@ export default async function AdminPage() {
     { data: draftPosts },
     { data: reviewPosts },
     { data: recentPublished },
+    { data: manifestoItems },
   ] = await Promise.all([
     supabase
       .from("posts")
@@ -40,6 +41,11 @@ export default async function AdminPage() {
       .eq("status", "published")
       .order("published_at", { ascending: false })
       .limit(10),
+    supabase
+      .from("manifesto_items")
+      .select("id, source_id, title_en")
+      .like("source_id", "bp-%")
+      .order("source_id"),
   ]);
 
   return (
@@ -47,6 +53,7 @@ export default async function AdminPage() {
       draftPosts={(draftPosts ?? []) as any[]}
       reviewPosts={(reviewPosts ?? []) as any[]}
       recentPublished={(recentPublished ?? []) as any[]}
+      manifestoItems={(manifestoItems ?? []) as any[]}
     />
   );
 }

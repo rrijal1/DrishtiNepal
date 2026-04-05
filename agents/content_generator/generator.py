@@ -19,6 +19,33 @@ from agents.common.utils import (
     parse_ai_json,
 )
 
+
+def _get_minister_name_map() -> dict[str, str]:
+    """Return {name_en_lower: uuid} for all active ministers."""
+    result = (
+        db.table("ministers")
+        .select("id, name_en")
+        .eq("status", "active")
+        .execute()
+    )
+    return {m["name_en"].lower(): m["id"] for m in (result.data or [])}
+
+
+def _get_manifesto_brief() -> str:
+    """Return a compact bp-XXX → title map for the AI prompt context."""
+    result = (
+        db.table("manifesto_items")
+        .select("source_id, title_en")
+        .like("source_id", "bp-%")
+        .order("source_id")
+        .execute()
+    )
+    lines = [
+        f"{r['source_id']}: {r['title_en']}"
+        for r in (result.data or [])
+    ]
+    return "\n".join(lines)
+
 logger = setup_logger("content_generator")
 
 # Concurrency limit for AI calls (respect rate limits on free-tier NVIDIA NIM)
@@ -158,6 +185,10 @@ def fetch_analyzed_news(limit: int = 20) -> List[Dict]:
     return result.data
 
 
+# Module-level cache so we don't re-query manifesto on every post
+_MANIFESTO_BRIEF_CACHE: str | None = None
+
+
 def generate_post_content(news_items: List[Dict]) -> Optional[Dict]:
     """
     Two-step content generation:
@@ -167,8 +198,13 @@ def generate_post_content(news_items: List[Dict]) -> Optional[Dict]:
     This avoids factual errors that occur when both languages are generated
     simultaneously from truncated source text.
     """
+    global _MANIFESTO_BRIEF_CACHE
     if not news_items:
         return None
+
+    # Lazily load manifesto reference once per process run
+    if _MANIFESTO_BRIEF_CACHE is None:
+        _MANIFESTO_BRIEF_CACHE = _get_manifesto_brief()
 
     # Step 1: Generate English content — pass FULL source text for factual accuracy
     context = "\n\n".join(
@@ -190,13 +226,16 @@ CRITICAL ACCURACY RULES:
 - Use the exact names from the source text. If the source says "Dol Prasad Aryal", do not write "Devraj Ghimire".
 - If you're uncertain about a fact, omit it rather than guess.
 
+BACHHA PATRA MANIFESTO ITEMS (bp-001 to bp-100):
+{_MANIFESTO_BRIEF_CACHE}
+
 Generate a JSON response with:
 - "title_en": Sharp, specific English headline. Use active voice. Name the minister/actor when relevant.
 - "body_en": 200-400 word article (Markdown). Lead with the most important fact, then context, then accountability angle. Reference manifesto promises if relevant.
 - "excerpt_en": 1-2 sentence hook. Make people want to click.
 - "social_hook": Punchy line under 100 chars for social media.
 - "tags": list of relevant tags (e.g., ["economy", "cabinet-decision"])
-- "bp_items": list of Bachha Patra IDs this directly relates to (e.g., ["bp-001"]). Empty list is fine.
+- "bp_items": list of Bachha Patra IDs this news DIRECTLY relates to, chosen from the manifesto list above. Be specific — only include IDs where there is a clear connection. Empty list [] if none apply.
 - "type": one of "news_update", "analysis", "cabinet_decision"
 
 WRITING RULES:
@@ -323,6 +362,28 @@ def store_post(content: Dict, source_item: Dict):
 
     result = db.table("posts").insert(post_data).execute()
     post_id = result.data[0]["id"]
+
+    # Link post to mentioned ministers via post_ministers junction table
+    processing = source_item.get("processing_result") or {}
+    mentioned_names: list[str] = processing.get("ministers_mentioned") or []
+    if mentioned_names:
+        minister_map = _get_minister_name_map()
+        links = []
+        for name in mentioned_names:
+            uuid = minister_map.get(name.lower())
+            if uuid:
+                links.append({"post_id": post_id, "minister_id": uuid})
+        if links:
+            try:
+                db.table("post_ministers").upsert(
+                    links, on_conflict="post_id,minister_id"
+                ).execute()
+                logger.info(
+                    f"  Linked to {len(links)} minister(s): "
+                    + ", ".join(mentioned_names)
+                )
+            except Exception as e:
+                logger.warning(f"  post_ministers insert failed: {e}")
 
     # Mark source news item as processed
     db.table("raw_news").update({"processed": True}).eq(
