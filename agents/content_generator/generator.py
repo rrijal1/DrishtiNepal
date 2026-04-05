@@ -23,10 +23,7 @@ from agents.common.utils import (
 def _get_minister_name_map() -> dict[str, str]:
     """Return {name_en_lower: uuid} for all active ministers."""
     result = (
-        db.table("ministers")
-        .select("id, name_en")
-        .eq("status", "active")
-        .execute()
+        db.table("ministers").select("id, name_en").eq("status", "active").execute()
     )
     return {m["name_en"].lower(): m["id"] for m in (result.data or [])}
 
@@ -40,11 +37,9 @@ def _get_manifesto_brief() -> str:
         .order("source_id")
         .execute()
     )
-    lines = [
-        f"{r['source_id']}: {r['title_en']}"
-        for r in (result.data or [])
-    ]
+    lines = [f"{r['source_id']}: {r['title_en']}" for r in (result.data or [])]
     return "\n".join(lines)
+
 
 logger = setup_logger("content_generator")
 

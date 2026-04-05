@@ -25,12 +25,18 @@ from agents.common.utils import (
     log_agent_run,
     complete_agent_run,
     parse_ai_json,
+    link_to_manifesto,
+    queue_for_review,
 )
 
 logger = setup_logger("gazette_monitor")
 
 OPMCM_BASE = "https://opmcm.gov.np"
 LISTING_URL = f"{OPMCM_BASE}/category/cabinet-decision/"
+
+GAZETTE_BASE_URL = "https://rajpatra.dop.gov.np"
+GAZETTE_LIST_URL = f"{GAZETTE_BASE_URL}/front/listview"
+
 HEADERS = {
     "User-Agent": "DrishtiNepal/1.0 (https://drishtinepal.com; public interest accountability project)",
     "Accept-Language": "ne,en;q=0.9",
@@ -40,10 +46,18 @@ MAX_PDF_TEXT = 12000  # Characters to send to AI
 
 # Map keywords in PDF filenames to readable month labels
 PDF_MONTH_KEYWORDS = [
-    ("CHAITRA", "Chaitra"), ("CHAIT", "Chaitra"), ("FALGUN", "Falgun"),
-    ("MAGH", "Magh"), ("POUSH", "Poush"), ("MANSIR", "Mangsir"),
-    ("KARTIK", "Kartik"), ("ASOJ", "Ashoj"), ("BHADRA", "Bhadra"),
-    ("SHRAWAN", "Shrawan"), ("ASAR", "Asar"), ("JESTHA", "Jestha"),
+    ("CHAITRA", "Chaitra"),
+    ("CHAIT", "Chaitra"),
+    ("FALGUN", "Falgun"),
+    ("MAGH", "Magh"),
+    ("POUSH", "Poush"),
+    ("MANSIR", "Mangsir"),
+    ("KARTIK", "Kartik"),
+    ("ASOJ", "Ashoj"),
+    ("BHADRA", "Bhadra"),
+    ("SHRAWAN", "Shrawan"),
+    ("ASAR", "Asar"),
+    ("JESTHA", "Jestha"),
     ("BAISAKH", "Baisakh"),
 ]
 
@@ -133,9 +147,7 @@ def download_pdf_text(pdf_url: str) -> str | None:
         with pdfplumber.open(io.BytesIO(resp.content)) as pdf:
             pages = [p.extract_text() for p in pdf.pages if p.extract_text()]
         text = "\n\n".join(pages)
-        logger.info(
-            f"Extracted {len(text)} chars from {pdf_url.split('/')[-1][:60]}"
-        )
+        logger.info(f"Extracted {len(text)} chars from {pdf_url.split('/')[-1][:60]}")
         return text if text.strip() else None
     except Exception as e:
         logger.warning(f"PDF extraction failed ({pdf_url.split('/')[-1][:50]}): {e}")
@@ -220,20 +232,26 @@ def store_decisions(
             decision_date = today
 
         try:
-            result = db.table("cabinet_decisions").insert({
-                "title_en": (title_en or title_np)[:400],
-                "title_np": title_np[:400] if title_np else None,
-                "summary_en": (d.get("summary_en") or "").strip() or None,
-                "category": d.get("category", "other"),
-                "significance": d.get("significance", "medium"),
-                "source_url": content_url,
-                "decision_date": decision_date,
-                "metadata": {
-                    "source_pdf_url": pdf_url,
-                    "month_label": month_label,
-                    "ai_extracted": True,
-                },
-            }).execute()
+            result = (
+                db.table("cabinet_decisions")
+                .insert(
+                    {
+                        "title_en": (title_en or title_np)[:400],
+                        "title_np": title_np[:400] if title_np else None,
+                        "summary_en": (d.get("summary_en") or "").strip() or None,
+                        "category": d.get("category", "other"),
+                        "significance": d.get("significance", "medium"),
+                        "source_url": content_url,
+                        "decision_date": decision_date,
+                        "metadata": {
+                            "source_pdf_url": pdf_url,
+                            "month_label": month_label,
+                            "ai_extracted": True,
+                        },
+                    }
+                )
+                .execute()
+            )
 
             decision_id = result.data[0]["id"]
             created += 1
@@ -243,16 +261,16 @@ def store_decisions(
                 manifesto_uuid = manifesto_map.get(str(bp_id))
                 if manifesto_uuid:
                     try:
-                        db.table("cabinet_decision_manifesto_links").insert({
-                            "decision_id": decision_id,
-                            "manifesto_item_id": manifesto_uuid,
-                        }).execute()
+                        db.table("cabinet_decision_manifesto_links").insert(
+                            {
+                                "decision_id": decision_id,
+                                "manifesto_item_id": manifesto_uuid,
+                            }
+                        ).execute()
                     except Exception:
                         pass  # Ignore duplicate link constraint errors
 
-            logger.info(
-                f"  Stored [{d.get('category', '?')}] {title_en[:80]}"
-            )
+            logger.info(f"  Stored [{d.get('category', '?')}] {title_en[:80]}")
         except Exception as e:
             logger.warning(f"  Failed to store '{title_en[:60]}': {e}")
 
@@ -262,25 +280,27 @@ def store_decisions(
 def _mark_pdf_as_processed(pdf_url: str, content_url: str, month_label: str):
     """Insert a placeholder row so we don't retry a PDF that yielded no decisions."""
     today = datetime.now(timezone.utc).date().isoformat()
-    db.table("cabinet_decisions").insert({
-        "title_en": f"Cabinet Decisions — {month_label}",
-        "decision_date": today,
-        "source_url": content_url,
-        "category": "other",
-        "significance": "medium",
-        "metadata": {
-            "source_pdf_url": pdf_url,
-            "month_label": month_label,
-            "no_decisions_extracted": True,
-        },
-    }).execute()
+    db.table("cabinet_decisions").insert(
+        {
+            "title_en": f"Cabinet Decisions — {month_label}",
+            "decision_date": today,
+            "source_url": content_url,
+            "category": "other",
+            "significance": "medium",
+            "metadata": {
+                "source_pdf_url": pdf_url,
+                "month_label": month_label,
+                "no_decisions_extracted": True,
+            },
+        }
+    ).execute()
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 
-def run():
-    """Main entry point. Checks OPMCM for new monthly decision PDFs."""
+def run_cabinet_decisions():
+    """Checks OPMCM for new monthly decision PDFs."""
     run_id = log_agent_run("gazette_monitor")
     pdfs_processed = 0
     decisions_created = 0
@@ -303,7 +323,9 @@ def run():
             text = download_pdf_text(pdf_url)
             if not text:
                 logger.warning("  PDF text extraction failed — marking as processed")
-                _mark_pdf_as_processed(pdf_url, entry["content_url"], entry["month_label"])
+                _mark_pdf_as_processed(
+                    pdf_url, entry["content_url"], entry["month_label"]
+                )
                 pdfs_processed += 1
                 continue
 
@@ -322,7 +344,9 @@ def run():
                 )
                 decisions_created += n
             else:
-                _mark_pdf_as_processed(pdf_url, entry["content_url"], entry["month_label"])
+                _mark_pdf_as_processed(
+                    pdf_url, entry["content_url"], entry["month_label"]
+                )
 
             pdfs_processed += 1
 

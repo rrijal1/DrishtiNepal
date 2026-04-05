@@ -83,12 +83,14 @@ def fetch_notice_listing(pages: int = 2) -> list[dict]:
                 if not href.startswith("http"):
                     href = PARL_BASE + href
 
-                notices.append({
-                    "notice_id": notice_id,
-                    "title_np": title_np,
-                    "url": href,
-                    "notice_type": _classify_title_heuristic(title_np),
-                })
+                notices.append(
+                    {
+                        "notice_id": notice_id,
+                        "title_np": title_np,
+                        "url": href,
+                        "notice_type": _classify_title_heuristic(title_np),
+                    }
+                )
                 page_notices += 1
 
             logger.info(f"Found {page_notices} new notices on page {page_num}")
@@ -102,9 +104,9 @@ def fetch_notice_listing(pages: int = 2) -> list[dict]:
 def _classify_title_heuristic(title_np: str) -> str:
     """Quick heuristic classification from Nepali title keywords."""
     if "कार्यसूची" in title_np:
-        return "notice"   # Daily agenda
+        return "notice"  # Daily agenda
     if "सूचनापत्र" in title_np:
-        return "notice"   # Bulletin
+        return "notice"  # Bulletin
     if "विधेयक" in title_np:
         return "bill"
     if "समिति" in title_np:
@@ -156,9 +158,7 @@ def download_pdf_text(pdf_url: str) -> str | None:
         with pdfplumber.open(io.BytesIO(resp.content)) as pdf:
             pages = [p.extract_text() for p in pdf.pages if p.extract_text()]
         text = "\n\n".join(pages)
-        logger.info(
-            f"Extracted {len(text)} chars from {pdf_url.split('/')[-1][:50]}"
-        )
+        logger.info(f"Extracted {len(text)} chars from {pdf_url.split('/')[-1][:50]}")
         return text if text.strip() else None
     except Exception as e:
         logger.warning(f"PDF extraction failed ({pdf_url.split('/')[-1][:50]}): {e}")
@@ -168,9 +168,7 @@ def download_pdf_text(pdf_url: str) -> str | None:
 # ── AI Classification ─────────────────────────────────────────────────────────
 
 
-def classify_notice_via_ai(
-    title_np: str, text: str | None, notice_type: str
-) -> dict:
+def classify_notice_via_ai(title_np: str, text: str | None, notice_type: str) -> dict:
     """Classify and summarize a parliament notice using AI."""
     content_preview = (text[:MAX_PDF_TEXT] if text else "").strip()
 
@@ -217,9 +215,7 @@ Return ONLY the JSON object, no markdown."""
         }
 
 
-def _find_related_minister(
-    text: str, minister_map: dict[str, str]
-) -> str | None:
+def _find_related_minister(text: str, minister_map: dict[str, str]) -> str | None:
     """Return minister UUID if any minister name appears in the text."""
     text_lower = text.lower()
     for name, mid in minister_map.items():
@@ -254,30 +250,38 @@ def store_parliament_record(
     record_type = classification.get("record_type", "notice")
 
     try:
-        result = db.table("parliament_records").insert({
-            "record_type": record_type,
-            "chamber": "house",
-            "record_date": datetime.now(timezone.utc).date().isoformat(),
-            "title_en": classification.get("title_en", notice["title_np"])[:400],
-            "title_np": notice["title_np"][:400],
-            "summary_en": classification.get("summary_en") or None,
-            "source_url": notice["url"],
-            "status": "recorded",
-            "manifesto_item_id": manifesto_item_id,
-            "related_minister_id": related_minister,
-            "ai_summary": classification.get("summary_en") or None,
-            "review_status": (
-                "needs_review"
-                if significance in ("critical", "high")
-                or record_type in ("bill", "vote")
-                else "auto_published"
-            ),
-            "metadata": {
-                "parliament_notice_id": notice["notice_id"],
-                "pdf_url": pdf_url,
-                "bs_date": classification.get("bs_date"),
-            },
-        }).execute()
+        result = (
+            db.table("parliament_records")
+            .insert(
+                {
+                    "record_type": record_type,
+                    "chamber": "house",
+                    "record_date": datetime.now(timezone.utc).date().isoformat(),
+                    "title_en": classification.get("title_en", notice["title_np"])[
+                        :400
+                    ],
+                    "title_np": notice["title_np"][:400],
+                    "summary_en": classification.get("summary_en") or None,
+                    "source_url": notice["url"],
+                    "status": "recorded",
+                    "manifesto_item_id": manifesto_item_id,
+                    "related_minister_id": related_minister,
+                    "ai_summary": classification.get("summary_en") or None,
+                    "review_status": (
+                        "needs_review"
+                        if significance in ("critical", "high")
+                        or record_type in ("bill", "vote")
+                        else "auto_published"
+                    ),
+                    "metadata": {
+                        "parliament_notice_id": notice["notice_id"],
+                        "pdf_url": pdf_url,
+                        "bs_date": classification.get("bs_date"),
+                    },
+                }
+            )
+            .execute()
+        )
         return result.data[0]["id"]
     except Exception as e:
         logger.warning(
@@ -303,16 +307,15 @@ def run():
                 .select("id, source_id")
                 .like("source_id", "bp-%")
                 .execute()
-                .data or []
+                .data
+                or []
             )
         }
         minister_map = get_minister_map(lowercase_keys=True)
 
         notices = fetch_notice_listing(pages=2)
         new_notices = [n for n in notices if not is_already_processed(n["notice_id"])]
-        logger.info(
-            f"Found {len(new_notices)} new notices (of {len(notices)} total)"
-        )
+        logger.info(f"Found {len(new_notices)} new notices (of {len(notices)} total)")
 
         for notice in new_notices[:MAX_NOTICES_PER_RUN]:
             notices_processed += 1

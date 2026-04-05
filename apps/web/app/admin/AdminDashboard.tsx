@@ -43,7 +43,9 @@ export function AdminDashboard({
   recentPublished,
   manifestoItems,
 }: Props) {
-  const [tab, setTab] = useState<"drafts" | "review" | "published" | "add_decision">("drafts");
+  const [tab, setTab] = useState<
+    "drafts" | "review" | "published" | "add_decision"
+  >("drafts");
 
   const tabs = [
     {
@@ -542,7 +544,9 @@ function AddDecisionForm({
             <input
               required
               value={form.title_en}
-              onChange={(e) => setForm((f) => ({ ...f, title_en: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, title_en: e.target.value }))
+              }
               placeholder="e.g. Approve Budget Allocation for Road Construction"
               className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
             />
@@ -553,7 +557,9 @@ function AddDecisionForm({
             </label>
             <input
               value={form.title_np}
-              onChange={(e) => setForm((f) => ({ ...f, title_np: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, title_np: e.target.value }))
+              }
               placeholder="मन्त्रिपरिषद् निर्णय शीर्षक"
               className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400"
             />

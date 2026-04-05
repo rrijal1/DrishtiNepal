@@ -32,17 +32,13 @@ def slugify(name: str) -> str:
 
 def build_name_to_uuid() -> dict[str, str]:
     """Return both slug and lowercase-name variants for each minister."""
-    result = (
-        db.table("ministers")
-        .select("id, name_en")
-        .execute()
-    )
+    result = db.table("ministers").select("id, name_en").execute()
     mapping: dict[str, str] = {}
     for m in result.data or []:
         name = m["name_en"]
         uuid = m["id"]
-        mapping[slugify(name)] = uuid          # e.g. "balendra-shah"
-        mapping[name.lower()] = uuid           # e.g. "balendra shah"
+        mapping[slugify(name)] = uuid  # e.g. "balendra-shah"
+        mapping[name.lower()] = uuid  # e.g. "balendra shah"
     return mapping
 
 
@@ -64,7 +60,9 @@ def build_url_to_ministers() -> dict[str, list[str]]:
         names: list = pr.get("ministers_mentioned") or []
         uuids = []
         for name in names:
-            uuid = minister_name_map.get(name.lower()) or minister_name_map.get(slugify(name))
+            uuid = minister_name_map.get(name.lower()) or minister_name_map.get(
+                slugify(name)
+            )
             if uuid:
                 uuids.append(uuid)
         if uuids:
@@ -115,13 +113,17 @@ def main() -> None:
                 db.table("post_ministers").upsert(
                     links, on_conflict="post_id,minister_id"
                 ).execute()
-                print(f"  post {post_id[:8]}: linked {len(links)} minister(s) "
-                      f"| tags={[t for t in tags if name_map.get(t.lower()) or name_map.get(slugify(t))]}")
+                print(
+                    f"  post {post_id[:8]}: linked {len(links)} minister(s) "
+                    f"| tags={[t for t in tags if name_map.get(t.lower()) or name_map.get(slugify(t))]}"
+                )
                 total_links += len(links)
             except Exception as e:
                 print(f"  post {post_id[:8]}: ERROR - {e}")
 
-    print(f"\nDone. Inserted/updated {total_links} post_ministers rows across {len(posts)} posts.")
+    print(
+        f"\nDone. Inserted/updated {total_links} post_ministers rows across {len(posts)} posts."
+    )
 
 
 if __name__ == "__main__":
