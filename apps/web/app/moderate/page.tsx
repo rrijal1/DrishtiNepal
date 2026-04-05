@@ -345,6 +345,7 @@ function ReviewCard({
       <ModerationActions
         reviewItemId={item.id}
         contentType={item.content_type}
+        contentId={item.content_id}
         reviewer={reviewer}
       />
     </div>
