@@ -81,11 +81,11 @@ export default async function ArticlesPage() {
             <Link
               key={p.id}
               href={`/articles/${p.slug}`}
-              className="group flex flex-col rounded-xl border border-neutral-200 bg-white transition hover:border-[#1e3a5f]/30 hover:shadow-lg"
+              className="group flex flex-col rounded-xl border border-neutral-200 bg-white transition hover:border-[#0EA5E9]/30 hover:shadow-lg"
             >
               <div className="flex-1 p-6">
                 <div className="mb-3 flex items-center gap-2">
-                  <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-[#1e3a5f]">
+                  <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-800">
                     {p.category}
                   </span>
                   {p.ai_generated ? (
@@ -98,7 +98,7 @@ export default async function ArticlesPage() {
                     </span>
                   )}
                 </div>
-                <h2 className="text-lg font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
+                <h2 className="text-lg font-semibold text-neutral-800 group-hover:text-blue-800">
                   {p.title}
                 </h2>
                 {p.title_np && (

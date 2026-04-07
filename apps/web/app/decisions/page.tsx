@@ -66,7 +66,7 @@ export default async function DecisionsPage() {
                   href={d.source_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 inline-block text-xs text-[#1e3a5f] hover:underline"
+                  className="mt-3 inline-block text-xs text-blue-800 hover:underline"
                 >
                   View original source →
                 </a>

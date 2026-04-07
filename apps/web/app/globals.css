@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  /* Drishti Nepal Brand Colors */
-  --color-brand: #1e3a5f; /* Deep blue - trust, authority */
-  --color-brand-light: #2d5a8e;
-  --color-brand-dark: #0f1f33;
-  --color-accent: #dc2626; /* Nepal red */
-  --color-accent-light: #ef4444;
+  /* Drishti Nepal Brand Colors
+     Primary: Deep Sky — authoritative, modern, trustworthy
+     Red:     Warm Crimson — Nepal-flag-inspired */
+  --color-brand: #1e40af;
+  --color-brand-light: #0ea5e9;
+  --color-brand-dark: #1e3a8a;
+  --color-accent: #e63946;
+  --color-accent-light: #ef5461;
   --color-success: #16a34a;
   --color-warning: #f59e0b;
   --color-danger: #dc2626;
@@ -64,6 +66,59 @@ body {
   animation: score-pulse 2s ease-in-out infinite;
 }
 
+/* ── Drishti Nepal hero animations ── */
+
+/* Dash segment travels from path start → end */
+@keyframes dn-travel {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -107;
+  }
+}
+
+/* Node fade-in on mount */
+@keyframes dn-node-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Outer glow ring throb */
+@keyframes dn-node-pulse {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+  50% {
+    opacity: 0.07;
+  }
+}
+
+/* Text label fade-in */
+@keyframes dn-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.82;
+  }
+}
+
+/* Pencil underline draws left → right */
+@keyframes dn-expand-line {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 /* Glass effect for cards */
 .glass {
   background: rgba(255, 255, 255, 0.8);
@@ -100,7 +155,7 @@ body {
   @apply leading-7 mb-6;
 }
 .prose a {
-  @apply text-[#1e3a5f] underline transition hover:opacity-80;
+  @apply text-[var(--color-brand)] underline transition hover:opacity-80;
 }
 .prose strong {
   @apply font-bold;

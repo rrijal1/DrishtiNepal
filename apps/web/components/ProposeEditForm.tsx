@@ -91,7 +91,7 @@ export function ProposeEditForm({
             setSelectedField(e.target.value);
             setProposedText("");
           }}
-          className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30"
+          className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30"
         >
           {fields.map((f) => (
             <option key={f.name} value={f.name}>
@@ -125,7 +125,7 @@ export function ProposeEditForm({
           required
           rows={4}
           placeholder="Enter the corrected text…"
-          className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30"
+          className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30"
         />
       </div>
 
@@ -139,7 +139,7 @@ export function ProposeEditForm({
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           placeholder="e.g. Official gazette no. 1234, Gorkhapatra 2082-04-15"
-          className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30"
+          className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30"
         />
       </div>
 
@@ -154,7 +154,7 @@ export function ProposeEditForm({
             value={submitterName}
             onChange={(e) => setSubmitterName(e.target.value)}
             placeholder="Anonymous"
-            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30"
+            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30"
           />
         </div>
         <div>
@@ -166,7 +166,7 @@ export function ProposeEditForm({
             value={submitterEmail}
             onChange={(e) => setSubmitterEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1e3a5f]/30"
+            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30"
           />
         </div>
       </div>
@@ -180,7 +180,7 @@ export function ProposeEditForm({
       <button
         type="submit"
         disabled={state === "submitting" || !proposedText.trim()}
-        className="rounded-lg bg-[#1e3a5f] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#1e3a5f]/90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-lg bg-blue-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {state === "submitting" ? "Submitting…" : "Submit Edit Proposal"}
       </button>

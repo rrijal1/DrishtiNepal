@@ -27,7 +27,7 @@ export function MinisterCard({
   return (
     <a
       href={`/ministers/${m.id}`}
-      className="group relative flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition hover:border-[#1e3a5f]/30 hover:shadow-lg"
+      className="group relative flex flex-col rounded-xl border border-neutral-200 bg-white p-5 transition hover:border-[#0EA5E9]/30 hover:shadow-lg"
     >
       <div className="flex items-start gap-4">
         {/* Avatar */}
@@ -46,7 +46,7 @@ export function MinisterCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
+          <h3 className="truncate font-semibold text-neutral-800 group-hover:text-blue-800">
             {name}
           </h3>
           {locale === "en" && (
@@ -72,7 +72,7 @@ export function MinisterCard({
         <span className="rounded-full bg-neutral-50 px-2.5 py-0.5 text-xs font-medium text-neutral-500">
           {m.party}
         </span>
-        <span className="text-xs font-medium text-[#1e3a5f] opacity-0 transition group-hover:opacity-100">
+        <span className="text-xs font-medium text-blue-800 opacity-0 transition group-hover:opacity-100">
           {locale === "en" ? "View Profile →" : "प्रोफाइल हेर्नुहोस् →"}
         </span>
       </div>

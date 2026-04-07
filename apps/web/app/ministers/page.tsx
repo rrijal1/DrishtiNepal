@@ -97,7 +97,7 @@ export default async function MinistersPage({ searchParams }: Props) {
             href={key === "all" ? "/ministers" : `/ministers?filter=${key}`}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
               activeFilter === key
-                ? "bg-[#1e3a5f] text-white"
+                ? "bg-blue-800 text-white"
                 : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
             }`}
           >

@@ -114,7 +114,7 @@ export default async function ScoresPage() {
         <p className="mt-2 text-neutral-500">
           Outcome-only model (v1) — every score tracks real-world progress
           toward manifesto targets.{" "}
-          <a href="/methodology" className="text-[#1e3a5f] underline">
+          <a href="/methodology" className="text-blue-800 underline">
             Read our methodology
           </a>
           .
@@ -130,7 +130,7 @@ export default async function ScoresPage() {
           </h2>
           <div className="mb-6 flex items-center justify-center">
             <div className="text-center">
-              <p className="text-5xl font-bold text-[#1e3a5f]">{avgScore}</p>
+              <p className="text-5xl font-bold text-blue-800">{avgScore}</p>
               <p className="mt-1 text-sm text-neutral-500">Overall Average</p>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default async function ScoresPage() {
           </div>
           <p className="mt-5 border-t border-neutral-100 pt-3 text-xs text-neutral-400">
             {manifestoItems?.length ?? 0} total manifesto commitments tracked.{" "}
-            <a href="/manifesto" className="text-[#1e3a5f] underline">
+            <a href="/manifesto" className="text-blue-800 underline">
               View all →
             </a>
           </p>
@@ -245,7 +245,7 @@ export default async function ScoresPage() {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-neutral-800 group-hover:text-[#1e3a5f]">
+                      <p className="text-sm font-semibold text-neutral-800 group-hover:text-blue-800">
                         {m.name_en}
                       </p>
                       <p className="font-nepali text-xs text-neutral-400">

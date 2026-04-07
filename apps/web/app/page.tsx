@@ -1,5 +1,6 @@
+import { HeroSection } from "@/components/HeroSection";
 import { MinisterCard } from "@/components/MinisterCard";
-import { getLocale, translations } from "@/lib/i18n";
+import { getLocale } from "@/lib/i18n";
 import { supabase } from "@/lib/supabase";
 
 export const revalidate = 300; // ISR: revalidate every 5 min
@@ -9,7 +10,7 @@ const KARAR_AREAS = [
     id: "pp-001",
     label: "Integrity & Governance",
     bpRange: [1, 18],
-    color: "#1e3a5f",
+    color: "#1e40af",
   },
   {
     id: "pp-002",
@@ -39,7 +40,6 @@ const KARAR_AREAS = [
 
 export default async function HomePage() {
   const locale = await getLocale();
-  const t = translations[locale].home;
 
   const { data: ministers } = await supabase
     .from("ministers")
@@ -107,57 +107,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ─── Hero ─── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#1e3a5f] via-[#2a4a73] to-[#1a2f4a]">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-white/20 blur-3xl" />
-          <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-red-500/20 blur-3xl" />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="mb-3 text-sm font-medium uppercase tracking-wider text-blue-200/80">
-              AI-Powered Government Accountability
-            </p>
-            <h1 className="text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-6xl">
-              {t.heroTitle}
-              <br />
-              <span className="text-red-400">{t.heroSubtitle}</span>
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-blue-100/80">
-              {t.heroDescription}
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="/manifesto"
-                className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#1e3a5f] shadow-lg transition hover:bg-neutral-100"
-              >
-                {locale === "en"
-                  ? "View Manifesto →"
-                  : "वाचा पत्र हेर्नुहोस् →"}
-              </a>
-              <a
-                href="/ministers"
-                className="rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/20"
-              >
-                {t.viewMinisters}
-              </a>
-            </div>
-          </div>
-
-          {/* Live stat pills */}
-          <div className="mt-12 flex flex-wrap gap-4">
-            <StatPill
-              label={t.ministersTracked}
-              value={ministers?.length ?? 0}
-            />
-            <StatPill
-              label={t.postsPublished}
-              value={recentPosts?.length ?? 0}
-              suffix="+"
-            />
-            <StatPill label={t.sourcesMonitored} value={20} />
-          </div>
-        </div>
-      </section>
+      <HeroSection ministersCount={ministers?.length ?? 15} locale={locale} />
 
       {/* ─── Manifesto Progress ─── */}
       <section className="bg-white">
@@ -175,7 +125,7 @@ export default async function HomePage() {
             </div>
             <a
               href="/manifesto"
-              className="shrink-0 rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 transition hover:border-[#1e3a5f] hover:text-[#1e3a5f]"
+              className="shrink-0 rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 transition hover:border-blue-800 hover:text-blue-800"
             >
               {locale === "en" ? "View all →" : "सबै हेर्नुहोस् →"}
             </a>
@@ -204,7 +154,7 @@ export default async function HomePage() {
                     cy="50"
                     r="42"
                     fill="none"
-                    stroke="#1e3a5f"
+                    stroke="#1e40af"
                     strokeWidth="10"
                     strokeLinecap="round"
                     strokeDasharray={`${(circumference * overallPct) / 100} ${circumference}`}
@@ -278,31 +228,33 @@ export default async function HomePage() {
       </section>
 
       {/* ─── Minister Grid ─── */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <SectionHeading
-          title={
-            locale === "en" ? "Cabinet Ministers" : "मन्त्रिपरिषद्का सदस्यहरू"
-          }
-          subtitle={
-            locale === "en"
-              ? "Current scorecard for every minister in the Ra Swa Pa cabinet."
-              : "रास्वपा क्याबिनेटका प्रत्येक मन्त्रीको हालको स्कोरकार्ड।"
-          }
-          href="/ministers"
-        />
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {ministers?.map((m) => (
-            <MinisterCard key={m.id} minister={m} locale={locale} />
-          )) ?? (
-            <p className="col-span-full text-center text-neutral-400">
-              No ministers loaded yet. Check back soon.
-            </p>
-          )}
+      <section className="bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <SectionHeading
+            title={
+              locale === "en" ? "Cabinet Ministers" : "मन्त्रिपरिषद्का सदस्यहरू"
+            }
+            subtitle={
+              locale === "en"
+                ? "Current scorecard for every minister in the Ra Swa Pa cabinet."
+                : "रास्वपा क्याबिनेटका प्रत्येक मन्त्रीको हालको स्कोरकार्ड।"
+            }
+            href="/ministers"
+          />
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {ministers?.map((m) => (
+              <MinisterCard key={m.id} minister={m} locale={locale} />
+            )) ?? (
+              <p className="col-span-full text-center text-neutral-400">
+                No ministers loaded yet. Check back soon.
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
       {/* ─── Cabinet Decisions · compact strip ─── */}
-      <section className="border-y border-neutral-100 bg-neutral-50">
+      <section className="border-y border-neutral-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 overflow-x-auto pb-1">
             <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
@@ -313,10 +265,10 @@ export default async function HomePage() {
                 <a
                   key={d.id}
                   href="/decisions"
-                  className="group flex shrink-0 items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 transition hover:border-[#1e3a5f]/40 hover:text-[#1e3a5f]"
+                  className="group flex shrink-0 items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 transition hover:border-[#0EA5E9]/40 hover:text-blue-800"
                 >
                   <SignificanceBadge level={d.significance} locale={locale} />
-                  <span className="max-w-[20rem] truncate group-hover:text-[#1e3a5f]">
+                  <span className="max-w-[20rem] truncate group-hover:text-blue-800">
                     {locale === "en" ? d.title_en : d.title_np || d.title_en}
                   </span>
                   <span className="shrink-0 text-[11px] text-neutral-400">
@@ -334,7 +286,7 @@ export default async function HomePage() {
             )}
             <a
               href="/decisions"
-              className="ml-auto shrink-0 text-xs font-medium text-[#1e3a5f] transition hover:underline"
+              className="ml-auto shrink-0 text-xs font-medium text-blue-800 transition hover:underline"
             >
               {locale === "en" ? "View all →" : "सबै →"}
             </a>
@@ -344,7 +296,7 @@ export default async function HomePage() {
 
       {/* ─── Recent Analysis · compact row ─── */}
       {recentPosts && recentPosts.length > 0 && (
-        <section className="border-b border-neutral-100 bg-white py-4">
+        <section className="border-b border-neutral-100 bg-gray-50 py-4">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
@@ -352,7 +304,7 @@ export default async function HomePage() {
               </span>
               <a
                 href="/articles"
-                className="text-xs font-medium text-[#1e3a5f] transition hover:underline"
+                className="text-xs font-medium text-blue-800 transition hover:underline"
               >
                 {locale === "en" ? "View all →" : "सबै →"}
               </a>
@@ -364,11 +316,11 @@ export default async function HomePage() {
                   href={`/articles/${p.slug}`}
                   className="group flex items-start gap-2.5"
                 >
-                  <span className="mt-0.5 shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-[#1e3a5f]">
+                  <span className="mt-0.5 shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-800">
                     {p.category}
                   </span>
                   <div className="min-w-0">
-                    <p className="line-clamp-2 text-sm font-medium text-neutral-700 group-hover:text-[#1e3a5f]">
+                    <p className="line-clamp-2 text-sm font-medium text-neutral-700 group-hover:text-blue-800">
                       {locale === "en" ? p.title_en : p.title_np || p.title_en}
                     </p>
                     <p className="mt-0.5 text-[11px] text-neutral-400">
@@ -386,7 +338,7 @@ export default async function HomePage() {
       )}
 
       {/* ─── How it works ─── */}
-      <section className="bg-gradient-to-b from-neutral-50 to-white">
+      <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-neutral-800 sm:text-3xl">
@@ -446,33 +398,35 @@ export default async function HomePage() {
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="rounded-2xl bg-[#1e3a5f] p-8 text-center sm:p-12">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            {locale === "en"
-              ? "Democracy Needs Your Eyes"
-              : "लोकतन्त्रलाई तपाईंको आँखा चाहिन्छ"}
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-blue-100/70">
-            {locale === "en"
-              ? "Have evidence of a minister's actions? Found an error in our data? Contribute to a more accountable Nepal."
-              : "मन्त्रीका कार्यहरूको प्रमाण छ? हाम्रो डाटामा त्रुटि फेला पार्नुभयो? अझ बढी जवाफदेही नेपालका लागि योगदान गर्नुहोस्।"}
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <a
-              href="/submit"
-              className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-[#1e3a5f] transition hover:bg-neutral-100"
-            >
-              {locale === "en" ? "Submit Evidence" : "प्रमाण पेश गर्नुहोस्"}
-            </a>
-            <a
-              href="https://github.com/rrijal1/DrishtiNepal"
-              className="rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
-            >
+      <section className="bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <div className="rounded-2xl bg-blue-800 p-8 text-center sm:p-12">
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">
               {locale === "en"
-                ? "Contribute on GitHub"
-                : "GitHub मा योगदान गर्नुहोस्"}
-            </a>
+                ? "Democracy Needs Your Eyes"
+                : "लोकतन्त्रलाई तपाईंको आँखा चाहिन्छ"}
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-blue-100/70">
+              {locale === "en"
+                ? "Have evidence of a minister's actions? Found an error in our data? Contribute to a more accountable Nepal."
+                : "मन्त्रीका कार्यहरूको प्रमाण छ? हाम्रो डाटामा त्रुटि फेला पार्नुभयो? अझ बढी जवाफदेही नेपालका लागि योगदान गर्नुहोस्।"}
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <a
+                href="/submit"
+                className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-blue-800 transition hover:bg-neutral-100"
+              >
+                {locale === "en" ? "Submit Evidence" : "प्रमाण पेश गर्नुहोस्"}
+              </a>
+              <a
+                href="https://github.com/rrijal1/DrishtiNepal"
+                className="rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                {locale === "en"
+                  ? "Contribute on GitHub"
+                  : "GitHub मा योगदान गर्नुहोस्"}
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -481,26 +435,6 @@ export default async function HomePage() {
 }
 
 /* ── Small helper components ── */
-
-function StatPill({
-  label,
-  value,
-  suffix,
-}: {
-  label: string;
-  value: number;
-  suffix?: string;
-}) {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 backdrop-blur">
-      <span className="text-lg font-bold text-white">
-        {value}
-        {suffix}
-      </span>
-      <span className="text-xs text-blue-200/70">{label}</span>
-    </div>
-  );
-}
 
 function SectionHeading({
   title,
@@ -521,7 +455,7 @@ function SectionHeading({
       </div>
       <a
         href={href}
-        className="hidden text-sm font-medium text-[#1e3a5f] transition hover:underline sm:block"
+        className="hidden text-sm font-medium text-blue-800 transition hover:underline sm:block"
       >
         View all →
       </a>
@@ -540,7 +474,7 @@ function HowStep({
 }) {
   return (
     <div className="text-center">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#1e3a5f]/10 text-lg font-bold text-[#1e3a5f]">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0EA5E9]/10 text-lg font-bold text-blue-800">
         {step}
       </div>
       <h3 className="mt-4 font-semibold text-neutral-800">{title}</h3>

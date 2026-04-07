@@ -19,7 +19,7 @@ interface SearchResult {
 function TypeIcon({ type }: { type: SearchResult["type"] }) {
   if (type === "minister")
     return (
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1e3a5f]/10 text-[#1e3a5f] font-bold text-sm">
+      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0EA5E9]/10 text-blue-800 font-bold text-sm">
         म
       </span>
     );
@@ -116,11 +116,11 @@ function SearchPageContent() {
           value={query}
           onChange={handleChange}
           placeholder="Search ministers, manifesto commitments, articles…"
-          className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-11 pr-4 text-sm text-neutral-800 shadow-sm outline-none transition focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/10"
+          className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-11 pr-4 text-sm text-neutral-800 shadow-sm outline-none transition focus:border-blue-800 focus:ring-2 focus:ring-[#0EA5E9]/10"
         />
         {loading && (
           <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#1e3a5f] border-t-transparent" />
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-800 border-t-transparent" />
           </div>
         )}
       </div>

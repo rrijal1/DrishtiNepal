@@ -28,11 +28,11 @@ export function Header({ locale, navLabels: t }: HeaderProps) {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#1e3a5f] text-white font-bold text-lg">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-800 text-white font-bold text-lg">
             द
           </div>
           <div className="flex flex-col leading-none">
-            <span className="text-lg font-bold text-[#1e3a5f]">
+            <span className="text-lg font-bold text-blue-800">
               Drishti Nepal
             </span>
             <span className="text-[10px] font-medium text-neutral-400 font-nepali">

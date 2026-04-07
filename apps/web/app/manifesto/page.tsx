@@ -25,7 +25,7 @@ const KARAR_PATRA_AREAS: Array<{
     description_en:
       "Anti-corruption campaign, digital government services, judicial reform, and end to politicisation of state institutions.",
     bpRange: [1, 18],
-    color: "#1e3a5f",
+    color: "#1e40af",
     colorLight: "#eef2f7",
   },
   {

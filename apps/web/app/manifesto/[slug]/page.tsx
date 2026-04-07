@@ -9,7 +9,7 @@ const KARAR_PATRA_AREAS = [
   {
     id: "pp-001",
     title_en: "Integrity & Good Governance",
-    color: "#1e3a5f",
+    color: "#1e40af",
     bpRange: [1, 18],
   },
   {

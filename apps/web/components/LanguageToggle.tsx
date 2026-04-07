@@ -23,7 +23,7 @@ export function LanguageToggle({ currentLocale }: { currentLocale: Locale }) {
         aria-pressed={currentLocale === "en"}
         className={`rounded-md px-3 py-1 text-xs font-semibold tracking-wide transition ${
           currentLocale === "en"
-            ? "bg-[#1e3a5f] text-white"
+            ? "bg-blue-800 text-white"
             : "text-neutral-500 hover:text-neutral-800"
         }`}
       >
@@ -34,7 +34,7 @@ export function LanguageToggle({ currentLocale }: { currentLocale: Locale }) {
         aria-pressed={currentLocale === "np"}
         className={`rounded-md px-3 py-1 text-xs font-semibold tracking-wide transition ${
           currentLocale === "np"
-            ? "bg-[#1e3a5f] text-white"
+            ? "bg-blue-800 text-white"
             : "text-neutral-500 hover:text-neutral-800"
         }`}
         style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}

@@ -60,7 +60,7 @@ export function ScoreHistoryChart({ scores }: ScoreHistoryChartProps) {
         <Line
           type="monotone"
           dataKey="Overall"
-          stroke="#1e3a5f"
+          stroke="#1e40af"
           strokeWidth={2.5}
           dot={{ r: 3 }}
           activeDot={{ r: 5 }}

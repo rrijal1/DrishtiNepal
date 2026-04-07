@@ -39,7 +39,7 @@ export default async function OGImage({
       style={{
         width: "100%",
         height: "100%",
-        background: "linear-gradient(135deg, #1e3a5f 0%, #0f2240 100%)",
+        background: "linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)",
         display: "flex",
         flexDirection: "column",
         padding: "60px",
