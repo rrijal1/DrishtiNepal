@@ -1,11 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
+import { requireAdmin, supabaseAdmin, unauthorized } from "@/lib/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const user = await requireAdmin(req);
+  if (!user) return unauthorized();
+
+  const db = supabaseAdmin();
 
   let body: Record<string, unknown>;
   try {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const now = new Date().toISOString();
 
   if (action === "approve") {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from("posts")
       .update({ status: "published", published_at: now })
       .eq("id", post_id);
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (action === "reject") {
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from("posts")
       .update({ status: "rejected" })
       .eq("id", post_id);
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (action === "update") {
-    const updates: Record<string, string> = {};
+    const updates: Record<string, unknown> = {};
     if (title_en) updates.title_en = title_en;
     if (title_np) updates.title_np = title_np;
     if (content_en) updates.content_en = content_en;
@@ -75,10 +75,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { error } = await supabaseAdmin
-      .from("posts")
-      .update(updates)
-      .eq("id", post_id);
+    // Human edit → mark as not AI-generated
+    updates.ai_generated = false;
+    updates.edited_by = user;
+
+    const { error } = await db.from("posts").update(updates).eq("id", post_id);
 
     if (error) {
       return NextResponse.json(

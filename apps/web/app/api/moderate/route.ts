@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 const VALID_ACTIONS = new Set([
@@ -19,10 +19,7 @@ const VALID_CONTENT_TYPES = new Set([
 ]);
 
 export async function POST(req: NextRequest) {
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const db = supabaseAdmin();
 
   let body: Record<string, unknown>;
   try {
@@ -57,7 +54,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Fetch the review item
-  const { data: item, error: fetchError } = await supabaseAdmin
+  const { data: item, error: fetchError } = await db
     .from("content_review_queue")
     .select("*")
     .eq("id", review_item_id)
@@ -81,7 +78,7 @@ export async function POST(req: NextRequest) {
   const now = new Date().toISOString();
 
   // Update the review queue item
-  const { error: updateError } = await supabaseAdmin
+  const { error: updateError } = await db
     .from("content_review_queue")
     .update({
       status: statusMap[action],
@@ -102,7 +99,7 @@ export async function POST(req: NextRequest) {
   // Propagate the decision to the source content
   if (action === "approve" || action === "reject") {
     await propagateDecision(
-      supabaseAdmin,
+      db,
       item.content_type,
       item.content_id,
       action,

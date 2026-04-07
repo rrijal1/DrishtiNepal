@@ -6,7 +6,7 @@ import { useState } from "react";
 export default function LoginPage() {
   const router = useRouter();
   const params = useSearchParams();
-  const from = params.get("from") ?? "/moderate";
+  const from = params.get("from") ?? "/admin";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

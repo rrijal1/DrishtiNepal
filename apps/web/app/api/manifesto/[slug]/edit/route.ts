@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 const ALLOWED_FIELDS = new Set([
@@ -19,11 +19,7 @@ export async function POST(
 ) {
   const { slug } = await params;
 
-  // Initialize inside handler so env vars are available at request time (not build time)
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const db = supabaseAdmin();
 
   let body: Record<string, unknown>;
   try {
@@ -79,7 +75,7 @@ export async function POST(
   }
 
   // Verify the item exists and matches the slug
-  const { data: item, error: lookupError } = await supabaseAdmin
+  const { data: item, error: lookupError } = await db
     .from("manifesto_items")
     .select("id")
     .eq("id", manifesto_item_id)
@@ -93,18 +89,16 @@ export async function POST(
     );
   }
 
-  const { error: insertError } = await supabaseAdmin
-    .from("manifesto_edits")
-    .insert({
-      manifesto_item_id,
-      field_name,
-      original_text: original_text?.trim() ?? "",
-      proposed_text: proposed_text.trim(),
-      reason: reason?.trim() || null,
-      submitter_name: submitter_name?.trim() || null,
-      submitter_email: submitter_email?.trim() || null,
-      status: "pending",
-    });
+  const { error: insertError } = await db.from("manifesto_edits").insert({
+    manifesto_item_id,
+    field_name,
+    original_text: original_text?.trim() ?? "",
+    proposed_text: proposed_text.trim(),
+    reason: reason?.trim() || null,
+    submitter_name: submitter_name?.trim() || null,
+    submitter_email: submitter_email?.trim() || null,
+    status: "pending",
+  });
 
   if (insertError) {
     console.error("manifesto_edits insert error:", insertError);

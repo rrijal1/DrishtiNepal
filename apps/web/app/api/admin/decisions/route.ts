@@ -1,11 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const db = supabaseAdmin();
 
   let body: Record<string, unknown>;
   try {
@@ -48,7 +45,7 @@ export async function POST(req: NextRequest) {
     : "medium";
 
   // Insert the cabinet decision
-  const { data: decision, error: insertErr } = await supabaseAdmin
+  const { data: decision, error: insertErr } = await db
     .from("cabinet_decisions")
     .insert({
       title_en: title_en.trim(),
@@ -74,7 +71,7 @@ export async function POST(req: NextRequest) {
   // Resolve bp-XXX source IDs to UUIDs and create manifesto links
   const bpIds = Array.isArray(selected_bp_ids) ? selected_bp_ids : [];
   if (bpIds.length > 0) {
-    const { data: items } = await supabaseAdmin
+    const { data: items } = await db
       .from("manifesto_items")
       .select("id, source_id")
       .in("source_id", bpIds);
@@ -85,7 +82,7 @@ export async function POST(req: NextRequest) {
         manifesto_item_id: item.id,
       }));
       // Ignore conflicts (idempotent)
-      await supabaseAdmin
+      await db
         .from("cabinet_decision_manifesto_links")
         .upsert(links, { onConflict: "decision_id,manifesto_item_id" });
     }

@@ -12,12 +12,6 @@ test.describe("Static Pages", () => {
     const heading = page.getByRole("heading", { level: 1 });
     await expect(heading).toBeVisible();
   });
-
-  test("moderate page renders without crash", async ({ page }) => {
-    await page.goto("/moderate");
-    const heading = page.getByRole("heading", { level: 1 });
-    await expect(heading).toBeVisible();
-  });
 });
 
 test.describe("Language Toggle", () => {

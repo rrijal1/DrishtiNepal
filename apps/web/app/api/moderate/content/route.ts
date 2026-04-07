@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -13,17 +13,14 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const db = supabaseAdmin();
 
   let data: Record<string, unknown> | null = null;
 
   try {
     switch (type) {
       case "evidence_assessment": {
-        const r = await supabaseAdmin
+        const r = await db
           .from("initiative_evidence")
           .select(
             "id, assessment_en, assessment_np, probability, citations, status, assessed_at, metadata, manifesto_item_id",
@@ -32,7 +29,7 @@ export async function GET(req: NextRequest) {
           .single();
         if (r.data) {
           // Enrich with manifesto item title
-          const mi = await supabaseAdmin
+          const mi = await db
             .from("manifesto_items")
             .select("source_id, title_en, item_text_en")
             .eq("id", r.data.manifesto_item_id)
@@ -43,7 +40,7 @@ export async function GET(req: NextRequest) {
       }
 
       case "gazette_entry": {
-        const r = await supabaseAdmin
+        const r = await db
           .from("gazette_entries")
           .select(
             "id, gazette_number, title_en, title_np, summary_en, category, significance, published_date, source_url, pdf_url, review_status",
@@ -55,7 +52,7 @@ export async function GET(req: NextRequest) {
       }
 
       case "parliament_record": {
-        const r = await supabaseAdmin
+        const r = await db
           .from("parliament_records")
           .select("*")
           .eq("id", id)
@@ -65,7 +62,7 @@ export async function GET(req: NextRequest) {
       }
 
       case "post": {
-        const r = await supabaseAdmin
+        const r = await db
           .from("posts")
           .select(
             "id, title_en, title_np, excerpt_en, content_en, category, tags, status, source_url, ai_generated, created_at",
@@ -77,7 +74,7 @@ export async function GET(req: NextRequest) {
       }
 
       case "public_submission": {
-        const r = await supabaseAdmin
+        const r = await db
           .from("public_submissions")
           .select("*")
           .eq("id", id)
@@ -87,7 +84,7 @@ export async function GET(req: NextRequest) {
       }
 
       case "manifesto_edit": {
-        const r = await supabaseAdmin
+        const r = await db
           .from("manifesto_edits")
           .select("*")
           .eq("id", id)

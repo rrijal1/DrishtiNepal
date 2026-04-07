@@ -1,13 +1,10 @@
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/admin";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const db = supabaseAdmin();
 
-  const { data, error } = await supabaseAdmin
+  const { data, error } = await db
     .from("social_handles")
     .select("*")
     .order("platform")
@@ -20,10 +17,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
-    process.env.SUPABASE_SERVICE_KEY ?? "",
-  );
+  const db = supabaseAdmin();
 
   let body: Record<string, unknown>;
   try {
@@ -55,7 +49,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await db
       .from("social_handles")
       .insert({
         platform,
@@ -79,7 +73,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "id required" }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
+    const { error } = await db
       .from("social_handles")
       .update({ is_active, updated_at: new Date().toISOString() })
       .eq("id", id);
@@ -96,10 +90,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "id required" }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
-      .from("social_handles")
-      .delete()
-      .eq("id", id);
+    const { error } = await db.from("social_handles").delete().eq("id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

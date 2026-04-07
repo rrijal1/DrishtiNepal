@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const PROTECTED = ["/moderate", "/admin"];
+const PROTECTED = ["/admin"];
 
 async function hmacHex(secret: string, data: string): Promise<string> {
   const enc = new TextEncoder();
@@ -61,5 +61,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/moderate/:path*", "/admin/:path*"],
+  matcher: ["/admin/:path*"],
 };

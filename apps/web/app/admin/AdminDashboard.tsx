@@ -1,5 +1,7 @@
 "use client";
 
+import { LogoutButton } from "@/components/LogoutButton";
+import { ModerationActions } from "@/components/ModerationActions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -22,17 +24,53 @@ interface Post {
   published_at?: string | null;
 }
 
+interface ReviewItem {
+  id: string;
+  content_type: string;
+  content_id: string;
+  priority: string;
+  status: string;
+  title: string;
+  summary: string | null;
+  ai_confidence: number | null;
+  flagged_reason: string | null;
+  assigned_to: string | null;
+  reviewed_by: string | null;
+  review_notes: string | null;
+  created_at: string;
+  reviewed_at: string | null;
+}
+
 interface ManifestoItem {
   id: string;
   source_id: string;
   title_en: string;
 }
 
+interface Indicator {
+  id: string;
+  indicator_name: string;
+  indicator_label: string;
+  category: string;
+  unit: string;
+  direction: string;
+  baseline_value: number | null;
+  target_value: number | null;
+  current_value: number | null;
+  measured_date: string | null;
+  source: string;
+  source_url: string | null;
+}
+
 interface Props {
   draftPosts: Post[];
   reviewPosts: Post[];
   recentPublished: Post[];
+  pendingQueue: ReviewItem[];
+  recentReviewed: ReviewItem[];
   manifestoItems: ManifestoItem[];
+  indicators: Indicator[];
+  username: string;
 }
 
 // ── Main Component ───────────────────────────────────────────────────────────
@@ -41,73 +79,87 @@ export function AdminDashboard({
   draftPosts,
   reviewPosts,
   recentPublished,
+  pendingQueue,
+  recentReviewed,
   manifestoItems,
+  indicators,
+  username,
 }: Props) {
   const [tab, setTab] = useState<
-    "drafts" | "review" | "published" | "add_decision"
-  >("drafts");
+    "news" | "drafts" | "queue" | "published" | "decisions" | "indicators"
+  >("news");
+
+  const publishedToday = recentPublished.filter(
+    (p) =>
+      p.published_at &&
+      new Date(p.published_at).toDateString() === new Date().toDateString(),
+  ).length;
 
   const tabs = [
+    { id: "news" as const, label: "News Review", count: reviewPosts.length },
     {
       id: "drafts" as const,
       label: "Analysis Drafts",
       count: draftPosts.length,
     },
     {
-      id: "review" as const,
-      label: "News Updates (Review)",
-      count: reviewPosts.length,
+      id: "queue" as const,
+      label: "Review Queue",
+      count: pendingQueue.length,
     },
     {
       id: "published" as const,
       label: "Recently Published",
       count: recentPublished.length,
     },
+    { id: "decisions" as const, label: "Add Decision", count: 0 },
     {
-      id: "add_decision" as const,
-      label: "Add Decision",
-      count: 0,
+      id: "indicators" as const,
+      label: "Indicators",
+      count: indicators.length,
     },
   ];
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-800">Admin Dashboard</h1>
-        <p className="mt-2 text-neutral-500">
-          Review AI-generated articles, approve for publishing, or edit before
-          release.
-        </p>
+      {/* Header */}
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-800">Drishti Admin</h1>
+          <p className="mt-1 text-sm text-neutral-500">
+            Signed in as{" "}
+            <span className="font-semibold text-neutral-700">{username}</span>
+          </p>
+        </div>
+        <LogoutButton />
       </div>
 
       {/* Stats row */}
-      <div className="mb-8 grid grid-cols-3 gap-4 sm:grid-cols-3">
+      <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <StatCard
+          label="News Pending"
+          value={reviewPosts.length}
+          color="blue"
+        />
         <StatCard
           label="Analysis Drafts"
           value={draftPosts.length}
           color="amber"
         />
         <StatCard
-          label="News Pending Review"
-          value={reviewPosts.length}
-          color="blue"
+          label="Review Queue"
+          value={pendingQueue.length}
+          color="violet"
         />
         <StatCard
           label="Published Today"
-          value={
-            recentPublished.filter(
-              (p) =>
-                p.published_at &&
-                new Date(p.published_at).toDateString() ===
-                  new Date().toDateString(),
-            ).length
-          }
+          value={publishedToday}
           color="emerald"
         />
       </div>
 
       {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-lg bg-neutral-100 p-1">
+      <div className="mb-6 flex flex-wrap gap-1 rounded-lg bg-neutral-100 p-1">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -129,11 +181,21 @@ export function AdminDashboard({
       </div>
 
       {/* Content */}
+      {tab === "news" && <PostQueue posts={reviewPosts} editable />}
       {tab === "drafts" && <PostQueue posts={draftPosts} editable />}
-      {tab === "review" && <PostQueue posts={reviewPosts} editable={false} />}
+      {tab === "queue" && (
+        <ReviewQueue
+          pending={pendingQueue}
+          recent={recentReviewed}
+          username={username}
+        />
+      )}
       {tab === "published" && <PublishedList posts={recentPublished} />}
-      {tab === "add_decision" && (
+      {tab === "decisions" && (
         <AddDecisionForm manifestoItems={manifestoItems} />
+      )}
+      {tab === "indicators" && (
+        <IndicatorsPanel indicators={indicators} username={username} />
       )}
     </div>
   );
@@ -164,6 +226,7 @@ function PostCard({ post, editable }: { post: Post; editable: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [editContent, setEditContent] = useState(post.content_en);
   const [editTitle, setEditTitle] = useState(post.title_en);
 
@@ -175,6 +238,7 @@ function PostCard({ post, editable }: { post: Post; editable: boolean }) {
 
   async function handleAction(action: "approve" | "reject") {
     setLoading(action);
+    setActionError(null);
     try {
       const res = await fetch("/api/admin/posts", {
         method: "POST",
@@ -183,7 +247,14 @@ function PostCard({ post, editable }: { post: Post; editable: boolean }) {
       });
       if (res.ok) {
         router.refresh();
+      } else {
+        const body = (await res.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        setActionError(body.error ?? `Failed to ${action} (${res.status})`);
       }
+    } catch {
+      setActionError("Network error — please try again");
     } finally {
       setLoading(null);
     }
@@ -285,6 +356,13 @@ function PostCard({ post, editable }: { post: Post; editable: boolean }) {
           </button>
         </div>
       </div>
+
+      {/* Inline error message */}
+      {actionError && (
+        <div className="border-t border-red-100 bg-red-50 px-5 py-2 text-xs text-red-600">
+          {actionError}
+        </div>
+      )}
 
       {/* Expanded content */}
       {expanded && (
@@ -676,6 +754,446 @@ function AddDecisionForm({
   );
 }
 
+// ── Review Queue ─────────────────────────────────────────────────────────────
+
+function ReviewQueue({
+  pending,
+  recent,
+  username,
+}: {
+  pending: ReviewItem[];
+  recent: ReviewItem[];
+  username: string;
+}) {
+  return (
+    <div className="grid gap-8 lg:grid-cols-3">
+      <div className="lg:col-span-2">
+        <h2 className="mb-4 text-lg font-bold text-neutral-800">
+          Pending Review
+        </h2>
+        {pending.length > 0 ? (
+          <div className="space-y-3">
+            {pending.map((item) => (
+              <QueueCard key={item.id} item={item} username={username} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-10 text-center text-neutral-400">
+            No items pending review. All caught up!
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-lg font-bold text-neutral-800">
+          Recently Reviewed
+        </h2>
+        {recent.length > 0 ? (
+          <div className="space-y-3">
+            {recent.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-lg border border-neutral-200 bg-white p-4"
+              >
+                <p className="text-sm font-medium text-neutral-700 line-clamp-2">
+                  {item.title}
+                </p>
+                <div className="mt-1 flex items-center gap-2 text-xs text-neutral-400">
+                  <QueueStatusChip status={item.status} />
+                  {item.reviewed_at && (
+                    <>
+                      <span>·</span>
+                      <span>
+                        {new Date(item.reviewed_at).toLocaleDateString(
+                          "en-US",
+                          { month: "short", day: "numeric" },
+                        )}
+                      </span>
+                    </>
+                  )}
+                </div>
+                {item.review_notes && (
+                  <p className="mt-1.5 text-xs text-neutral-500 italic">
+                    {item.review_notes}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-6 text-center text-sm text-neutral-400">
+            No reviews yet
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function QueueCard({ item, username }: { item: ReviewItem; username: string }) {
+  return (
+    <div className="rounded-xl border border-neutral-200 bg-white p-5 transition hover:shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <PriorityBadge priority={item.priority} />
+            <ContentTypeChip type={item.content_type} />
+          </div>
+          <h3 className="font-medium text-neutral-800 line-clamp-2">
+            {item.title}
+          </h3>
+          {item.summary && (
+            <p className="mt-1 text-sm text-neutral-500 line-clamp-2">
+              {item.summary}
+            </p>
+          )}
+          <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-neutral-400">
+            <span>
+              {new Date(item.created_at).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+            {item.ai_confidence !== null && (
+              <>
+                <span>·</span>
+                <span>
+                  AI:{" "}
+                  <span className="font-medium text-neutral-600">
+                    {(item.ai_confidence * 100).toFixed(0)}%
+                  </span>
+                </span>
+              </>
+            )}
+          </div>
+          {item.flagged_reason && (
+            <p className="mt-2 rounded-md bg-red-50 px-3 py-1.5 text-xs text-red-600">
+              Flag: {item.flagged_reason}
+            </p>
+          )}
+        </div>
+        <QueueStatusChip status={item.status} />
+      </div>
+      <ModerationActions
+        reviewItemId={item.id}
+        contentType={item.content_type}
+        contentId={item.content_id}
+        reviewer={username}
+      />
+    </div>
+  );
+}
+
+function PriorityBadge({ priority }: { priority: string }) {
+  const styles: Record<string, string> = {
+    urgent: "bg-red-100 text-red-700",
+    high: "bg-amber-100 text-amber-700",
+    normal: "bg-neutral-100 text-neutral-600",
+    low: "bg-neutral-50 text-neutral-400",
+  };
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${styles[priority] ?? styles.normal}`}
+    >
+      {priority}
+    </span>
+  );
+}
+
+function ContentTypeChip({ type }: { type: string }) {
+  const labels: Record<string, string> = {
+    gazette_entry: "Gazette",
+    parliament_record: "Parliament",
+    evidence_assessment: "Evidence",
+    action: "Action",
+    post: "Post",
+    manifesto_edit: "Manifesto Edit",
+    public_submission: "Submission",
+    score_update: "Score",
+  };
+  return (
+    <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-600">
+      {labels[type] ?? type}
+    </span>
+  );
+}
+
+function QueueStatusChip({ status }: { status: string }) {
+  const styles: Record<string, string> = {
+    pending: "bg-amber-100 text-amber-700",
+    in_review: "bg-blue-100 text-blue-700",
+    approved: "bg-emerald-100 text-emerald-700",
+    rejected: "bg-red-100 text-red-700",
+    needs_revision: "bg-orange-100 text-orange-700",
+  };
+  const labels: Record<string, string> = {
+    pending: "Pending",
+    in_review: "In Review",
+    approved: "Approved",
+    rejected: "Rejected",
+    needs_revision: "Needs Revision",
+  };
+  return (
+    <span
+      className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${styles[status] ?? "bg-neutral-100 text-neutral-600"}`}
+    >
+      {labels[status] ?? status}
+    </span>
+  );
+}
+
+// ── Indicators Panel ─────────────────────────────────────────────────────────
+
+function IndicatorsPanel({
+  indicators,
+  username,
+}: {
+  indicators: Indicator[];
+  username: string;
+}) {
+  const router = useRouter();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    value: "",
+    measured_date: new Date().toISOString().slice(0, 10),
+    source_url: "",
+    source_text: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [filterCat, setFilterCat] = useState<string>("all");
+
+  const categories = [...new Set(indicators.map((i) => i.category))].sort();
+  const filtered =
+    filterCat === "all"
+      ? indicators
+      : indicators.filter((i) => i.category === filterCat);
+
+  function startEdit(ind: Indicator) {
+    setEditingId(ind.id);
+    setForm({
+      value: ind.current_value?.toString() ?? "",
+      measured_date: new Date().toISOString().slice(0, 10),
+      source_url: "",
+      source_text: "",
+    });
+    setError(null);
+  }
+
+  async function handleSave(indicatorId: string) {
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/indicators", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          indicator_id: indicatorId,
+          ...form,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to save");
+        return;
+      }
+      setEditingId(null);
+      router.refresh();
+    } catch {
+      setError("Network error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (indicators.length === 0) {
+    return (
+      <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-12 text-center text-neutral-400">
+        No indicators seeded yet. Run the seed_bp_indicators script first.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Category filter */}
+      <div className="flex flex-wrap gap-1">
+        <button
+          onClick={() => setFilterCat("all")}
+          className={`rounded-md px-3 py-1.5 text-xs font-medium ${filterCat === "all" ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
+        >
+          All ({indicators.length})
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setFilterCat(cat)}
+            className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterCat === cat ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
+          >
+            {cat.replace(/_/g, " ")} (
+            {indicators.filter((i) => i.category === cat).length})
+          </button>
+        ))}
+      </div>
+
+      {/* Indicators table */}
+      <div className="overflow-x-auto rounded-xl border border-neutral-200">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-neutral-50 text-xs font-medium text-neutral-500">
+            <tr>
+              <th className="px-4 py-3">Indicator</th>
+              <th className="px-4 py-3">Category</th>
+              <th className="px-4 py-3 text-right">Baseline</th>
+              <th className="px-4 py-3 text-right">Target</th>
+              <th className="px-4 py-3 text-right">Current</th>
+              <th className="px-4 py-3">Last Updated</th>
+              <th className="px-4 py-3" />
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-neutral-100">
+            {filtered.map((ind) => (
+              <tr key={ind.id} className="hover:bg-neutral-50">
+                <td className="px-4 py-3">
+                  <div className="font-medium text-neutral-800">
+                    {ind.indicator_label}
+                  </div>
+                  <div className="text-xs text-neutral-400">
+                    {ind.indicator_name}
+                    {ind.unit ? ` (${ind.unit})` : ""}
+                  </div>
+                </td>
+                <td className="px-4 py-3">
+                  <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium capitalize text-neutral-600">
+                    {ind.category.replace(/_/g, " ")}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-right font-mono text-xs">
+                  {ind.baseline_value ?? "–"}
+                </td>
+                <td className="px-4 py-3 text-right font-mono text-xs">
+                  {ind.target_value ?? "–"}
+                </td>
+                <td className="px-4 py-3 text-right font-mono text-xs font-semibold">
+                  {ind.current_value ?? "–"}
+                </td>
+                <td className="px-4 py-3 text-xs text-neutral-400">
+                  {ind.measured_date
+                    ? new Date(ind.measured_date).toLocaleDateString()
+                    : "Never"}
+                </td>
+                <td className="px-4 py-3">
+                  {editingId === ind.id ? (
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="text-xs text-neutral-400 hover:text-neutral-600"
+                    >
+                      Cancel
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => startEdit(ind)}
+                      className="text-xs font-medium text-blue-600 hover:text-blue-800"
+                    >
+                      Update
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Edit form (appears below table when editing) */}
+      {editingId && (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <h3 className="mb-3 text-sm font-semibold text-blue-800">
+            Update:{" "}
+            {indicators.find((i) => i.id === editingId)?.indicator_label}
+          </h3>
+          {error && (
+            <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-600">
+              {error}
+            </p>
+          )}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <label className="block">
+              <span className="text-xs font-medium text-blue-700">
+                New Value *
+              </span>
+              <input
+                type="number"
+                step="any"
+                value={form.value}
+                onChange={(e) => setForm({ ...form, value: e.target.value })}
+                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-medium text-blue-700">
+                Measurement Date *
+              </span>
+              <input
+                type="date"
+                value={form.measured_date}
+                onChange={(e) =>
+                  setForm({ ...form, measured_date: e.target.value })
+                }
+                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-medium text-blue-700">
+                Source URL *
+              </span>
+              <input
+                type="url"
+                value={form.source_url}
+                onChange={(e) =>
+                  setForm({ ...form, source_url: e.target.value })
+                }
+                placeholder="https://..."
+                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-medium text-blue-700">
+                Source Description *
+              </span>
+              <input
+                type="text"
+                value={form.source_text}
+                onChange={(e) =>
+                  setForm({ ...form, source_text: e.target.value })
+                }
+                placeholder="e.g. NRB Monthly Report"
+                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+              />
+            </label>
+          </div>
+          <div className="mt-3 flex gap-2">
+            <button
+              disabled={saving}
+              onClick={() => handleSave(editingId)}
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            >
+              {saving ? "Saving…" : "Save Measurement"}
+            </button>
+            <button
+              onClick={() => setEditingId(null)}
+              className="rounded-md bg-white px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Shared Components ────────────────────────────────────────────────────────
 
 function StatCard({
@@ -685,12 +1203,13 @@ function StatCard({
 }: {
   label: string;
   value: number;
-  color: "amber" | "blue" | "emerald";
+  color: "amber" | "blue" | "emerald" | "violet";
 }) {
   const bgMap = {
     amber: "bg-amber-50 text-amber-700 border-amber-200",
     blue: "bg-blue-50 text-blue-700 border-blue-200",
     emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    violet: "bg-violet-50 text-violet-700 border-violet-200",
   };
   return (
     <div className={`rounded-xl border p-4 ${bgMap[color]}`}>
