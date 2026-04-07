@@ -46,7 +46,7 @@ export function MinisterCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-neutral-800 group-hover:text-blue-800">
+          <h3 className="truncate font-semibold text-neutral-800 group-hover:text-blue-700">
             {name}
           </h3>
           {locale === "en" && (
@@ -72,7 +72,7 @@ export function MinisterCard({
         <span className="rounded-full bg-neutral-50 px-2.5 py-0.5 text-xs font-medium text-neutral-500">
           {m.party}
         </span>
-        <span className="text-xs font-medium text-blue-800 opacity-0 transition group-hover:opacity-100">
+        <span className="text-xs font-medium text-blue-700 opacity-0 transition group-hover:opacity-100">
           {locale === "en" ? "View Profile →" : "प्रोफाइल हेर्नुहोस् →"}
         </span>
       </div>

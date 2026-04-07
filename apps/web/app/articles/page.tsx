@@ -85,7 +85,7 @@ export default async function ArticlesPage() {
             >
               <div className="flex-1 p-6">
                 <div className="mb-3 flex items-center gap-2">
-                  <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-800">
+                  <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700">
                     {p.category}
                   </span>
                   {p.ai_generated ? (
@@ -98,7 +98,7 @@ export default async function ArticlesPage() {
                     </span>
                   )}
                 </div>
-                <h2 className="text-lg font-semibold text-neutral-800 group-hover:text-blue-800">
+                <h2 className="text-lg font-semibold text-neutral-800 group-hover:text-blue-700">
                   {p.title}
                 </h2>
                 {p.title_np && (

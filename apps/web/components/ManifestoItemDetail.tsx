@@ -278,7 +278,7 @@ function IndicatorChart({ ind, color }: { ind: Indicator; color: string }) {
                 href={ind.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] font-semibold text-blue-600 underline underline-offset-2 transition hover:text-blue-800"
+                className="text-[10px] font-semibold text-blue-600 underline underline-offset-2 transition hover:text-blue-700"
               >
                 {ind.source} ↗
               </a>
@@ -453,7 +453,7 @@ function MandateBar({
               style={{ width: `${pct}%` }}
             />
             <div
-              className="absolute top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-blue-800"
+              className="absolute top-1/2 h-4 w-1 -translate-y-1/2 rounded-full bg-blue-700"
               style={{ left: `${pct}%` }}
             />
           </>
@@ -468,7 +468,7 @@ function MandateBar({
           {!startDate && " (govt. formation)"}
         </span>
         {pct != null && (
-          <span className="font-medium text-blue-800">
+          <span className="font-medium text-blue-700">
             {now.toLocaleDateString("en-US", {
               month: "short",
               year: "numeric",
@@ -505,7 +505,7 @@ export function ManifestoItemDetail({
   const lang = locale;
 
   const s = STATUS_MAP[item.status] ?? STATUS_MAP.not_started;
-  const color = kararArea?.color ?? "#1e40af";
+  const color = kararArea?.color ?? "#1d4ed8";
   const keyCommitments: string[] = Array.isArray(item.key_commitments)
     ? item.key_commitments
     : [];
@@ -576,7 +576,7 @@ export function ManifestoItemDetail({
                 <Link
                   key={a.minister_id}
                   href={`/ministers/${a.ministers?.id ?? a.minister_id}`}
-                  className="rounded-full bg-[#0EA5E9]/8 px-2.5 py-0.5 text-xs font-medium text-blue-800 transition hover:bg-[#0EA5E9]/15"
+                  className="rounded-full bg-[#0EA5E9]/8 px-2.5 py-0.5 text-xs font-medium text-blue-700 transition hover:bg-[#0EA5E9]/15"
                 >
                   {lang === "en"
                     ? a.ministers?.name_en
@@ -835,7 +835,7 @@ export function ManifestoItemDetail({
                             {fmtDate(p.published_at)}
                           </span>
                         </div>
-                        <p className="font-medium text-neutral-800 hover:text-blue-800 line-clamp-2">
+                        <p className="font-medium text-neutral-800 hover:text-blue-700 line-clamp-2">
                           {p.title_en}
                         </p>
                       </div>
@@ -999,9 +999,9 @@ export function ManifestoItemDetail({
                   <Link
                     key={a.minister_id}
                     href={`/ministers/${a.ministers?.id ?? a.minister_id}`}
-                    className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm font-medium text-blue-800 transition hover:bg-[#0EA5E9]/5"
+                    className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm font-medium text-blue-700 transition hover:bg-[#0EA5E9]/5"
                   >
-                    <span className="h-6 w-6 rounded-full bg-[#0EA5E9]/10 text-center text-[10px] font-bold leading-6 text-blue-800">
+                    <span className="h-6 w-6 rounded-full bg-[#0EA5E9]/10 text-center text-[10px] font-bold leading-6 text-blue-700">
                       {(a.ministers?.name_en?.[0] ?? "?").toUpperCase()}
                     </span>
                     <span>

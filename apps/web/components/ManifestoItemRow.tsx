@@ -76,7 +76,7 @@ export function ManifestoItemRow({
             <Link
               href={`/manifesto/${slug}`}
               onClick={(e) => e.stopPropagation()}
-              className="mt-1.5 block font-semibold text-neutral-800 transition hover:text-blue-800 hover:underline"
+              className="mt-1.5 block font-semibold text-neutral-800 transition hover:text-blue-700 hover:underline"
             >
               {item.title_en ?? item.item_text_en.slice(0, 100)}
             </Link>
@@ -88,7 +88,7 @@ export function ManifestoItemRow({
                     key={a.minister_id}
                     href={`/ministers/${a.ministers?.id ?? a.minister_id}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="rounded-full bg-[#0EA5E9]/8 px-2.5 py-0.5 text-xs font-medium text-blue-800 transition hover:bg-[#0EA5E9]/15"
+                    className="rounded-full bg-[#0EA5E9]/8 px-2.5 py-0.5 text-xs font-medium text-blue-700 transition hover:bg-[#0EA5E9]/15"
                   >
                     {a.ministers?.name_en}
                   </Link>
@@ -184,13 +184,13 @@ export function ManifestoItemRow({
                           </p>
                         </div>
                         <div className="relative rounded-lg border-2 border-[#0EA5E9]/30 bg-[#0EA5E9]/5 p-3 text-center">
-                          <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-blue-800 px-2 py-0.5 text-[8px] font-bold text-white shadow">
+                          <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-blue-700 px-2 py-0.5 text-[8px] font-bold text-white shadow">
                             NOW
                           </span>
-                          <p className="text-[9px] font-semibold uppercase tracking-wide text-blue-800">
+                          <p className="text-[9px] font-semibold uppercase tracking-wide text-blue-700">
                             Achievement
                           </p>
-                          <p className="mt-1.5 text-base font-extrabold text-blue-800">
+                          <p className="mt-1.5 text-base font-extrabold text-blue-700">
                             {formatValue(
                               ind.current_value ?? ind.baseline_value,
                               ind.unit,
@@ -261,7 +261,7 @@ export function ManifestoItemRow({
             </Link>
             <Link
               href={`/manifesto/${slug}`}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-800 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-opacity-90"
             >
               Full details
               <svg

@@ -10,7 +10,7 @@ const KARAR_AREAS = [
     id: "pp-001",
     label: "Integrity & Governance",
     bpRange: [1, 18],
-    color: "#1e40af",
+    color: "#1d4ed8",
   },
   {
     id: "pp-002",
@@ -125,7 +125,7 @@ export default async function HomePage() {
             </div>
             <a
               href="/manifesto"
-              className="shrink-0 rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 transition hover:border-blue-800 hover:text-blue-800"
+              className="shrink-0 rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-600 transition hover:border-blue-700 hover:text-blue-700"
             >
               {locale === "en" ? "View all →" : "सबै हेर्नुहोस् →"}
             </a>
@@ -154,7 +154,7 @@ export default async function HomePage() {
                     cy="50"
                     r="42"
                     fill="none"
-                    stroke="#1e40af"
+                    stroke="#1d4ed8"
                     strokeWidth="10"
                     strokeLinecap="round"
                     strokeDasharray={`${(circumference * overallPct) / 100} ${circumference}`}
@@ -265,10 +265,10 @@ export default async function HomePage() {
                 <a
                   key={d.id}
                   href="/decisions"
-                  className="group flex shrink-0 items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 transition hover:border-[#0EA5E9]/40 hover:text-blue-800"
+                  className="group flex shrink-0 items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-sm text-neutral-700 transition hover:border-[#0EA5E9]/40 hover:text-blue-700"
                 >
                   <SignificanceBadge level={d.significance} locale={locale} />
-                  <span className="max-w-[20rem] truncate group-hover:text-blue-800">
+                  <span className="max-w-[20rem] truncate group-hover:text-blue-700">
                     {locale === "en" ? d.title_en : d.title_np || d.title_en}
                   </span>
                   <span className="shrink-0 text-[11px] text-neutral-400">
@@ -286,7 +286,7 @@ export default async function HomePage() {
             )}
             <a
               href="/decisions"
-              className="ml-auto shrink-0 text-xs font-medium text-blue-800 transition hover:underline"
+              className="ml-auto shrink-0 text-xs font-medium text-blue-700 transition hover:underline"
             >
               {locale === "en" ? "View all →" : "सबै →"}
             </a>
@@ -304,7 +304,7 @@ export default async function HomePage() {
               </span>
               <a
                 href="/articles"
-                className="text-xs font-medium text-blue-800 transition hover:underline"
+                className="text-xs font-medium text-blue-700 transition hover:underline"
               >
                 {locale === "en" ? "View all →" : "सबै →"}
               </a>
@@ -316,11 +316,11 @@ export default async function HomePage() {
                   href={`/articles/${p.slug}`}
                   className="group flex items-start gap-2.5"
                 >
-                  <span className="mt-0.5 shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-800">
+                  <span className="mt-0.5 shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700">
                     {p.category}
                   </span>
                   <div className="min-w-0">
-                    <p className="line-clamp-2 text-sm font-medium text-neutral-700 group-hover:text-blue-800">
+                    <p className="line-clamp-2 text-sm font-medium text-neutral-700 group-hover:text-blue-700">
                       {locale === "en" ? p.title_en : p.title_np || p.title_en}
                     </p>
                     <p className="mt-0.5 text-[11px] text-neutral-400">
@@ -400,7 +400,7 @@ export default async function HomePage() {
       {/* ─── CTA ─── */}
       <section className="bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-blue-800 p-8 text-center sm:p-12">
+          <div className="rounded-2xl bg-blue-700 p-8 text-center sm:p-12">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">
               {locale === "en"
                 ? "Democracy Needs Your Eyes"
@@ -414,7 +414,7 @@ export default async function HomePage() {
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <a
                 href="/submit"
-                className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-blue-800 transition hover:bg-neutral-100"
+                className="rounded-lg bg-white px-6 py-3 text-sm font-semibold text-blue-700 transition hover:bg-neutral-100"
               >
                 {locale === "en" ? "Submit Evidence" : "प्रमाण पेश गर्नुहोस्"}
               </a>
@@ -455,7 +455,7 @@ function SectionHeading({
       </div>
       <a
         href={href}
-        className="hidden text-sm font-medium text-blue-800 transition hover:underline sm:block"
+        className="hidden text-sm font-medium text-blue-700 transition hover:underline sm:block"
       >
         View all →
       </a>
@@ -474,7 +474,7 @@ function HowStep({
 }) {
   return (
     <div className="text-center">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0EA5E9]/10 text-lg font-bold text-blue-800">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#0EA5E9]/10 text-lg font-bold text-blue-700">
         {step}
       </div>
       <h3 className="mt-4 font-semibold text-neutral-800">{title}</h3>

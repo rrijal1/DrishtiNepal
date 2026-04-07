@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 
 // ─── Brand palette ───────────────────────────────────────────────────────────
-// Primary:  #1e40af (deep sky)   Light: #0EA5E9   Dark: #1e3a8a
+// Primary:  #1d4ed8 (deep sky)   Light: #0EA5E9   Dark: #1e40af
 // Red:      #E63946 (warm crimson)
 
-const BRAND = "#1e40af";
+const BRAND = "#1d4ed8";
 const BRAND_LIGHT = "#0EA5E9";
-const BRAND_DARK = "#1e3a8a";
+const BRAND_DARK = "#1e40af";
 const BRAND_RED = "#e63946";
 
 // ─── Globe constants ─────────────────────────────────────────────────────────

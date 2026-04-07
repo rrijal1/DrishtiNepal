@@ -110,7 +110,7 @@ function AiArticle({ post }: { post: any }) {
             </Link>
 
             <div className="mb-6 flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-800">
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
                     {post.category}
                 </span>
                 <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-600">
@@ -131,7 +131,7 @@ function AiArticle({ post }: { post: any }) {
             {post.post_ministers?.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                     {post.post_ministers.map((pm: any) => (
-                        <Link key={pm.minister_id} href={`/ministers/${pm.minister_id}`} className="rounded-full bg-[#0EA5E9]/5 px-3 py-1 text-xs font-medium text-blue-800 transition hover:bg-[#0EA5E9]/10">
+                        <Link key={pm.minister_id} href={`/ministers/${pm.minister_id}`} className="rounded-full bg-[#0EA5E9]/5 px-3 py-1 text-xs font-medium text-blue-700 transition hover:bg-[#0EA5E9]/10">
                             {pm.ministers?.name_en}
                         </Link>
                     ))}
@@ -155,7 +155,7 @@ function AiArticle({ post }: { post: any }) {
             {post.source_url && (
                 <div className="mt-10 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
                     <p className="text-xs text-neutral-500">
-                        Source: <a href={post.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-800 underline">{post.source_url}</a>
+                        Source: <a href={post.source_url} target="_blank" rel="noopener noreferrer" className="text-blue-700 underline">{post.source_url}</a>
                     </p>
                 </div>
             )}

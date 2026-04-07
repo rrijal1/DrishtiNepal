@@ -11,7 +11,7 @@ export default function OGImage() {
       style={{
         width: "100%",
         height: "100%",
-        background: "linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)",
+        background: "linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

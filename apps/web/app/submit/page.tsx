@@ -88,7 +88,7 @@ export default function SubmitPage() {
               id="submit-type"
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
             >
               <option value="evidence">Evidence of Action</option>
               <option value="correction">Correction / Error Report</option>
@@ -113,7 +113,7 @@ export default function SubmitPage() {
                 setForm({ ...form, minister_name: e.target.value })
               }
               placeholder="e.g. Name of the minister"
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
             />
           </div>
 
@@ -132,7 +132,7 @@ export default function SubmitPage() {
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               placeholder="Brief summary of the evidence or correction"
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
             />
           </div>
 
@@ -153,7 +153,7 @@ export default function SubmitPage() {
                 setForm({ ...form, description: e.target.value })
               }
               placeholder="Provide details about the evidence, including dates, context, and impact. The more specific, the better."
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
             />
           </div>
 
@@ -171,7 +171,7 @@ export default function SubmitPage() {
               value={form.source_url}
               onChange={(e) => setForm({ ...form, source_url: e.target.value })}
               placeholder="https://..."
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
             />
             <p className="mt-1 text-xs text-neutral-400">
               Link to a news article, government gazette, or other verifiable
@@ -196,7 +196,7 @@ export default function SubmitPage() {
                   setForm({ ...form, submitter_name: e.target.value })
                 }
                 placeholder="For attribution"
-                className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+                className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
               />
             </div>
             <div>
@@ -214,7 +214,7 @@ export default function SubmitPage() {
                   setForm({ ...form, submitter_email: e.target.value })
                 }
                 placeholder="For follow-up questions"
-                className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-800 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
+                className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-sm focus:border-blue-700 focus:ring-1 focus:ring-[#0EA5E9] focus:outline-none"
               />
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function SubmitPage() {
             <button
               type="submit"
               disabled={status === "submitting"}
-              className="rounded-lg bg-blue-800 px-8 py-3 text-sm font-semibold text-white transition hover:bg-[#2a4a73] disabled:opacity-50"
+              className="rounded-lg bg-blue-700 px-8 py-3 text-sm font-semibold text-white transition hover:bg-[#2a4a73] disabled:opacity-50"
             >
               {status === "submitting" ? "Submitting…" : "Submit Evidence"}
             </button>
@@ -241,7 +241,7 @@ export default function SubmitPage() {
             can also{" "}
             <a
               href="https://github.com/rrijal1/DrishtiNepal"
-              className="text-blue-800 underline"
+              className="text-blue-700 underline"
             >
               submit a Pull Request on GitHub
             </a>{" "}

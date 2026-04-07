@@ -180,7 +180,7 @@ export function ProposeEditForm({
       <button
         type="submit"
         disabled={state === "submitting" || !proposedText.trim()}
-        className="rounded-lg bg-blue-800 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-50"
+        className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {state === "submitting" ? "Submitting…" : "Submit Edit Proposal"}
       </button>

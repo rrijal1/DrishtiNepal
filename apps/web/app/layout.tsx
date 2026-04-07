@@ -103,11 +103,11 @@ function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-800 text-white font-bold">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700 text-white font-bold">
                 द
               </div>
               <div>
-                <p className="font-bold text-blue-800">Drishti Nepal</p>
+                <p className="font-bold text-blue-700">Drishti Nepal</p>
                 <p className="text-xs text-neutral-400 font-nepali">
                   दृष्टि नेपाल
                 </p>

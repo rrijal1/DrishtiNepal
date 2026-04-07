@@ -104,7 +104,7 @@ function EvidenceContent({ data }: { data: D }) {
                   href={str(c)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-blue-600 underline break-all hover:text-blue-800"
+                  className="text-xs text-blue-600 underline break-all hover:text-blue-700"
                 >
                   {str(c)}
                 </a>
@@ -167,7 +167,7 @@ function GazetteContent({ data }: { data: D }) {
               href={str(data.source_url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-blue-600 underline hover:text-blue-800"
+              className="text-xs text-blue-600 underline hover:text-blue-700"
             >
               Source ↗
             </a>
@@ -177,7 +177,7 @@ function GazetteContent({ data }: { data: D }) {
               href={str(data.pdf_url)}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-blue-600 underline hover:text-blue-800"
+              className="text-xs text-blue-600 underline hover:text-blue-700"
             >
               PDF ↗
             </a>
@@ -206,7 +206,7 @@ function PostContent({ data }: { data: D }) {
         {content.length > 600 ? (
           <button
             onClick={() => setShowFull((v) => !v)}
-            className="mt-1 text-xs text-blue-600 underline hover:text-blue-800"
+            className="mt-1 text-xs text-blue-600 underline hover:text-blue-700"
           >
             {showFull ? "Show less" : "Read full article"}
           </button>
@@ -226,7 +226,7 @@ function PostContent({ data }: { data: D }) {
             href={str(data.source_url)}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 underline hover:text-blue-800"
+            className="text-blue-600 underline hover:text-blue-700"
           >
             Source ↗
           </a>
@@ -388,7 +388,7 @@ export function ModerationActions({
       {/* Expand / collapse full content */}
       <button
         onClick={toggleExpand}
-        className="mb-3 flex w-full items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-800"
+        className="mb-3 flex w-full items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700"
       >
         <svg
           className={`h-3.5 w-3.5 transition-transform ${expanded ? "rotate-90" : ""}`}
