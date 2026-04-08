@@ -28,7 +28,23 @@ async function safe<T = any>(
 export default async function AdminPage() {
   const hdrs = await headers();
   const username = hdrs.get("x-admin-user") ?? "admin";
-  const db = supabaseAdmin();
+
+  let db: ReturnType<typeof supabaseAdmin>;
+  try {
+    db = supabaseAdmin();
+  } catch {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
+        <div className="max-w-md rounded-2xl border border-red-200 bg-white p-8 text-center shadow-sm">
+          <h1 className="text-xl font-bold text-red-700">Configuration Error</h1>
+          <p className="mt-2 text-sm text-neutral-600">
+            <code className="rounded bg-neutral-100 px-1 py-0.5 text-xs">SUPABASE_SERVICE_KEY</code>{" "}
+            is not set. Add it to your Vercel environment variables and redeploy.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const POST_FIELDS =
     "id, slug, title_en, title_np, content_en, content_np, excerpt_en, category, ai_generated, status, source_url, tags, created_at, published_at";
