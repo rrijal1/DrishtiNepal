@@ -48,7 +48,7 @@ def seed_ministers():
                 "bio_summary_en": m.get("bio_summary_en") or None,
                 "bio_summary_np": m.get("bio_summary_np") or None,
                 "previous_roles": m.get("previous_roles", []),
-                "status": "active",
+                "status": m.get("status", "active"),
             }
         )
 
