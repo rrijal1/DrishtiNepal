@@ -1,81 +1,17 @@
-import { ManifestoItemDetail } from "@/components/ManifestoItemDetail";
+import { IndicatorList } from "@/components/IndicatorList";
 import { getLocale } from "@/lib/i18n";
+import { calcProgress, KARAR_AREAS } from "@/lib/manifesto-utils";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 
 export const revalidate = 300;
-
-const KARAR_PATRA_AREAS = [
-  {
-    id: "pp-001",
-    title_en: "Integrity & Good Governance",
-    color: "#1d4ed8",
-    bpRange: [1, 18],
-  },
-  {
-    id: "pp-002",
-    title_en: "Prosperous Middle-Class Nepal",
-    color: "#0f6b3b",
-    bpRange: [19, 60],
-  },
-  {
-    id: "pp-003",
-    title_en: "Jobs & Opportunity",
-    color: "#92400e",
-    bpRange: [61, 80],
-  },
-  {
-    id: "pp-004",
-    title_en: "Connected Nepal",
-    color: "#5b21b6",
-    bpRange: [81, 95],
-  },
-  {
-    id: "pp-005",
-    title_en: "Diaspora & Global Nepal",
-    color: "#b91c1c",
-    bpRange: [96, 100],
-  },
-];
 
 function getKararArea(sourceId: string) {
   const m = sourceId?.match(/^bp-(\d+)$/);
   if (!m) return null;
   const n = parseInt(m[1]);
   return (
-    KARAR_PATRA_AREAS.find((a) => n >= a.bpRange[0] && n <= a.bpRange[1]) ??
-    null
-  );
-}
-
-function calcProgress(ind: {
-  baseline_value: number | null;
-  current_value: number | null;
-  target_value: number | null;
-  direction: string | null;
-}): number | null {
-  if (
-    ind.baseline_value == null ||
-    ind.target_value == null ||
-    ind.current_value == null
-  )
-    return null;
-  const range = ind.target_value - ind.baseline_value;
-  if (range === 0) return ind.current_value >= ind.target_value ? 100 : 0;
-  if (ind.direction === "lower_is_better") {
-    return Math.min(
-      100,
-      Math.max(
-        0,
-        ((ind.baseline_value - ind.current_value) /
-          (ind.baseline_value - ind.target_value)) *
-          100,
-      ),
-    );
-  }
-  return Math.min(
-    100,
-    Math.max(0, ((ind.current_value - ind.baseline_value) / range) * 100),
+    KARAR_AREAS.find((a) => n >= a.bpRange[0] && n <= a.bpRange[1]) ?? null
   );
 }
 
@@ -93,7 +29,7 @@ export async function generateMetadata({
   if (!item) return { title: "Commitment Not Found — Drishti Nepal" };
   return {
     title: `${item.title_en ?? slug} | Vacha Patra — Drishti Nepal`,
-    description: `Tracking commitment ${slug} from RSP's bachha patra.`,
+    description: `Tracking commitment ${slug}.`,
   };
 }
 
@@ -119,82 +55,48 @@ export default async function ManifestoItemPage({
     { data: indicators },
     { data: actionLinks },
     { data: decisionLinks },
-    { data: evidenceItems },
     { data: relatedPosts },
-    taggedPostsResult,
   ] = await Promise.all([
     supabase
       .from("outcome_indicators")
-      .select("*")
+      .select("*, sources(name_en, slug)")
       .eq("manifesto_item_id", item.id)
+      .order("indicator_type")
       .order("indicator_name"),
     supabase
       .from("action_manifesto_links")
       .select(
-        "link_type, actions(id, title_en, action_date, category, sentiment, description_en, sources)",
+        "link_type, actions(id, title_en, action_date, category, sentiment)",
       )
       .eq("manifesto_item_id", item.id)
       .order("created_at", { ascending: false })
-      .limit(20),
+      .limit(10),
     supabase
       .from("cabinet_decision_manifesto_links")
-      .select(
-        "cabinet_decisions(id, title_en, decision_date, summary_en, significance)",
-      )
+      .select("cabinet_decisions(id, title_en, decision_date, significance)")
       .eq("manifesto_item_id", item.id)
       .order("created_at", { ascending: false })
-      .limit(20),
-    supabase
-      .from("initiative_evidence")
-      .select("id, assessment_en, citations, status, assessed_at, probability")
-      .eq("manifesto_item_id", item.id)
-      .eq("status", "approved")
-      .order("assessed_at", { ascending: false })
-      .limit(5),
-    supabase
-      .from("post_ministers")
-      .select("posts(id, title_en, slug, published_at, category, image_url)")
-      .in(
-        "minister_id",
-        (item.minister_manifesto_assignments ?? []).map(
-          (a: any) => a.minister_id,
-        ),
-      )
-      .order("created_at", { ascending: false })
-      .limit(6),
+      .limit(10),
     supabase
       .from("posts")
-      .select("id, title_en, slug, published_at, category, image_url")
+      .select("id, title_en, slug, published_at, category")
       .eq("status", "published")
       .contains("tags", [slug])
       .order("published_at", { ascending: false })
-      .limit(6),
+      .limit(5),
   ]);
 
-  // Merge minister-linked posts and tag-linked posts, deduplicate by slug
-  const ministerPosts = (relatedPosts ?? [])
-    .map((pm: any) => pm.posts)
-    .filter(Boolean);
-  const taggedPosts = (taggedPostsResult.data ?? []) as any[];
-  const seenSlugs = new Set<string>();
-  const mergedPosts: any[] = [];
-  for (const p of [...taggedPosts, ...ministerPosts]) {
-    if (p && p.slug && !seenSlugs.has(p.slug)) {
-      seenSlugs.add(p.slug);
-      mergedPosts.push(p);
-    }
-  }
-  mergedPosts.sort(
-    (a, b) =>
-      new Date(b.published_at).getTime() - new Date(a.published_at).getTime(),
+  const allIndicators = indicators ?? [];
+  const resultIndicators = allIndicators.filter(
+    (i: any) => i.indicator_type === "result",
   );
 
-  const allIndicators = indicators ?? [];
+  // Aggregate score from result indicators only
   let aggregateScore: number | null = null;
-  if (allIndicators.length > 0) {
+  if (resultIndicators.length > 0) {
     let ws = 0,
       wt = 0;
-    for (const ind of allIndicators) {
+    for (const ind of resultIndicators) {
       const pct = calcProgress(ind as any);
       if (pct != null) {
         const w = (ind as any).weight ?? 1;
@@ -205,17 +107,193 @@ export default async function ManifestoItemPage({
     if (wt > 0) aggregateScore = Math.round(ws / wt);
   }
 
+  const area = getKararArea(item.source_id);
+  const ministers = (item.minister_manifesto_assignments ?? [])
+    .map((a: any) => a.ministers)
+    .filter(Boolean);
+
+  const title =
+    locale === "en" ? item.title_en : item.title_np || item.title_en;
+  const description =
+    locale === "en"
+      ? item.item_text_en
+      : item.item_text_np || item.item_text_en;
+
   return (
-    <ManifestoItemDetail
-      item={item as any}
-      indicators={allIndicators as any[]}
-      actionLinks={(actionLinks ?? []) as any[]}
-      decisionLinks={(decisionLinks ?? []) as any[]}
-      evidenceItems={(evidenceItems ?? []) as any[]}
-      relatedPosts={mergedPosts as any[]}
-      aggregateScore={aggregateScore}
-      kararArea={getKararArea(item.source_id)}
-      locale={locale}
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
+      <a
+        href="/manifesto"
+        className="mb-6 inline-flex items-center text-sm text-neutral-500 hover:text-neutral-800"
+      >
+        {locale === "en" ? "← Manifesto" : "← वाचा पत्र"}
+      </a>
+
+      {/* ── Header ── */}
+      <div className="mb-8">
+        {area && (
+          <span
+            className="mb-2 inline-block rounded-full px-3 py-1 text-xs font-semibold text-white"
+            style={{ backgroundColor: area.color }}
+          >
+            {locale === "en" ? area.label_en : area.label_np}
+          </span>
+        )}
+        <h1 className="text-2xl font-bold text-neutral-800 sm:text-3xl">
+          {title}
+        </h1>
+        <p className="mt-1 text-xs text-neutral-400">
+          {item.source_id.toUpperCase()}
+        </p>
+        {description && <p className="mt-3 text-neutral-600">{description}</p>}
+
+        {/* Score + Ministers */}
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          {aggregateScore !== null && (
+            <div className="rounded-lg border border-neutral-200 bg-white px-4 py-2">
+              <span className="text-xs text-neutral-400">
+                {locale === "en" ? "Score" : "स्कोर"}
+              </span>
+              <p className="text-2xl font-bold text-blue-700">
+                {aggregateScore}/100
+              </p>
+            </div>
+          )}
+          {ministers.length > 0 && (
+            <div className="text-sm text-neutral-600">
+              <span className="text-xs text-neutral-400">
+                {locale === "en" ? "Responsible:" : "जिम्मेवार:"}
+              </span>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {ministers.map((m: any) => (
+                  <a
+                    key={m.id}
+                    href={`/ministers/${m.id}`}
+                    className="rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-700 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    {locale === "en" ? m.name_en : m.name_np || m.name_en}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── Indicators ── */}
+      {allIndicators.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-4 text-lg font-bold text-neutral-800">
+            {locale === "en" ? "Indicators" : "सूचकहरू"}
+          </h2>
+          <IndicatorList indicators={allIndicators as any[]} locale={locale} />
+        </div>
+      )}
+
+      {/* ── Actions ── */}
+      {actionLinks && actionLinks.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-3 text-lg font-bold text-neutral-800">
+            {locale === "en" ? "Related Actions" : "सम्बन्धित कार्यहरू"}
+          </h2>
+          <div className="space-y-2">
+            {actionLinks.map((al: any, i: number) => {
+              const a = al.actions;
+              if (!a) return null;
+              return (
+                <div
+                  key={a.id ?? i}
+                  className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-white p-3 text-sm"
+                >
+                  <SentimentDot sentiment={a.sentiment} />
+                  <div>
+                    <p className="font-medium text-neutral-800">{a.title_en}</p>
+                    <p className="text-xs text-neutral-400">
+                      {a.category} ·{" "}
+                      {new Date(a.action_date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Cabinet Decisions ── */}
+      {decisionLinks && decisionLinks.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-3 text-lg font-bold text-neutral-800">
+            {locale === "en" ? "Cabinet Decisions" : "क्याबिनेट निर्णयहरू"}
+          </h2>
+          <div className="space-y-2">
+            {decisionLinks.map((dl: any, i: number) => {
+              const d = dl.cabinet_decisions;
+              if (!d) return null;
+              return (
+                <div
+                  key={d.id ?? i}
+                  className="rounded-lg border border-neutral-200 bg-white p-3 text-sm"
+                >
+                  <p className="font-medium text-neutral-800">{d.title_en}</p>
+                  <p className="text-xs text-neutral-400">
+                    {new Date(d.decision_date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Related Posts ── */}
+      {relatedPosts && relatedPosts.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-3 text-lg font-bold text-neutral-800">
+            {locale === "en" ? "Related Articles" : "सम्बन्धित लेखहरू"}
+          </h2>
+          <div className="space-y-2">
+            {relatedPosts.map((p: any) => (
+              <a
+                key={p.id}
+                href={`/articles/${p.slug}`}
+                className="block rounded-lg border border-neutral-200 bg-white p-3 text-sm transition hover:shadow-sm"
+              >
+                <p className="font-medium text-neutral-800 hover:text-blue-700">
+                  {p.title_en}
+                </p>
+                <p className="text-xs text-neutral-400">
+                  {p.category} ·{" "}
+                  {new Date(p.published_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SentimentDot({ sentiment }: { sentiment: string }) {
+  const colors: Record<string, string> = {
+    positive: "bg-emerald-400",
+    neutral: "bg-neutral-300",
+    negative: "bg-red-400",
+    mixed: "bg-amber-400",
+  };
+  return (
+    <div
+      className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${colors[sentiment] ?? "bg-neutral-300"}`}
     />
   );
 }

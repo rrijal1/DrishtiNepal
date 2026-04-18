@@ -60,6 +60,10 @@ interface Indicator {
   measured_date: string | null;
   source: string;
   source_url: string | null;
+  indicator_type: "result" | "process";
+  process_status: string | null;
+  parent_indicator_id: string | null;
+  source_id: string | null;
 }
 
 interface Props {
@@ -961,43 +965,66 @@ function IndicatorsPanel({
     source_url: "",
     source_text: "",
   });
+  const [processForm, setProcessForm] = useState({ status: "not_started" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filterCat, setFilterCat] = useState<string>("all");
+  const [filterType, setFilterType] = useState<"all" | "result" | "process">(
+    "all",
+  );
 
   const categories = [...new Set(indicators.map((i) => i.category))].sort();
-  const filtered =
-    filterCat === "all"
-      ? indicators
-      : indicators.filter((i) => i.category === filterCat);
+  const filtered = indicators.filter((i) => {
+    if (filterCat !== "all" && i.category !== filterCat) return false;
+    if (filterType !== "all" && i.indicator_type !== filterType) return false;
+    return true;
+  });
 
   function startEdit(ind: Indicator) {
     setEditingId(ind.id);
-    setForm({
-      value: ind.current_value?.toString() ?? "",
-      measured_date: new Date().toISOString().slice(0, 10),
-      source_url: "",
-      source_text: "",
-    });
+    if (ind.indicator_type === "process") {
+      setProcessForm({ status: ind.process_status ?? "not_started" });
+    } else {
+      setForm({
+        value: ind.current_value?.toString() ?? "",
+        measured_date: new Date().toISOString().slice(0, 10),
+        source_url: "",
+        source_text: "",
+      });
+    }
     setError(null);
   }
 
-  async function handleSave(indicatorId: string) {
+  async function handleSave(ind: Indicator) {
     setSaving(true);
     setError(null);
     try {
-      const res = await fetch("/api/admin/indicators", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          indicator_id: indicatorId,
-          ...form,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Failed to save");
-        return;
+      if (ind.indicator_type === "process") {
+        const res = await fetch("/api/admin/indicators", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            indicator_id: ind.id,
+            action: "update_process_status",
+            process_status: processForm.status,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || "Failed to save");
+          return;
+        }
+      } else {
+        const res = await fetch("/api/admin/indicators", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ indicator_id: ind.id, ...form }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || "Failed to save");
+          return;
+        }
       }
       setEditingId(null);
       router.refresh();
@@ -1018,13 +1045,30 @@ function IndicatorsPanel({
 
   return (
     <div className="space-y-4">
-      {/* Category filter */}
-      <div className="flex flex-wrap gap-1">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Type filter */}
+        {(["all", "result", "process"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setFilterType(t)}
+            className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterType === t ? "bg-blue-700 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
+          >
+            {t === "all" ? "All Types" : t}
+          </button>
+        ))}
+        <span className="mx-1 text-neutral-300">|</span>
         <button
           onClick={() => setFilterCat("all")}
           className={`rounded-md px-3 py-1.5 text-xs font-medium ${filterCat === "all" ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
         >
-          All ({indicators.length})
+          All (
+          {
+            indicators.filter(
+              (i) => filterType === "all" || i.indicator_type === filterType,
+            ).length
+          }
+          )
         </button>
         {categories.map((cat) => (
           <button
@@ -1032,8 +1076,7 @@ function IndicatorsPanel({
             onClick={() => setFilterCat(cat)}
             className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterCat === cat ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
           >
-            {cat.replace(/_/g, " ")} (
-            {indicators.filter((i) => i.category === cat).length})
+            {cat.replace(/_/g, " ")}
           </button>
         ))}
       </div>
@@ -1044,11 +1087,10 @@ function IndicatorsPanel({
           <thead className="bg-neutral-50 text-xs font-medium text-neutral-500">
             <tr>
               <th className="px-4 py-3">Indicator</th>
-              <th className="px-4 py-3">Category</th>
+              <th className="px-4 py-3">Type</th>
               <th className="px-4 py-3 text-right">Baseline</th>
               <th className="px-4 py-3 text-right">Target</th>
-              <th className="px-4 py-3 text-right">Current</th>
-              <th className="px-4 py-3">Last Updated</th>
+              <th className="px-4 py-3 text-right">Current / Status</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
@@ -1065,23 +1107,44 @@ function IndicatorsPanel({
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[10px] font-medium capitalize text-neutral-600">
-                    {ind.category.replace(/_/g, " ")}
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${ind.indicator_type === "result" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}
+                  >
+                    {ind.indicator_type}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right font-mono text-xs">
-                  {ind.baseline_value ?? "–"}
+                  {ind.indicator_type === "result"
+                    ? (ind.baseline_value ?? "–")
+                    : "–"}
                 </td>
                 <td className="px-4 py-3 text-right font-mono text-xs">
-                  {ind.target_value ?? "–"}
+                  {ind.indicator_type === "result"
+                    ? (ind.target_value ?? "–")
+                    : "–"}
                 </td>
-                <td className="px-4 py-3 text-right font-mono text-xs font-semibold">
-                  {ind.current_value ?? "–"}
-                </td>
-                <td className="px-4 py-3 text-xs text-neutral-400">
-                  {ind.measured_date
-                    ? new Date(ind.measured_date).toLocaleDateString()
-                    : "Never"}
+                <td className="px-4 py-3 text-right text-xs font-semibold">
+                  {ind.indicator_type === "process" ? (
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                        ind.process_status === "resolved"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : ind.process_status === "ongoing"
+                            ? "bg-blue-100 text-blue-700"
+                            : ind.process_status === "blocked"
+                              ? "bg-red-100 text-red-700"
+                              : ind.process_status === "reversed"
+                                ? "bg-orange-100 text-orange-700"
+                                : "bg-neutral-100 text-neutral-500"
+                      }`}
+                    >
+                      {ind.process_status ?? "not_started"}
+                    </span>
+                  ) : (
+                    <span className="font-mono">
+                      {ind.current_value ?? "–"}
+                    </span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {editingId === ind.id ? (
@@ -1106,90 +1169,123 @@ function IndicatorsPanel({
         </table>
       </div>
 
-      {/* Edit form (appears below table when editing) */}
-      {editingId && (
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-3 text-sm font-semibold text-blue-800">
-            Update:{" "}
-            {indicators.find((i) => i.id === editingId)?.indicator_label}
-          </h3>
-          {error && (
-            <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-600">
-              {error}
-            </p>
-          )}
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <label className="block">
-              <span className="text-xs font-medium text-blue-700">
-                New Value *
-              </span>
-              <input
-                type="number"
-                step="any"
-                value={form.value}
-                onChange={(e) => setForm({ ...form, value: e.target.value })}
-                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-medium text-blue-700">
-                Measurement Date *
-              </span>
-              <input
-                type="date"
-                value={form.measured_date}
-                onChange={(e) =>
-                  setForm({ ...form, measured_date: e.target.value })
-                }
-                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-medium text-blue-700">
-                Source URL *
-              </span>
-              <input
-                type="url"
-                value={form.source_url}
-                onChange={(e) =>
-                  setForm({ ...form, source_url: e.target.value })
-                }
-                placeholder="https://..."
-                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-              />
-            </label>
-            <label className="block">
-              <span className="text-xs font-medium text-blue-700">
-                Source Description *
-              </span>
-              <input
-                type="text"
-                value={form.source_text}
-                onChange={(e) =>
-                  setForm({ ...form, source_text: e.target.value })
-                }
-                placeholder="e.g. NRB Monthly Report"
-                className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-              />
-            </label>
-          </div>
-          <div className="mt-3 flex gap-2">
-            <button
-              disabled={saving}
-              onClick={() => handleSave(editingId)}
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-            >
-              {saving ? "Saving…" : "Save Measurement"}
-            </button>
-            <button
-              onClick={() => setEditingId(null)}
-              className="rounded-md bg-white px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Edit form */}
+      {editingId &&
+        (() => {
+          const ind = indicators.find((i) => i.id === editingId);
+          if (!ind) return null;
+
+          return (
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <h3 className="mb-3 text-sm font-semibold text-blue-800">
+                Update: {ind.indicator_label}
+              </h3>
+              {error && (
+                <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-600">
+                  {error}
+                </p>
+              )}
+              {ind.indicator_type === "process" ? (
+                <div className="flex items-end gap-3">
+                  <label className="block">
+                    <span className="text-xs font-medium text-blue-700">
+                      Status
+                    </span>
+                    <select
+                      value={processForm.status}
+                      onChange={(e) =>
+                        setProcessForm({ status: e.target.value })
+                      }
+                      className="mt-1 block rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="not_started">Not Started</option>
+                      <option value="ongoing">Ongoing</option>
+                      <option value="resolved">Resolved</option>
+                      <option value="blocked">Blocked</option>
+                      <option value="reversed">Reversed</option>
+                    </select>
+                  </label>
+                  <button
+                    disabled={saving}
+                    onClick={() => handleSave(ind)}
+                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                  >
+                    {saving ? "Saving…" : "Save"}
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <label className="block">
+                      <span className="text-xs font-medium text-blue-700">
+                        New Value *
+                      </span>
+                      <input
+                        type="number"
+                        step="any"
+                        value={form.value}
+                        onChange={(e) =>
+                          setForm({ ...form, value: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-medium text-blue-700">
+                        Date *
+                      </span>
+                      <input
+                        type="date"
+                        value={form.measured_date}
+                        onChange={(e) =>
+                          setForm({ ...form, measured_date: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-medium text-blue-700">
+                        Source URL *
+                      </span>
+                      <input
+                        type="url"
+                        value={form.source_url}
+                        placeholder="https://..."
+                        onChange={(e) =>
+                          setForm({ ...form, source_url: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs font-medium text-blue-700">
+                        Source Text *
+                      </span>
+                      <input
+                        type="text"
+                        value={form.source_text}
+                        placeholder="e.g. NRB Report"
+                        onChange={(e) =>
+                          setForm({ ...form, source_text: e.target.value })
+                        }
+                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
+                      />
+                    </label>
+                  </div>
+                  <div className="mt-3">
+                    <button
+                      disabled={saving}
+                      onClick={() => handleSave(ind)}
+                      className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {saving ? "Saving…" : "Save Measurement"}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
     </div>
   );
 }

@@ -237,8 +237,6 @@ def store_score(minister_id: str, outcome_score: float, breakdown: dict) -> None
             "period_start": period_start,
             "period_end": period_end,
             "outcome_score": outcome_score,
-            "initiative_score": None,  # tracked but not scored
-            "evidence_score": None,  # editorial context only
             "overall": outcome_score,  # v1: overall = outcome_score
             "breakdown": breakdown,
             "methodology_version": METHODOLOGY_VERSION,
@@ -262,9 +260,17 @@ def run() -> None:
     items_failed = 0
 
     try:
-        # Fetch all indicators once — shared across all ministers
-        all_indicators = db.table("outcome_indicators").select("*").execute().data
-        logger.info(f"Loaded {len(all_indicators)} outcome indicators")
+        # Fetch only result indicators — process indicators don't count toward scores
+        all_indicators = (
+            db.table("outcome_indicators")
+            .select("*")
+            .eq("indicator_type", "result")
+            .execute()
+            .data
+        )
+        logger.info(
+            f"Loaded {len(all_indicators)} result indicators (process indicators excluded)"
+        )
 
         # National score (logged but not stored in scores table — no minister_id)
         national = calculate_national_outcome_score(all_indicators)

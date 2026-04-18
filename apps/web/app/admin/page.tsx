@@ -36,10 +36,15 @@ export default async function AdminPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
         <div className="max-w-md rounded-2xl border border-red-200 bg-white p-8 text-center shadow-sm">
-          <h1 className="text-xl font-bold text-red-700">Configuration Error</h1>
+          <h1 className="text-xl font-bold text-red-700">
+            Configuration Error
+          </h1>
           <p className="mt-2 text-sm text-neutral-600">
-            <code className="rounded bg-neutral-100 px-1 py-0.5 text-xs">SUPABASE_SERVICE_KEY</code>{" "}
-            is not set. Add it to your Vercel environment variables and redeploy.
+            <code className="rounded bg-neutral-100 px-1 py-0.5 text-xs">
+              SUPABASE_SERVICE_KEY
+            </code>{" "}
+            is not set. Add it to your Vercel environment variables and
+            redeploy.
           </p>
         </div>
       </div>
@@ -112,7 +117,7 @@ export default async function AdminPage() {
       db
         .from("outcome_indicators")
         .select(
-          "id, indicator_name, indicator_label, category, unit, direction, baseline_value, target_value, current_value, measured_date, source, source_url",
+          "id, indicator_name, indicator_label, category, unit, direction, baseline_value, target_value, current_value, measured_date, source, source_url, indicator_type, process_status, parent_indicator_id, source_id",
         )
         .order("category")
         .order("indicator_label"),

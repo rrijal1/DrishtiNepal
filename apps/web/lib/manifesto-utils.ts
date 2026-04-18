@@ -6,7 +6,67 @@
 
 export const GOVT_FORMATION = "2026-03-27";
 
+export const KARAR_AREAS = [
+  {
+    id: "pp-001",
+    label_en: "Integrity & Good Governance",
+    label_np: "सुशासन र स्वच्छता",
+    bpRange: [1, 18] as const,
+    color: "#1d4ed8",
+    colorLight: "#eef2f7",
+  },
+  {
+    id: "pp-002",
+    label_en: "Prosperous Middle-Class",
+    label_np: "समृद्ध मध्यमवर्गीय नेपाल",
+    bpRange: [19, 60] as const,
+    color: "#0f6b3b",
+    colorLight: "#edf7f2",
+  },
+  {
+    id: "pp-003",
+    label_en: "Jobs & Opportunity",
+    label_np: "रोजगारी र अवसर",
+    bpRange: [61, 80] as const,
+    color: "#92400e",
+    colorLight: "#fdf6ed",
+  },
+  {
+    id: "pp-004",
+    label_en: "Connected Nepal",
+    label_np: "जडान नेपाल",
+    bpRange: [81, 95] as const,
+    color: "#5b21b6",
+    colorLight: "#f3f0fb",
+  },
+  {
+    id: "pp-005",
+    label_en: "Diaspora & Global Nepal",
+    label_np: "प्रवासी र विश्व नेपाल",
+    bpRange: [96, 100] as const,
+    color: "#b91c1c",
+    colorLight: "#fef2f2",
+  },
+] as const;
+
 // ── Types ────────────────────────────────────────────────────────────────────
+
+export type IndicatorType = "result" | "process";
+export type ProcessStatus =
+  | "not_started"
+  | "ongoing"
+  | "resolved"
+  | "blocked"
+  | "reversed";
+
+export interface Source {
+  id: string;
+  slug: string;
+  name_en: string;
+  name_np?: string | null;
+  document_date?: string | null;
+  document_url?: string | null;
+}
 
 export interface OutcomeIndicator {
   id: string;
@@ -23,6 +83,12 @@ export interface OutcomeIndicator {
   source: string | null;
   source_url?: string | null;
   weight?: number | null;
+  indicator_type: IndicatorType;
+  process_status?: ProcessStatus | null;
+  parent_indicator_id?: string | null;
+  source_id?: string | null;
+  sources?: Source | null;
+  children?: OutcomeIndicator[]; // populated client-side for nesting
 }
 
 export interface MonthlyDataPoint {
@@ -132,3 +198,61 @@ export function buildMonthlyData(ind: {
   }
   return months;
 }
+
+/**
+ * Nest process indicators under their parent result indicators.
+ * Returns only result indicators (with children[] populated).
+ * Orphan process indicators (no parent) become standalone entries.
+ */
+export function nestIndicators(flat: OutcomeIndicator[]): OutcomeIndicator[] {
+  const results = flat.filter((i) => i.indicator_type === "result");
+  const processes = flat.filter((i) => i.indicator_type === "process");
+
+  const byId = new Map(
+    results.map((r) => [r.id, { ...r, children: [] as OutcomeIndicator[] }]),
+  );
+
+  for (const p of processes) {
+    const parent = p.parent_indicator_id
+      ? byId.get(p.parent_indicator_id)
+      : null;
+    if (parent) {
+      parent.children.push(p);
+    }
+    // orphan process indicators are not displayed in the score view
+  }
+
+  return Array.from(byId.values());
+}
+
+/** Process status display config */
+export const PROCESS_STATUS_CONFIG: Record<
+  ProcessStatus,
+  { label_en: string; label_np: string; color: string }
+> = {
+  not_started: {
+    label_en: "Not Started",
+    label_np: "सुरु नभएको",
+    color: "bg-neutral-100 text-neutral-500",
+  },
+  ongoing: {
+    label_en: "Ongoing",
+    label_np: "जारी",
+    color: "bg-blue-100 text-blue-700",
+  },
+  resolved: {
+    label_en: "Resolved",
+    label_np: "समाधान",
+    color: "bg-emerald-100 text-emerald-700",
+  },
+  blocked: {
+    label_en: "Blocked",
+    label_np: "अवरुद्ध",
+    color: "bg-red-100 text-red-700",
+  },
+  reversed: {
+    label_en: "Reversed",
+    label_np: "उल्टो",
+    color: "bg-orange-100 text-orange-700",
+  },
+};
