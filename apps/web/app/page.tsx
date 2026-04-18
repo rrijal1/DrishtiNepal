@@ -1,4 +1,5 @@
 import { NationalScoreHero } from "@/components/NationalScoreHero";
+import type { MonthlyDataPoint } from "@/components/MonthlyScoreChart";
 import { getLocale } from "@/lib/i18n";
 import { KARAR_AREAS } from "@/lib/manifesto-utils";
 import { supabase } from "@/lib/supabase";
@@ -25,8 +26,8 @@ export default async function HomePage() {
       .eq("indicator_type", "result"),
     supabase
       .from("scores")
-      .select("minister_id, overall, scored_at")
-      .order("scored_at", { ascending: false }),
+      .select("minister_id, overall, scored_at, period_start")
+      .order("period_start", { ascending: true }),
     supabase
       .from("posts")
       .select("id, title_en, title_np, slug, published_at, category")
@@ -66,21 +67,32 @@ export default async function HomePage() {
   const score =
     totalWeight > 0 ? Math.round((weightedSum / totalWeight) * 100) : 0;
 
-  // ── Trend: compare current to previous scoring cycle ──
-  const scoresByMinister = new Map<string, number[]>();
+  // ── Monthly aggregate scores (for chart) ──
+  // Group all minister scores by period_start month, average overall per month
+  const monthlyBuckets = new Map<string, number[]>();
   for (const s of allScores ?? []) {
-    const arr = scoresByMinister.get(s.minister_id) ?? [];
-    arr.push(s.overall ?? 0);
-    scoresByMinister.set(s.minister_id, arr);
+    if (!s.period_start || s.overall == null) continue;
+    const d = new Date(s.period_start);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const bucket = monthlyBuckets.get(key) ?? [];
+    bucket.push(s.overall);
+    monthlyBuckets.set(key, bucket);
   }
-  const prevScores = Array.from(scoresByMinister.values())
-    .map((arr) => arr[1])
-    .filter((v): v is number => v != null);
-  const prevAvg =
-    prevScores.length > 0
-      ? Math.round(prevScores.reduce((a, b) => a + b, 0) / prevScores.length)
-      : null;
-  const trend = prevAvg !== null ? score - prevAvg : null;
+  const monthlyData: MonthlyDataPoint[] = Array.from(monthlyBuckets.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, vals]) => {
+      const [year, month] = key.split("-");
+      const label = new Date(Number(year), Number(month) - 1, 1).toLocaleString(
+        "en-US",
+        { month: "short", year: "numeric" },
+      );
+      const avg = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+      return { label, score: avg };
+    });
+
+  // ── Trend: compare latest monthly average to previous ──
+  const prevMonthAvg = monthlyData.length > 1 ? monthlyData[monthlyData.length - 2].score : null;
+  const trend = prevMonthAvg !== null ? score - prevMonthAvg : null;
 
   // ── Area scores ──
   const areaScores = KARAR_AREAS.map((area) => {
@@ -110,6 +122,7 @@ export default async function HomePage() {
         daysSinceFormation={daysSinceFormation}
         indicatorCount={allIndicators.length}
         locale={locale}
+        monthlyData={monthlyData}
       />
 
       {/* ─── 5 Priority Areas ─── */}
@@ -121,7 +134,8 @@ export default async function HomePage() {
             </h2>
             <a
               href="/manifesto"
-              className="text-sm font-medium text-blue-700 hover:underline"
+              className="text-sm font-medium hover:underline"
+              style={{ color: "#003893" }}
             >
               {locale === "en" ? "View all →" : "सबै हेर्नुहोस् →"}
             </a>
@@ -175,7 +189,8 @@ export default async function HomePage() {
             </h2>
             <a
               href="/ministers"
-              className="text-sm font-medium text-blue-700 hover:underline"
+              className="text-sm font-medium hover:underline"
+              style={{ color: "#003893" }}
             >
               {locale === "en" ? "All ministers →" : "सबै मन्त्रीहरू →"}
             </a>
@@ -233,7 +248,8 @@ export default async function HomePage() {
               </h2>
               <a
                 href="/articles"
-                className="text-sm font-medium text-blue-700 hover:underline"
+                className="text-sm font-medium hover:underline"
+                style={{ color: "#003893" }}
               >
                 {locale === "en" ? "View all →" : "सबै →"}
               </a>
@@ -245,10 +261,13 @@ export default async function HomePage() {
                   href={`/articles/${p.slug}`}
                   className="group rounded-lg border border-neutral-200 bg-white p-4 transition hover:shadow-sm"
                 >
-                  <span className="inline-block rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-medium text-blue-700">
+                  <span
+                    className="inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium"
+                    style={{ backgroundColor: "#EFF6FF", color: "#003893" }}
+                  >
                     {p.category}
                   </span>
-                  <p className="mt-2 line-clamp-2 text-sm font-medium text-neutral-700 group-hover:text-blue-700">
+                  <p className="mt-2 line-clamp-2 text-sm font-medium text-neutral-700">
                     {locale === "en" ? p.title_en : p.title_np || p.title_en}
                   </p>
                   <p className="mt-1 text-[11px] text-neutral-400">
@@ -267,7 +286,12 @@ export default async function HomePage() {
       {/* ─── CTA ─── */}
       <section className="bg-gray-50">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-          <div className="rounded-2xl bg-blue-700 p-8 text-center sm:p-10">
+          <div
+            className="rounded-2xl p-8 text-center sm:p-10"
+            style={{
+              background: "linear-gradient(135deg,#003893 0%,#002D7A 100%)",
+            }}
+          >
             <h2 className="text-xl font-bold text-white sm:text-2xl">
               {locale === "en"
                 ? "Democracy Needs Your Eyes"
@@ -281,7 +305,8 @@ export default async function HomePage() {
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <a
                 href="/submit"
-                className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-neutral-100"
+                className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold transition hover:bg-neutral-100"
+                style={{ color: "#003893" }}
               >
                 {locale === "en" ? "Submit Evidence" : "प्रमाण पेश गर्नुहोस्"}
               </a>

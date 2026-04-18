@@ -46,7 +46,7 @@ export function MinisterCard({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-neutral-800 group-hover:text-blue-700">
+          <h3 className="truncate font-semibold text-neutral-800" style={{color:'inherit'}}>
             {name}
           </h3>
           {locale === "en" && (

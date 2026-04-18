@@ -62,6 +62,8 @@ export default async function AdminPage() {
     recentReviewed,
     manifestoItems,
     indicators,
+    ministers,
+    allScores,
   ] = await Promise.all([
     safe(() =>
       db
@@ -122,6 +124,22 @@ export default async function AdminPage() {
         .order("category")
         .order("indicator_label"),
     ),
+    safe(() =>
+      db
+        .from("ministers")
+        .select("id, name_en, ministry")
+        .eq("status", "active")
+        .order("name_en"),
+    ),
+    safe(() =>
+      db
+        .from("scores")
+        .select(
+          "id, minister_id, period_start, period_end, overall, outcome_score, manifesto_compliance, public_accountability, scored_at",
+        )
+        .order("period_start", { ascending: false })
+        .limit(200),
+    ),
   ]);
 
   return (
@@ -133,6 +151,8 @@ export default async function AdminPage() {
       recentReviewed={recentReviewed as any[]}
       manifestoItems={manifestoItems as any[]}
       indicators={indicators as any[]}
+      ministers={ministers as any[]}
+      allScores={allScores as any[]}
       username={username}
     />
   );

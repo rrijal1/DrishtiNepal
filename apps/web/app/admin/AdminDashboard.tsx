@@ -66,6 +66,24 @@ interface Indicator {
   source_id: string | null;
 }
 
+interface Minister {
+  id: string;
+  name_en: string;
+  ministry: string;
+}
+
+interface ScoreRow {
+  id: string;
+  minister_id: string;
+  period_start: string;
+  period_end: string;
+  overall: number | null;
+  outcome_score: number | null;
+  manifesto_compliance: number | null;
+  public_accountability: number | null;
+  scored_at: string | null;
+}
+
 interface Props {
   draftPosts: Post[];
   reviewPosts: Post[];
@@ -74,6 +92,8 @@ interface Props {
   recentReviewed: ReviewItem[];
   manifestoItems: ManifestoItem[];
   indicators: Indicator[];
+  ministers: Minister[];
+  allScores: ScoreRow[];
   username: string;
 }
 
@@ -87,10 +107,12 @@ export function AdminDashboard({
   recentReviewed,
   manifestoItems,
   indicators,
+  ministers,
+  allScores,
   username,
 }: Props) {
   const [tab, setTab] = useState<
-    "news" | "drafts" | "queue" | "published" | "decisions" | "indicators"
+    "news" | "drafts" | "queue" | "published" | "decisions" | "indicators" | "scores"
   >("news");
 
   const publishedToday = recentPublished.filter(
@@ -121,6 +143,11 @@ export function AdminDashboard({
       id: "indicators" as const,
       label: "Indicators",
       count: indicators.length,
+    },
+    {
+      id: "scores" as const,
+      label: "Monthly Scores",
+      count: allScores.length,
     },
   ];
 
@@ -199,7 +226,15 @@ export function AdminDashboard({
         <AddDecisionForm manifestoItems={manifestoItems} />
       )}
       {tab === "indicators" && (
-        <IndicatorsPanel indicators={indicators} username={username} />
+        <IndicatorsPanel
+          indicators={indicators}
+          manifestoItems={manifestoItems}
+          ministers={ministers}
+          username={username}
+        />
+      )}
+      {tab === "scores" && (
+        <MonthlyScoresPanel ministers={ministers} allScores={allScores} />
       )}
     </div>
   );
@@ -952,28 +987,37 @@ function QueueStatusChip({ status }: { status: string }) {
 
 function IndicatorsPanel({
   indicators,
-  username,
+  manifestoItems,
+  ministers,
+  username: _username,
 }: {
   indicators: Indicator[];
+  manifestoItems: ManifestoItem[];
+  ministers: Minister[];
   username: string;
 }) {
   const router = useRouter();
+  const [mode, setMode] = useState<"list" | "add_result" | "add_process">("list");
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({
-    value: "",
-    measured_date: new Date().toISOString().slice(0, 10),
-    source_url: "",
-    source_text: "",
-  });
+  const [form, setForm] = useState({ value: "", measured_date: new Date().toISOString().slice(0, 10), source_url: "", source_text: "" });
   const [processForm, setProcessForm] = useState({ status: "not_started" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filterCat, setFilterCat] = useState<string>("all");
-  const [filterType, setFilterType] = useState<"all" | "result" | "process">(
-    "all",
-  );
+  const [filterType, setFilterType] = useState<"all" | "result" | "process">("all");
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [addResultForm, setAddResultForm] = useState({ indicator_name: "", indicator_label: "", category: "", priority_area: "", unit: "", direction: "higher_is_better", baseline_value: "", target_value: "", current_value: "", source: "", source_url: "", weight: "5", manifesto_item_id: "", minister_id: "", ministry: "" });
+  const [addResultSaving, setAddResultSaving] = useState(false);
+  const [addResultError, setAddResultError] = useState<string | null>(null);
+  const [addResultSuccess, setAddResultSuccess] = useState(false);
+  const [addProcessForm, setAddProcessForm] = useState({ indicator_label: "", process_status: "not_started", parent_indicator_id: "", manifesto_item_id: "", minister_id: "", ministry: "", category: "" });
+  const [addProcessSaving, setAddProcessSaving] = useState(false);
+  const [addProcessError, setAddProcessError] = useState<string | null>(null);
+  const [addProcessSuccess, setAddProcessSuccess] = useState(false);
 
   const categories = [...new Set(indicators.map((i) => i.category))].sort();
+  const resultIndicators = indicators.filter((i) => i.indicator_type === "result");
   const filtered = indicators.filter((i) => {
     if (filterCat !== "all" && i.category !== filterCat) return false;
     if (filterType !== "all" && i.indicator_type !== filterType) return false;
@@ -982,310 +1026,403 @@ function IndicatorsPanel({
 
   function startEdit(ind: Indicator) {
     setEditingId(ind.id);
-    if (ind.indicator_type === "process") {
-      setProcessForm({ status: ind.process_status ?? "not_started" });
-    } else {
-      setForm({
-        value: ind.current_value?.toString() ?? "",
-        measured_date: new Date().toISOString().slice(0, 10),
-        source_url: "",
-        source_text: "",
-      });
-    }
+    if (ind.indicator_type === "process") setProcessForm({ status: ind.process_status ?? "not_started" });
+    else setForm({ value: ind.current_value?.toString() ?? "", measured_date: new Date().toISOString().slice(0, 10), source_url: "", source_text: "" });
     setError(null);
   }
 
   async function handleSave(ind: Indicator) {
-    setSaving(true);
-    setError(null);
+    setSaving(true); setError(null);
     try {
       if (ind.indicator_type === "process") {
-        const res = await fetch("/api/admin/indicators", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            indicator_id: ind.id,
-            action: "update_process_status",
-            process_status: processForm.status,
-          }),
-        });
+        const res = await fetch("/api/admin/indicators", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ indicator_id: ind.id, action: "update_process_status", process_status: processForm.status }) });
         const data = await res.json();
-        if (!res.ok) {
-          setError(data.error || "Failed to save");
-          return;
-        }
+        if (!res.ok) { setError(data.error || "Failed to save"); return; }
       } else {
-        const res = await fetch("/api/admin/indicators", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ indicator_id: ind.id, ...form }),
-        });
+        const res = await fetch("/api/admin/indicators", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ indicator_id: ind.id, ...form }) });
         const data = await res.json();
-        if (!res.ok) {
-          setError(data.error || "Failed to save");
-          return;
-        }
+        if (!res.ok) { setError(data.error || "Failed to save"); return; }
       }
-      setEditingId(null);
-      router.refresh();
-    } catch {
-      setError("Network error");
-    } finally {
-      setSaving(false);
-    }
+      setEditingId(null); router.refresh();
+    } catch { setError("Network error"); }
+    finally { setSaving(false); }
   }
 
-  if (indicators.length === 0) {
-    return (
-      <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-12 text-center text-neutral-400">
-        No indicators seeded yet. Run the seed_bp_indicators script first.
-      </div>
-    );
+  async function handleDelete(id: string) {
+    setDeletingId(id);
+    try {
+      const res = await fetch("/api/admin/indicators", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "delete", indicator_id: id }) });
+      const data = await res.json();
+      if (!res.ok) { alert(data.error || "Delete failed"); return; }
+      setConfirmDelete(null); router.refresh();
+    } catch { alert("Network error"); }
+    finally { setDeletingId(null); }
   }
+
+  async function handleAddResult(e: React.FormEvent) {
+    e.preventDefault();
+    setAddResultSaving(true); setAddResultError(null); setAddResultSuccess(false);
+    try {
+      const res = await fetch("/api/admin/indicators", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "add_result", ...addResultForm }) });
+      const data = await res.json();
+      if (!res.ok) { setAddResultError(data.error || "Failed"); return; }
+      setAddResultSuccess(true);
+      setAddResultForm({ indicator_name: "", indicator_label: "", category: "", priority_area: "", unit: "", direction: "higher_is_better", baseline_value: "", target_value: "", current_value: "", source: "", source_url: "", weight: "5", manifesto_item_id: "", minister_id: "", ministry: "" });
+      router.refresh();
+    } catch { setAddResultError("Network error"); }
+    finally { setAddResultSaving(false); }
+  }
+
+  async function handleAddProcess(e: React.FormEvent) {
+    e.preventDefault();
+    setAddProcessSaving(true); setAddProcessError(null); setAddProcessSuccess(false);
+    try {
+      const res = await fetch("/api/admin/indicators", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "add_process", ...addProcessForm }) });
+      const data = await res.json();
+      if (!res.ok) { setAddProcessError(data.error || "Failed"); return; }
+      setAddProcessSuccess(true);
+      setAddProcessForm({ indicator_label: "", process_status: "not_started", parent_indicator_id: "", manifesto_item_id: "", minister_id: "", ministry: "", category: "" });
+      router.refresh();
+    } catch { setAddProcessError("Network error"); }
+    finally { setAddProcessSaving(false); }
+  }
+
+  const inp = "w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400";
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Type filter */}
-        {(["all", "result", "process"] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setFilterType(t)}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterType === t ? "bg-blue-700 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
-          >
-            {t === "all" ? "All Types" : t}
-          </button>
-        ))}
-        <span className="mx-1 text-neutral-300">|</span>
-        <button
-          onClick={() => setFilterCat("all")}
-          className={`rounded-md px-3 py-1.5 text-xs font-medium ${filterCat === "all" ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
-        >
-          All (
-          {
-            indicators.filter(
-              (i) => filterType === "all" || i.indicator_type === filterType,
-            ).length
-          }
-          )
-        </button>
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setFilterCat(cat)}
-            className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterCat === cat ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
-          >
-            {cat.replace(/_/g, " ")}
+      <div className="flex gap-2">
+        {(["list", "add_result", "add_process"] as const).map((m) => (
+          <button key={m} onClick={() => setMode(m)}
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition ${mode === m ? "bg-blue-700 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}>
+            {m === "list" ? `All Indicators (${indicators.length})` : m === "add_result" ? "+ Add Result" : "+ Add Process"}
           </button>
         ))}
       </div>
 
-      {/* Indicators table */}
-      <div className="overflow-x-auto rounded-xl border border-neutral-200">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-neutral-50 text-xs font-medium text-neutral-500">
-            <tr>
-              <th className="px-4 py-3">Indicator</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3 text-right">Baseline</th>
-              <th className="px-4 py-3 text-right">Target</th>
-              <th className="px-4 py-3 text-right">Current / Status</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-neutral-100">
-            {filtered.map((ind) => (
-              <tr key={ind.id} className="hover:bg-neutral-50">
-                <td className="px-4 py-3">
-                  <div className="font-medium text-neutral-800">
-                    {ind.indicator_label}
-                  </div>
-                  <div className="text-xs text-neutral-400">
-                    {ind.indicator_name}
-                    {ind.unit ? ` (${ind.unit})` : ""}
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${ind.indicator_type === "result" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}
-                  >
-                    {ind.indicator_type}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-right font-mono text-xs">
-                  {ind.indicator_type === "result"
-                    ? (ind.baseline_value ?? "–")
-                    : "–"}
-                </td>
-                <td className="px-4 py-3 text-right font-mono text-xs">
-                  {ind.indicator_type === "result"
-                    ? (ind.target_value ?? "–")
-                    : "–"}
-                </td>
-                <td className="px-4 py-3 text-right text-xs font-semibold">
-                  {ind.indicator_type === "process" ? (
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                        ind.process_status === "resolved"
-                          ? "bg-emerald-100 text-emerald-700"
-                          : ind.process_status === "ongoing"
-                            ? "bg-blue-100 text-blue-700"
-                            : ind.process_status === "blocked"
-                              ? "bg-red-100 text-red-700"
-                              : ind.process_status === "reversed"
-                                ? "bg-orange-100 text-orange-700"
-                                : "bg-neutral-100 text-neutral-500"
-                      }`}
-                    >
-                      {ind.process_status ?? "not_started"}
-                    </span>
-                  ) : (
-                    <span className="font-mono">
-                      {ind.current_value ?? "–"}
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  {editingId === ind.id ? (
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="text-xs text-neutral-400 hover:text-neutral-600"
-                    >
-                      Cancel
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => startEdit(ind)}
-                      className="text-xs font-medium text-blue-600 hover:text-blue-800"
-                    >
-                      Update
-                    </button>
-                  )}
-                </td>
-              </tr>
+      {mode === "list" && (
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            {(["all", "result", "process"] as const).map((t) => (
+              <button key={t} onClick={() => setFilterType(t)}
+                className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterType === t ? "bg-blue-700 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}>
+                {t === "all" ? "All Types" : t}
+              </button>
             ))}
-          </tbody>
-        </table>
+            <span className="mx-1 text-neutral-300">|</span>
+            <button onClick={() => setFilterCat("all")}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium ${filterCat === "all" ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}>
+              All ({indicators.filter((i) => filterType === "all" || i.indicator_type === filterType).length})
+            </button>
+            {categories.map((cat) => (
+              <button key={cat} onClick={() => setFilterCat(cat)}
+                className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize ${filterCat === cat ? "bg-neutral-800 text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}>
+                {cat.replace(/_/g, " ")}
+              </button>
+            ))}
+          </div>
+
+          <div className="overflow-x-auto rounded-xl border border-neutral-200">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-neutral-50 text-xs font-medium text-neutral-500">
+                <tr>
+                  <th className="px-4 py-3">Indicator</th>
+                  <th className="px-4 py-3">Type</th>
+                  <th className="px-4 py-3 text-right">Baseline</th>
+                  <th className="px-4 py-3 text-right">Target</th>
+                  <th className="px-4 py-3 text-right">Current / Status</th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {filtered.map((ind) => (
+                  <tr key={ind.id} className="hover:bg-neutral-50">
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-neutral-800">{ind.indicator_label}</div>
+                      <div className="text-xs text-neutral-400">{ind.indicator_name}{ind.unit ? ` (${ind.unit})` : ""}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${ind.indicator_type === "result" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>
+                        {ind.indicator_type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right font-mono text-xs">{ind.indicator_type === "result" ? (ind.baseline_value ?? "–") : "–"}</td>
+                    <td className="px-4 py-3 text-right font-mono text-xs">{ind.indicator_type === "result" ? (ind.target_value ?? "–") : "–"}</td>
+                    <td className="px-4 py-3 text-right text-xs font-semibold">
+                      {ind.indicator_type === "process" ? (
+                        <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${ind.process_status === "resolved" ? "bg-emerald-100 text-emerald-700" : ind.process_status === "ongoing" ? "bg-blue-100 text-blue-700" : ind.process_status === "blocked" ? "bg-red-100 text-red-700" : ind.process_status === "reversed" ? "bg-orange-100 text-orange-700" : "bg-neutral-100 text-neutral-500"}`}>
+                          {ind.process_status ?? "not_started"}
+                        </span>
+                      ) : (
+                        <span className="font-mono">{ind.current_value ?? "–"}</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2 justify-end">
+                        {editingId === ind.id
+                          ? <button onClick={() => setEditingId(null)} className="text-xs text-neutral-400 hover:text-neutral-600">Cancel</button>
+                          : <button onClick={() => startEdit(ind)} className="text-xs font-medium text-blue-600 hover:text-blue-800">Update</button>}
+                        {confirmDelete === ind.id ? (
+                          <>
+                            <button onClick={() => handleDelete(ind.id)} disabled={deletingId === ind.id} className="text-xs font-medium text-red-600 hover:text-red-800 disabled:opacity-50">{deletingId === ind.id ? "..." : "Confirm"}</button>
+                            <button onClick={() => setConfirmDelete(null)} className="text-xs text-neutral-400 hover:text-neutral-600">✕</button>
+                          </>
+                        ) : (
+                          <button onClick={() => setConfirmDelete(ind.id)} className="text-xs text-red-400 hover:text-red-600">Delete</button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {editingId && (() => {
+            const ind = indicators.find((i) => i.id === editingId);
+            if (!ind) return null;
+            return (
+              <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+                <h3 className="mb-3 text-sm font-semibold text-blue-800">Update: {ind.indicator_label}</h3>
+                {error && <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-600">{error}</p>}
+                {ind.indicator_type === "process" ? (
+                  <div className="flex items-end gap-3">
+                    <label className="block">
+                      <span className="text-xs font-medium text-blue-700">Status</span>
+                      <select value={processForm.status} onChange={(e) => setProcessForm({ status: e.target.value })} className="mt-1 block rounded-md border border-blue-200 bg-white px-3 py-2 text-sm">
+                        <option value="not_started">Not Started</option>
+                        <option value="ongoing">Ongoing</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="blocked">Blocked</option>
+                        <option value="reversed">Reversed</option>
+                      </select>
+                    </label>
+                    <button disabled={saving} onClick={() => handleSave(ind)} className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">{saving ? "Saving…" : "Save"}</button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                      <label className="block"><span className="text-xs font-medium text-blue-700">New Value *</span><input type="number" step="any" value={form.value} onChange={(e) => setForm({ ...form, value: e.target.value })} className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm" /></label>
+                      <label className="block"><span className="text-xs font-medium text-blue-700">Date *</span><input type="date" value={form.measured_date} onChange={(e) => setForm({ ...form, measured_date: e.target.value })} className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm" /></label>
+                      <label className="block"><span className="text-xs font-medium text-blue-700">Source URL *</span><input type="url" value={form.source_url} placeholder="https://..." onChange={(e) => setForm({ ...form, source_url: e.target.value })} className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm" /></label>
+                      <label className="block"><span className="text-xs font-medium text-blue-700">Source Text *</span><input type="text" value={form.source_text} placeholder="e.g. NRB Report" onChange={(e) => setForm({ ...form, source_text: e.target.value })} className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm" /></label>
+                    </div>
+                    <div className="mt-3"><button disabled={saving} onClick={() => handleSave(ind)} className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">{saving ? "Saving…" : "Save Measurement"}</button></div>
+                  </>
+                )}
+              </div>
+            );
+          })()}
+        </>
+      )}
+
+      {mode === "add_result" && (
+        <form onSubmit={handleAddResult} className="space-y-5 rounded-xl border border-neutral-200 bg-white p-6">
+          <h2 className="text-base font-semibold text-neutral-800">Add Result Indicator</h2>
+          {addResultSuccess && <div className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 text-sm text-emerald-700">Indicator added ✓</div>}
+          {addResultError && <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700">{addResultError}</div>}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2"><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Indicator Name (internal) <span className="text-red-500">*</span></label><input required value={addResultForm.indicator_name} onChange={(e) => setAddResultForm((f) => ({ ...f, indicator_name: e.target.value }))} placeholder="e.g. gdp_growth_rate" className={inp} /></div>
+            <div className="sm:col-span-2"><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Display Label <span className="text-red-500">*</span></label><input required value={addResultForm.indicator_label} onChange={(e) => setAddResultForm((f) => ({ ...f, indicator_label: e.target.value }))} placeholder="e.g. GDP Growth Rate" className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Category <span className="text-red-500">*</span></label><input required value={addResultForm.category} onChange={(e) => setAddResultForm((f) => ({ ...f, category: e.target.value }))} placeholder="e.g. economic_growth" className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Priority Area</label><select value={addResultForm.priority_area} onChange={(e) => setAddResultForm((f) => ({ ...f, priority_area: e.target.value }))} className={inp}><option value="">None</option>{["PP-001","PP-002","PP-003","PP-004","PP-005"].map((p) => <option key={p} value={p}>{p}</option>)}</select></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Unit</label><input value={addResultForm.unit} onChange={(e) => setAddResultForm((f) => ({ ...f, unit: e.target.value }))} placeholder="e.g. %, km, MW" className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Direction</label><select value={addResultForm.direction} onChange={(e) => setAddResultForm((f) => ({ ...f, direction: e.target.value }))} className={inp}><option value="higher_is_better">Higher is better</option><option value="lower_is_better">Lower is better</option></select></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Baseline Value</label><input type="number" step="any" value={addResultForm.baseline_value} onChange={(e) => setAddResultForm((f) => ({ ...f, baseline_value: e.target.value }))} className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Target Value</label><input type="number" step="any" value={addResultForm.target_value} onChange={(e) => setAddResultForm((f) => ({ ...f, target_value: e.target.value }))} className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Current Value</label><input type="number" step="any" value={addResultForm.current_value} onChange={(e) => setAddResultForm((f) => ({ ...f, current_value: e.target.value }))} className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Weight (1–10)</label><input type="number" min="1" max="10" value={addResultForm.weight} onChange={(e) => setAddResultForm((f) => ({ ...f, weight: e.target.value }))} className={inp} /></div>
+            <div className="sm:col-span-2"><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Source <span className="text-red-500">*</span></label><input required value={addResultForm.source} onChange={(e) => setAddResultForm((f) => ({ ...f, source: e.target.value }))} placeholder="e.g. CBS Nepal" className={inp} /></div>
+            <div className="sm:col-span-2"><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Source URL</label><input type="url" value={addResultForm.source_url} onChange={(e) => setAddResultForm((f) => ({ ...f, source_url: e.target.value }))} placeholder="https://..." className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Manifesto Item</label><select value={addResultForm.manifesto_item_id} onChange={(e) => setAddResultForm((f) => ({ ...f, manifesto_item_id: e.target.value }))} className={inp}><option value="">None</option>{manifestoItems.map((m) => <option key={m.id} value={m.id}>{m.source_id} — {m.title_en}</option>)}</select></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Minister</label><select value={addResultForm.minister_id} onChange={(e) => { const mn = ministers.find((mm) => mm.id === e.target.value); setAddResultForm((f) => ({ ...f, minister_id: e.target.value, ministry: mn?.ministry ?? f.ministry })); }} className={inp}><option value="">None</option>{ministers.map((mm) => <option key={mm.id} value={mm.id}>{mm.name_en} — {mm.ministry}</option>)}</select></div>
+          </div>
+          <button type="submit" disabled={addResultSaving} className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50">{addResultSaving ? "Adding…" : "Add Result Indicator"}</button>
+        </form>
+      )}
+
+      {mode === "add_process" && (
+        <form onSubmit={handleAddProcess} className="space-y-5 rounded-xl border border-neutral-200 bg-white p-6">
+          <h2 className="text-base font-semibold text-neutral-800">Add Process Indicator</h2>
+          {addProcessSuccess && <div className="rounded-lg bg-emerald-50 border border-emerald-200 px-4 py-2 text-sm text-emerald-700">Process indicator added ✓</div>}
+          {addProcessError && <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700">{addProcessError}</div>}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="sm:col-span-2"><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Label <span className="text-red-500">*</span></label><input required value={addProcessForm.indicator_label} onChange={(e) => setAddProcessForm((f) => ({ ...f, indicator_label: e.target.value }))} placeholder="e.g. Draft Agriculture Bill" className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Status</label><select value={addProcessForm.process_status} onChange={(e) => setAddProcessForm((f) => ({ ...f, process_status: e.target.value }))} className={inp}><option value="not_started">Not Started</option><option value="ongoing">Ongoing</option><option value="resolved">Resolved</option><option value="blocked">Blocked</option><option value="reversed">Reversed</option></select></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Category</label><input value={addProcessForm.category} onChange={(e) => setAddProcessForm((f) => ({ ...f, category: e.target.value }))} placeholder="e.g. legislation" className={inp} /></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Parent Result Indicator</label><select value={addProcessForm.parent_indicator_id} onChange={(e) => setAddProcessForm((f) => ({ ...f, parent_indicator_id: e.target.value }))} className={inp}><option value="">None</option>{resultIndicators.map((r) => <option key={r.id} value={r.id}>{r.indicator_label}</option>)}</select></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Manifesto Item</label><select value={addProcessForm.manifesto_item_id} onChange={(e) => setAddProcessForm((f) => ({ ...f, manifesto_item_id: e.target.value }))} className={inp}><option value="">None</option>{manifestoItems.map((m) => <option key={m.id} value={m.id}>{m.source_id} — {m.title_en}</option>)}</select></div>
+            <div><label className="mb-1.5 block text-xs font-semibold text-neutral-500">Minister</label><select value={addProcessForm.minister_id} onChange={(e) => { const mn = ministers.find((mm) => mm.id === e.target.value); setAddProcessForm((f) => ({ ...f, minister_id: e.target.value, ministry: mn?.ministry ?? f.ministry })); }} className={inp}><option value="">None</option>{ministers.map((mm) => <option key={mm.id} value={mm.id}>{mm.name_en} — {mm.ministry}</option>)}</select></div>
+          </div>
+          <button type="submit" disabled={addProcessSaving} className="rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-amber-700 disabled:opacity-50">{addProcessSaving ? "Adding…" : "Add Process Indicator"}</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+// ── Monthly Scores Panel ─────────────────────────────────────────────────────
+
+function MonthlyScoresPanel({ ministers, allScores }: { ministers: Minister[]; allScores: ScoreRow[]; }) {
+  const router = useRouter();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ overall: "", outcome_score: "", manifesto_compliance: "", public_accountability: "" });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [addForm, setAddForm] = useState({ minister_id: "", period_start: new Date().toISOString().slice(0, 7) + "-01", period_end: "", overall: "", outcome_score: "", manifesto_compliance: "", public_accountability: "" });
+  const [addSaving, setAddSaving] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+
+  const ministerMap = new Map(ministers.map((m) => [m.id, m]));
+  const byMinister = new Map<string, ScoreRow[]>();
+  for (const s of allScores) {
+    const arr = byMinister.get(s.minister_id) ?? [];
+    arr.push(s);
+    byMinister.set(s.minister_id, arr);
+  }
+
+  function startEdit(row: ScoreRow) {
+    setEditingId(row.id);
+    setEditForm({ overall: row.overall?.toString() ?? "", outcome_score: row.outcome_score?.toString() ?? "", manifesto_compliance: row.manifesto_compliance?.toString() ?? "", public_accountability: row.public_accountability?.toString() ?? "" });
+    setError(null);
+  }
+
+  async function handleSave(row: ScoreRow) {
+    setSaving(true); setError(null);
+    try {
+      const res = await fetch("/api/admin/scores", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ minister_id: row.minister_id, period_start: row.period_start, period_end: row.period_end, ...editForm }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || "Failed"); return; }
+      setEditingId(null); router.refresh();
+    } catch { setError("Network error"); }
+    finally { setSaving(false); }
+  }
+
+  async function handleDelete(id: string) {
+    setDeletingId(id);
+    try {
+      const res = await fetch("/api/admin/scores", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ score_id: id }) });
+      const data = await res.json();
+      if (!res.ok) { alert(data.error || "Delete failed"); return; }
+      setConfirmDelete(null); router.refresh();
+    } catch { alert("Network error"); }
+    finally { setDeletingId(null); }
+  }
+
+  async function handleAdd(e: React.FormEvent) {
+    e.preventDefault();
+    setAddSaving(true); setAddError(null);
+    try {
+      const res = await fetch("/api/admin/scores", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(addForm) });
+      const data = await res.json();
+      if (!res.ok) { setAddError(data.error || "Failed"); return; }
+      setShowAdd(false);
+      setAddForm({ minister_id: "", period_start: new Date().toISOString().slice(0, 7) + "-01", period_end: "", overall: "", outcome_score: "", manifesto_compliance: "", public_accountability: "" });
+      router.refresh();
+    } catch { setAddError("Network error"); }
+    finally { setAddSaving(false); }
+  }
+
+  const inp = "w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-400";
+  const inpSm = "rounded-md border border-neutral-200 bg-white px-2 py-1 text-xs w-20 text-right font-mono focus:outline-none focus:ring-1 focus:ring-blue-400";
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold text-neutral-800">Monthly Score Snapshots</h2>
+        <button onClick={() => setShowAdd((v) => !v)} className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800">{showAdd ? "Cancel" : "+ Add Snapshot"}</button>
       </div>
 
-      {/* Edit form */}
-      {editingId &&
-        (() => {
-          const ind = indicators.find((i) => i.id === editingId);
-          if (!ind) return null;
+      {showAdd && (
+        <form onSubmit={handleAdd} className="rounded-xl border border-blue-200 bg-blue-50 p-5 space-y-4">
+          <h3 className="text-sm font-semibold text-blue-800">New Score Snapshot</h3>
+          {addError && <p className="text-xs text-red-600 bg-red-50 rounded px-3 py-2">{addError}</p>}
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div><label className="mb-1 block text-xs font-semibold text-blue-700">Minister <span className="text-red-500">*</span></label><select required value={addForm.minister_id} onChange={(e) => setAddForm((f) => ({ ...f, minister_id: e.target.value }))} className={inp}><option value="">Select…</option>{ministers.map((m) => <option key={m.id} value={m.id}>{m.name_en}</option>)}</select></div>
+            <div><label className="mb-1 block text-xs font-semibold text-blue-700">Period Start <span className="text-red-500">*</span></label><input type="date" required value={addForm.period_start} onChange={(e) => { const d = new Date(e.target.value); const end = new Date(d.getFullYear(), d.getMonth() + 1, 0).toISOString().slice(0, 10); setAddForm((f) => ({ ...f, period_start: e.target.value, period_end: end })); }} className={inp} /></div>
+            <div><label className="mb-1 block text-xs font-semibold text-blue-700">Period End <span className="text-red-500">*</span></label><input type="date" required value={addForm.period_end} onChange={(e) => setAddForm((f) => ({ ...f, period_end: e.target.value }))} className={inp} /></div>
+            <div><label className="mb-1 block text-xs font-semibold text-blue-700">Overall (0–100) <span className="text-red-500">*</span></label><input type="number" min="0" max="100" step="0.1" required value={addForm.overall} onChange={(e) => setAddForm((f) => ({ ...f, overall: e.target.value }))} className={inp} /></div>
+            <div><label className="mb-1 block text-xs font-semibold text-blue-700">Outcome Score</label><input type="number" min="0" max="100" step="0.1" value={addForm.outcome_score} onChange={(e) => setAddForm((f) => ({ ...f, outcome_score: e.target.value }))} className={inp} /></div>
+            <div><label className="mb-1 block text-xs font-semibold text-blue-700">Manifesto Compliance</label><input type="number" min="0" max="100" step="0.1" value={addForm.manifesto_compliance} onChange={(e) => setAddForm((f) => ({ ...f, manifesto_compliance: e.target.value }))} className={inp} /></div>
+          </div>
+          <button type="submit" disabled={addSaving} className="rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50">{addSaving ? "Saving…" : "Save Snapshot"}</button>
+        </form>
+      )}
 
-          return (
-            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
-              <h3 className="mb-3 text-sm font-semibold text-blue-800">
-                Update: {ind.indicator_label}
-              </h3>
-              {error && (
-                <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-600">
-                  {error}
-                </p>
-              )}
-              {ind.indicator_type === "process" ? (
-                <div className="flex items-end gap-3">
-                  <label className="block">
-                    <span className="text-xs font-medium text-blue-700">
-                      Status
-                    </span>
-                    <select
-                      value={processForm.status}
-                      onChange={(e) =>
-                        setProcessForm({ status: e.target.value })
-                      }
-                      className="mt-1 block rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-                    >
-                      <option value="not_started">Not Started</option>
-                      <option value="ongoing">Ongoing</option>
-                      <option value="resolved">Resolved</option>
-                      <option value="blocked">Blocked</option>
-                      <option value="reversed">Reversed</option>
-                    </select>
-                  </label>
-                  <button
-                    disabled={saving}
-                    onClick={() => handleSave(ind)}
-                    className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    {saving ? "Saving…" : "Save"}
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    <label className="block">
-                      <span className="text-xs font-medium text-blue-700">
-                        New Value *
-                      </span>
-                      <input
-                        type="number"
-                        step="any"
-                        value={form.value}
-                        onChange={(e) =>
-                          setForm({ ...form, value: e.target.value })
-                        }
-                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="text-xs font-medium text-blue-700">
-                        Date *
-                      </span>
-                      <input
-                        type="date"
-                        value={form.measured_date}
-                        onChange={(e) =>
-                          setForm({ ...form, measured_date: e.target.value })
-                        }
-                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="text-xs font-medium text-blue-700">
-                        Source URL *
-                      </span>
-                      <input
-                        type="url"
-                        value={form.source_url}
-                        placeholder="https://..."
-                        onChange={(e) =>
-                          setForm({ ...form, source_url: e.target.value })
-                        }
-                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="text-xs font-medium text-blue-700">
-                        Source Text *
-                      </span>
-                      <input
-                        type="text"
-                        value={form.source_text}
-                        placeholder="e.g. NRB Report"
-                        onChange={(e) =>
-                          setForm({ ...form, source_text: e.target.value })
-                        }
-                        className="mt-1 block w-full rounded-md border border-blue-200 bg-white px-3 py-2 text-sm"
-                      />
-                    </label>
-                  </div>
-                  <div className="mt-3">
-                    <button
-                      disabled={saving}
-                      onClick={() => handleSave(ind)}
-                      className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-                    >
-                      {saving ? "Saving…" : "Save Measurement"}
-                    </button>
-                  </div>
-                </>
-              )}
+      {Array.from(byMinister.entries()).map(([ministerId, rows]) => {
+        const min = ministerMap.get(ministerId);
+        const sorted = [...rows].sort((a, b) => a.period_start.localeCompare(b.period_start));
+        return (
+          <div key={ministerId} className="overflow-hidden rounded-xl border border-neutral-200">
+            <div className="bg-neutral-50 px-4 py-2.5 border-b border-neutral-200">
+              <p className="text-sm font-semibold text-neutral-800">{min?.name_en ?? ministerId}</p>
+              <p className="text-xs text-neutral-400">{min?.ministry}</p>
             </div>
-          );
-        })()}
+            <table className="w-full text-left text-xs">
+              <thead className="text-neutral-400 font-medium">
+                <tr>
+                  <th className="px-4 py-2">Period</th>
+                  <th className="px-4 py-2 text-right">Overall</th>
+                  <th className="px-4 py-2 text-right">Outcome</th>
+                  <th className="px-4 py-2 text-right">Manifesto</th>
+                  <th className="px-4 py-2 text-right">Accountability</th>
+                  <th className="px-4 py-2" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100">
+                {sorted.map((row) => (
+                  <tr key={row.id} className="hover:bg-neutral-50">
+                    <td className="px-4 py-2 font-mono text-neutral-600">{row.period_start} → {row.period_end}</td>
+                    {editingId === row.id ? (
+                      <>
+                        <td className="px-2 py-1.5 text-right"><input type="number" min="0" max="100" step="0.1" value={editForm.overall} onChange={(e) => setEditForm((f) => ({ ...f, overall: e.target.value }))} className={inpSm} /></td>
+                        <td className="px-2 py-1.5 text-right"><input type="number" min="0" max="100" step="0.1" value={editForm.outcome_score} onChange={(e) => setEditForm((f) => ({ ...f, outcome_score: e.target.value }))} className={inpSm} /></td>
+                        <td className="px-2 py-1.5 text-right"><input type="number" min="0" max="100" step="0.1" value={editForm.manifesto_compliance} onChange={(e) => setEditForm((f) => ({ ...f, manifesto_compliance: e.target.value }))} className={inpSm} /></td>
+                        <td className="px-2 py-1.5 text-right"><input type="number" min="0" max="100" step="0.1" value={editForm.public_accountability} onChange={(e) => setEditForm((f) => ({ ...f, public_accountability: e.target.value }))} className={inpSm} /></td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="px-4 py-2 text-right font-mono font-bold text-neutral-800">{row.overall ?? "–"}</td>
+                        <td className="px-4 py-2 text-right font-mono text-neutral-500">{row.outcome_score ?? "–"}</td>
+                        <td className="px-4 py-2 text-right font-mono text-neutral-500">{row.manifesto_compliance ?? "–"}</td>
+                        <td className="px-4 py-2 text-right font-mono text-neutral-500">{row.public_accountability ?? "–"}</td>
+                      </>
+                    )}
+                    <td className="px-4 py-2">
+                      <div className="flex items-center gap-2 justify-end">
+                        {editingId === row.id ? (
+                          <>
+                            <button onClick={() => handleSave(row)} disabled={saving} className="text-xs font-medium text-blue-600 hover:text-blue-800 disabled:opacity-50">{saving ? "…" : "Save"}</button>
+                            <button onClick={() => setEditingId(null)} className="text-xs text-neutral-400 hover:text-neutral-600">Cancel</button>
+                          </>
+                        ) : (
+                          <button onClick={() => startEdit(row)} className="text-xs font-medium text-blue-600 hover:text-blue-800">Edit</button>
+                        )}
+                        {confirmDelete === row.id ? (
+                          <>
+                            <button onClick={() => handleDelete(row.id)} disabled={deletingId === row.id} className="text-xs font-medium text-red-600 hover:text-red-800 disabled:opacity-50">{deletingId === row.id ? "…" : "Confirm"}</button>
+                            <button onClick={() => setConfirmDelete(null)} className="text-xs text-neutral-400 hover:text-neutral-600">✕</button>
+                          </>
+                        ) : (
+                          <button onClick={() => setConfirmDelete(row.id)} className="text-xs text-red-400 hover:text-red-600">Delete</button>
+                        )}
+                      </div>
+                      {error && editingId === row.id && <p className="mt-1 text-xs text-red-500">{error}</p>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      })}
+
+      {allScores.length === 0 && (
+        <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-12 text-center text-neutral-400">No score snapshots yet. Add one above.</div>
+      )}
     </div>
   );
 }

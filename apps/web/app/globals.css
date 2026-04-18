@@ -1,33 +1,49 @@
 @import "tailwindcss";
 
-:root {
-  /* Drishti Nepal Brand Colors
-     Primary: Deep Sky — authoritative, modern, trustworthy
-     Red:     Warm Crimson — Nepal-flag-inspired */
-  --color-brand: #5c6c97;
-  --color-brand-light: #0ea5e9;
-  --color-brand-dark: #1e40af;
-  --color-accent: #e63946;
-  --color-accent-light: #ef5461;
-  --color-success: #16a34a;
-  --color-warning: #f59e0b;
-  --color-danger: #dc2626;
-  --color-neutral-50: #f8fafc;
-  --color-neutral-100: #f1f5f9;
-  --color-neutral-200: #e2e8f0;
-  --color-neutral-300: #cbd5e1;
-  --color-neutral-400: #94a3b8;
-  --color-neutral-500: #64748b;
-  --color-neutral-600: #475569;
-  --color-neutral-700: #334155;
-  --color-neutral-800: #1e293b;
-  --color-neutral-900: #0f172a;
+/* ============================================= */
+/* Drishti Nepal – Official Brand Color System  */
+/* Tailwind CSS v4 – CSS-only configuration     */
+/* ============================================= */
 
-  --color-score-excellent: #16a34a;
-  --color-score-good: #65a30d;
-  --color-score-average: #f59e0b;
+@theme {
+  /* === BRAND (Primary) === */
+  --color-primary: #003893;
+  --color-primary-light: #EFF6FF;
+  --color-primary-hover: #002D7A;
+  --color-primary-active: #001F55;
+
+  /* === SEMANTIC COLORS === */
+  --color-success: #10B981;
+  --color-success-hover: #059669;
+  --color-warning: #D97706;
+  --color-warning-hover: #B45309;
+  --color-danger: #B91C1C;
+  --color-danger-hover: #991B1B;
+
+  /* === NEUTRALS (60–70% of your UI) === */
+  --color-neutral-50: #F8FAFC;
+  --color-neutral-100: #F1F5F9;
+  --color-neutral-200: #E2E8F0;
+  --color-neutral-300: #CBD5E1;
+  --color-neutral-500: #64748B;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1E2937;
+  --color-neutral-900: #0F172A;
+}
+
+:root {
+  /* Legacy aliases — kept for any inline var() usage */
+  --color-brand: #003893;
+  --color-brand-light: #EFF6FF;
+  --color-brand-dark: #002D7A;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-600: #475569;
+
+  --color-score-excellent: #10B981;
+  --color-score-good: #059669;
+  --color-score-average: #D97706;
   --color-score-poor: #f97316;
-  --color-score-failing: #dc2626;
+  --color-score-failing: #B91C1C;
 }
 
 /* Smooth scrolling */

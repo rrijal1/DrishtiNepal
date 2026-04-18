@@ -65,7 +65,10 @@ function ResultIndicatorCard({
             )}
           </div>
           {progress !== null && (
-            <span className="shrink-0 text-lg font-bold tabular-nums text-blue-700">
+            <span
+              className="shrink-0 text-lg font-bold tabular-nums"
+              style={{ color: "#003893" }}
+            >
               {Math.round(progress)}%
             </span>
           )}
@@ -75,8 +78,8 @@ function ResultIndicatorCard({
         {progress !== null && (
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100">
             <div
-              className="h-full rounded-full bg-blue-600 transition-all"
-              style={{ width: `${Math.min(100, progress)}%` }}
+              className="h-full rounded-full transition-all"
+              style={{ backgroundColor: "#003893", width: `${Math.min(100, progress)}%` }}
             />
           </div>
         )}
@@ -101,7 +104,8 @@ function ResultIndicatorCard({
         {hasChildren && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-3 flex items-center gap-1 text-xs font-medium text-blue-700 hover:underline"
+            className="mt-3 flex items-center gap-1 text-xs font-medium hover:underline"
+            style={{ color: "#003893" }}
           >
             <span
               className={`transition-transform ${expanded ? "rotate-90" : ""}`}
