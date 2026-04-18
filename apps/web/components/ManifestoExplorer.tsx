@@ -7,10 +7,10 @@ interface KararArea {
   id: string;
   title_en: string;
   title_np: string;
-  description_en: string;
+  description_en?: string;
   color: string;
   colorLight: string;
-  bpRange: [number, number];
+  bpRange: readonly [number, number];
 }
 
 interface AreaStat extends KararArea {
